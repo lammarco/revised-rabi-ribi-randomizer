@@ -111,7 +111,7 @@
 "from_location": "FOREST_START",
 "entry_prereq": "
     AIR_JUMP
-    | ((RABI_SLIPPERS | ITM_HARD) & WALL_JUMP_LV2)
+    | (WALL_JUMP_LV2 & (ITM_HARD | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
     | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & (SPEED1 | WALL_JUMP | ITM_VHARD))
     | (ADV_HARD & (WHIRL_BONK_CANCEL | HAMMER_ROLL))
     | (ADV_STUPID & (WHIRL_BONK | SLIDING_POWDER)) // bonk off jumping uprprc
@@ -859,10 +859,11 @@
         | (AIR_DASH & HARD)
         | SLIDE_JUMP_BUNSTRIKE
         | (ADV_VHARD & SLIDING_POWDER) // slide bonk
-        | ADV_STUPID // amulet climb, need 2 items at least
+        | (ADV_STUPID & 2_AMULET_FOOD) // amulet climb
         | (RABI_SLIPPERS & (
             SLIDING_POWDER
             | (SPEED1 & ITM_HARD)
+            | ADV_STUPID // very tight quickdrop jump
         ))
     ))",
 "exit_prereq": "NONE",
@@ -902,7 +903,7 @@
 "entry_prereq": "
     ADV_STUPID | RABI_SLIPPERS | AIR_JUMP | WHIRL_BONK
     | (ITM_VHARD & SPEED1)
-    | (ITM_HARD & (AIR_DASH | WALL_JUMP | SPEED3)) 
+    | (ITM_HARD & (AIR_DASH | WALL_JUMP | SPEED3))
     | (ADV_HARD & SLIDING_POWDER)
     ",
 "exit_prereq": "NONE",
@@ -1322,7 +1323,6 @@
 "from_location": "SYSINT2_END",
 "entry_prereq": "POST_GAME",
 "exit_prereq": "NONE",
-// TODO: add stupid CFE and sysint2 backwards
 }
 
 {
@@ -1334,8 +1334,8 @@
     | AIR_DASH
     | SLIDE_JUMP_BUNSTRIKE
     | DOWNDRILL_SEMISOLID_CLIP
-    | (ADV_VHARD & RABI_SLIPPERS) // need bunny amulet
-    | (ADV_STUPID & WALL_JUMP_LV2) // need bunny amulet lv2
+    | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD) // amuclimb
+    | (ADV_STUPID & WALL_JUMP_LV2 & 2_AMULET_FOOD) // amuclimb
     ",
 }
 
