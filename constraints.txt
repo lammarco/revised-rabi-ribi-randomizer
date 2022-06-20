@@ -358,7 +358,9 @@
     ((ADV_VHARD & BUNNY_AMULET) | SLIDING_POWDER | AIR_JUMP | AIR_DASH | RABI_SLIPPERS)
     & (SLIDE_ZIP | (EXPLOSIVES & (SLIDING_POWDER | HAMMER_ROLL_ZIP)))
 ",
-// can also enter from Irisu, but it still requires slide
+"alternate_exits": {
+    "LIBRARY_IRISU": "RABI_SLIPPERS & SLIDE_ZIP & ADV_VHARD",
+    },
 }
 
 {

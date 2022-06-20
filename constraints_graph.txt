@@ -741,13 +741,16 @@ PROLOGUE_TRIGGER & (
         WHIRL_BONK
         | (AIR_JUMP & AIR_DASH)
         | (AIR_JUMP & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+        | (AIR_DASH & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+        // stupid amuclimb
+        | (ADV_STUPID & AIR_DASH & WALL_JUMP & BUNNY_AMULET_LV2 & SLIDE_JUMP_BUNSTRIKE_CANCEL)
     ) & ( // alcove up
         AIR_JUMP
         | AIR_DASH
         | (RABI_SLIPPERS & ADV_STUPID & AMULET_FOOD)
         | (WALL_JUMP & ADV_STUPID & 2_AMULET_FOOD)
     )) // climb the shaft in the room to the right
-    | (WALL_JUMP_LV2 & AIR_JUMP & (AIR_DASH | SLIDE_JUMP_BUNSTRIKE_CANCEL))
+    | (WALL_JUMP_LV2 & AIR_JUMP & (AIR_DASH | BUNNY_STRIKE))
 ",
 }
 
@@ -769,22 +772,17 @@ PROLOGUE_TRIGGER & (
 ",
 }
 
-// this could theoretically restrict HITBOX_DOWN
-// as you can reach that room from LIBRARY_MID_LOWER with just RIBBON
-// but current constraints always allow the indirect path through LIBRARY_BOTTOM
 {
 "edge": "LIBRARY_MID_LOWER -> LIBRARY_BOTTOM",
 "prereq": "
-    (
-        (EXPLOSIVES_ENEMY & (SLIDING_POWDER | HAMMER_ROLL_ZIP))
-        | ( // RIBBON &
-            RABI_SLIPPERS
-            | AIR_JUMP
-            | AIR_DASH
-            | SLIDE_JUMP_BUNSTRIKE
-            | WHIRL_BONK
-            | (ADV_STUPID & AMULET_FOOD)
-        )
+    (EXPLOSIVES_ENEMY & (SLIDING_POWDER | HAMMER_ROLL_ZIP))
+    | (
+        RABI_SLIPPERS
+        | AIR_JUMP
+        | AIR_DASH
+        | SLIDE_JUMP_BUNSTRIKE
+        | WHIRL_BONK
+        | (ADV_STUPID & AMULET_FOOD)
     )
 ",
 }
@@ -814,13 +812,21 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "LIBRARY_MID_UPPER -> LIBRARY_IRISU",
 "prereq": "
+(
     SLIDE_ZIP
     // climb the shaft
     | (WHIRL_BONK_CANCEL & (ADV_STUPID | WALL_JUMP_LV2))
     | (AIR_JUMP & WALL_JUMP_LV2)
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS & AIR_JUMP & WALL_JUMP)
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS & WALL_JUMP_LV2)
-    // there is a stupid slide bonk here, just zip
+    // there is a stupid slide bonk here, just zip instead
+) & (
+    // the last little wall
+    AIR_DASH
+    | AIR_JUMP
+    | (ADV_VHARD & (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
+    | (ADV_STUPID & WALL_JUMP_LV2)
+)
 ",
 }
 

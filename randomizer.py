@@ -126,6 +126,127 @@ def apply_open_mode_fixes(areaid, data):
         # Trigger blocking going to beach from start
         data.tiledata_event = [0 if x==301 else x for x in data.tiledata_event]
 
+
+def apply_post_game_fixes(areaid, data):
+    # library
+    if areaid == 1:
+        # entrance
+        for x in range(281, 286):
+            data.tiledata_map[xy_to_index(x, 64)] = 0
+            data.tiledata_tiles1[xy_to_index(x, 64)] = 0
+            data.tiledata_event[xy_to_index(x, 64)] = 0
+        for x in range(295, 302):
+            data.tiledata_map[xy_to_index(x, 61)] = 0
+            data.tiledata_tiles1[xy_to_index(x, 61)] = 0
+            data.tiledata_event[xy_to_index(x, 61)] = 0
+
+        # lower area and hitbox down
+        data.tiledata_map[xy_to_index(352, 51)] = 0
+        data.tiledata_tiles1[xy_to_index(352, 51)] = 0
+        data.tiledata_event[xy_to_index(352, 51)] = 0
+
+        data.tiledata_event[xy_to_index(354, 61)] = 0
+        data.tiledata_event[xy_to_index(354, 62)] = 0
+
+        data.tiledata_event[xy_to_index(376, 63)] = 0
+        data.tiledata_event[xy_to_index(376, 64)] = 0
+
+        data.tiledata_event[xy_to_index(359, 34)] = 0
+        data.tiledata_event[xy_to_index(359, 35)] = 0
+
+        data.tiledata_event[xy_to_index(343, 40)] = 0
+        data.tiledata_event[xy_to_index(343, 40)] = 0
+
+        # large gaps to mid lower area
+        for x in range(327, 330):
+            data.tiledata_map[xy_to_index(x, 48)] = 0
+            data.tiledata_tiles1[xy_to_index(x, 48)] = 0
+            data.tiledata_event[xy_to_index(x, 48)] = 0
+
+        data.tiledata_event[xy_to_index(334, 52)] = 0
+        data.tiledata_event[xy_to_index(334, 53)] = 0
+
+        for x in range(303, 305):
+            data.tiledata_map[xy_to_index(x, 39)] = 0
+            data.tiledata_tiles1[xy_to_index(x, 39)] = 0
+            data.tiledata_event[xy_to_index(x, 39)] = 0
+        for y in range(38, 40):
+            data.tiledata_map[xy_to_index(308, y)] = 0
+            data.tiledata_tiles1[xy_to_index(308, y)] = 0
+            data.tiledata_event[xy_to_index(308, y)] = 0
+        for y in range(35, 42):
+            data.tiledata_map[xy_to_index(312, y)] = 0
+            data.tiledata_tiles1[xy_to_index(312, y)] = 0
+            data.tiledata_event[xy_to_index(312, y)] = 0
+
+        data.tiledata_event[xy_to_index(310, 49)] = 0
+        data.tiledata_event[xy_to_index(310, 50)] = 0
+
+        # library zip and 8 tile walljump room
+        data.tiledata_map[xy_to_index(223, 31)] = 0
+        data.tiledata_tiles1[xy_to_index(223, 31)] = 0
+        data.tiledata_event[xy_to_index(223, 31)] = 0
+
+        data.tiledata_map[xy_to_index(232, 34)] = 0
+        data.tiledata_tiles1[xy_to_index(232, 34)] = 0
+        data.tiledata_event[xy_to_index(232, 34)] = 0
+
+        data.tiledata_map[xy_to_index(235, 42)] = 0
+        data.tiledata_tiles1[xy_to_index(235, 42)] = 0
+        data.tiledata_event[xy_to_index(235, 42)] = 0
+
+        data.tiledata_map[xy_to_index(236, 36)] = 0
+        data.tiledata_tiles1[xy_to_index(236, 36)] = 0
+        data.tiledata_event[xy_to_index(236, 36)] = 0
+
+        data.tiledata_map[xy_to_index(231, 27)] = 0
+        data.tiledata_tiles1[xy_to_index(231, 27)] = 0
+        data.tiledata_event[xy_to_index(231, 27)] = 0
+
+        for x in range(224, 231):
+            data.tiledata_map[xy_to_index(x, 42)] = 0
+            data.tiledata_tiles1[xy_to_index(x, 42)] = 0
+            data.tiledata_event[xy_to_index(x, 42)] = 0
+
+        # beneath auto trigger
+        for x in range(293, 297):
+            data.tiledata_map[xy_to_index(x, 31)] = 0
+            data.tiledata_tiles1[xy_to_index(x, 31)] = 0
+            data.tiledata_event[xy_to_index(x, 31)] = 0
+
+        data.tiledata_event[xy_to_index(291, 32)] = 0
+        data.tiledata_event[xy_to_index(291, 33)] = 0
+
+        data.tiledata_event[xy_to_index(297, 30)] = 0
+        data.tiledata_event[xy_to_index(297, 31)] = 0
+
+        # mid upper to irisu
+        data.tiledata_map[xy_to_index(330, 30)] = 0
+        data.tiledata_tiles1[xy_to_index(330, 30)] = 0
+        data.tiledata_event[xy_to_index(330, 30)] = 0
+
+        data.tiledata_map[xy_to_index(335, 27)] = 0
+        data.tiledata_tiles1[xy_to_index(335, 27)] = 0
+        data.tiledata_event[xy_to_index(335, 27)] = 0
+
+        data.tiledata_map[xy_to_index(336, 24)] = 0
+        data.tiledata_tiles1[xy_to_index(336, 24)] = 0
+        data.tiledata_event[xy_to_index(336, 24)] = 0
+
+        data.tiledata_map[xy_to_index(337, 21)] = 0
+        data.tiledata_tiles1[xy_to_index(337, 21)] = 0
+        data.tiledata_event[xy_to_index(337, 21)] = 0
+
+        data.tiledata_event[xy_to_index(327, 30)] = 0
+        data.tiledata_event[xy_to_index(327, 31)] = 0
+
+        data.tiledata_event[xy_to_index(333, 30)] = 0
+        data.tiledata_event[xy_to_index(333, 31)] = 0
+
+        data.tiledata_event[xy_to_index(309, 16)] = 0
+        data.tiledata_event[xy_to_index(309, 17)] = 0
+
+
 def configure_shaft(mod, settings):
     events_list = []
 
@@ -171,7 +292,7 @@ def build_start_game_shaft(areaid, data, events_list):
     EVENT_COUNT = len(events_list)
     if EVENT_COUNT > MAX_EVENTS:
         fail('Too many events in start game shaft: %d/%d' % (EVENT_COUNT, MAX_EVENTS))
-    
+
     # EV_MOVEDOWN event to move erina down to start position
     data.tiledata_event[xy_to_index(111,43)] = 554
 
@@ -236,7 +357,7 @@ def apply_diff_patch_fixes(mod, diff_patch_files):
         for areaid, diffs in diff_data.area_diffs.items():
             apply_diff(area_arrays[areaid], diffs)
 
-def pre_modify_map_data(mod, settings, diff_patch_files):
+def pre_modify_map_data(mod, settings, diff_patch_files, config):
     # apply rando fixes
     if settings.apply_fixes:
         for areaid, data in mod.stored_datas.items():
@@ -263,6 +384,12 @@ def pre_modify_map_data(mod, settings, diff_patch_files):
     # Apply map patches from list of patches. We apply this only after everything else has been applied.
     apply_diff_patch_fixes(mod, diff_patch_files)
     print_ln('Map patches applied')
+
+    # Apply post game adjustments - remove tramplines and low% blocks
+    if config.settings["POST_GAME_ALLOWED"]:
+        for areaid, data in mod.stored_datas.items():
+            apply_post_game_fixes(areaid, data)
+        print_ln('Post Game map fixes applied')
 
     # Apply open mode after map patches because all it does is remove IDs 300 and 301.
     if settings.open_mode:
@@ -354,7 +481,7 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
     print_setting_bool('Shuffle Backgrounds', settings.shuffle_backgrounds)
     print_setting_bool('No Laggy Backgrounds', settings.no_laggy_backgrounds)
     print_setting_bool('No Difficult Backgrounds', settings.no_difficult_backgrounds)
-    
+
     print_setting_bool('Super Attack Mode', settings.super_attack_mode)
     print_setting_bool('Hyper Attack Mode', settings.hyper_attack_mode)
     print_setting_bool('Open Mode', settings.open_mode)
@@ -388,7 +515,7 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
         print_to_analysis('Difficulty: %.2f' % difficulty_analysis.difficulty_score)
         print_to_analysis('Sequence Break Potential: %.2f' % difficulty_analysis.breakability_score)
         print_to_analysis_only()
-    
+
 
     if not settings.no_write:
         f = open('%s/%s' % (settings.output_dir, 'analysis.txt'), 'w+')
@@ -416,7 +543,7 @@ def run_randomizer(seed, settings):
     mapfileio.grab_original_maps(settings.source_dir, settings.output_dir)
     print_ln('Maps copied...')
     mod = mapfileio.ItemModifier(areaids, source_dir=settings.source_dir, no_load=True)
-    pre_modify_map_data(mod, settings, allocation.map_modifications)
+    pre_modify_map_data(mod, settings, allocation.map_modifications, randomizer_data.config_data)
     apply_item_specific_fixes(mod, allocation)
     apply_map_transition_shuffle(mod, randomizer_data, settings, allocation)
     insert_items_into_map(mod, randomizer_data, settings, allocation)
