@@ -2312,7 +2312,7 @@ POST_GAME & (
 ",
 }
 
-// Two uses of explosives should be enough
+// Two uses of explosives is enough for all of sysint2
 // so don't worry about BOOST_MANY
 {
 "edge": "SYSINT2_START -> SYSINT2_EGG_ROOM",
@@ -2327,11 +2327,11 @@ EXPLOSIVES & (
 ",
 }
 
-// There are two columns to climb
+// There are two columns to climb after the long spike room
 // Bunstrike may be usable but I struggled with it
 {
 "edge": "SYSINT2_EGG_ROOM -> SYSINT2_END",
-"prereq": "EXPLOSIVES & (AIR_JUMP & (RABI_SLIPPERS | WALL_JUMP_LV2))",
+"prereq": "EXPLOSIVES & AIR_JUMP & (RABI_SLIPPERS | WALL_JUMP_LV2)",
 }
 
 {

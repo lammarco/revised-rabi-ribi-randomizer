@@ -245,7 +245,61 @@ def apply_post_game_fixes(areaid, data):
 
         data.tiledata_event[xy_to_index(309, 16)] = 0
         data.tiledata_event[xy_to_index(309, 17)] = 0
+    # sysint2
+    if areaid == 9:
+        # before the egg room
+        data.tiledata_event[xy_to_index(150, 156)] = 0
+        data.tiledata_event[xy_to_index(150, 157)] = 0
 
+        data.tiledata_event[xy_to_index(144, 156)] = 0
+        data.tiledata_event[xy_to_index(144, 157)] = 0
+
+        data.tiledata_event[xy_to_index(108, 154)] = 0
+        data.tiledata_event[xy_to_index(108, 155)] = 0
+
+        data.tiledata_event[xy_to_index(112, 154)] = 0
+        data.tiledata_event[xy_to_index(112, 155)] = 0
+
+        data.tiledata_event[xy_to_index(88, 151)] = 0
+        data.tiledata_event[xy_to_index(88, 152)] = 0
+
+        data.tiledata_event[xy_to_index(137, 141)] = 0
+        data.tiledata_event[xy_to_index(137, 142)] = 0
+
+        data.tiledata_event[xy_to_index(54, 130)] = 0
+        data.tiledata_event[xy_to_index(54, 131)] = 0
+
+        # after the egg room
+        data.tiledata_event[xy_to_index(130, 188)] = 0
+        data.tiledata_event[xy_to_index(130, 189)] = 0
+
+        data.tiledata_event[xy_to_index(158, 185)] = 0
+        data.tiledata_event[xy_to_index(158, 186)] = 0
+
+        data.tiledata_event[xy_to_index(167, 185)] = 0
+        data.tiledata_event[xy_to_index(167, 186)] = 0
+
+        data.tiledata_event[xy_to_index(177, 185)] = 0
+        data.tiledata_event[xy_to_index(177, 186)] = 0
+
+        data.tiledata_event[xy_to_index(190, 185)] = 0
+        data.tiledata_event[xy_to_index(190, 186)] = 0
+
+        data.tiledata_event[xy_to_index(200, 185)] = 0
+        data.tiledata_event[xy_to_index(200, 186)] = 0
+
+        data.tiledata_event[xy_to_index(209, 185)] = 0
+        data.tiledata_event[xy_to_index(209, 186)] = 0
+
+        data.tiledata_event[xy_to_index(215, 185)] = 0
+        data.tiledata_event[xy_to_index(215, 186)] = 0
+
+        data.tiledata_event[xy_to_index(208, 152)] = 0
+        data.tiledata_event[xy_to_index(208, 153)] = 0
+
+        data.tiledata_event[xy_to_index(203, 129)] = 0
+        data.tiledata_event[xy_to_index(203, 130)] = 0
+        # the last trampoline is left alone (296, 121-122)
 
 def configure_shaft(mod, settings):
     events_list = []
