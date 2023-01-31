@@ -4,6 +4,7 @@ from difficultyanalysis import DifficultyAnalysis
 from utility import fail, print_ln
 import time
 
+
 class Generator(object):
     def __init__(self, data, settings):
         self.data = data
@@ -31,23 +32,24 @@ class Generator(object):
 
             if success:
                 difficulty_analysis = None
-                if not self.settings.hide_difficulty or self.settings.min_difficulty > 0 or self.settings.max_sequence_breakability != None:
+                if not self.settings.hide_difficulty or self.settings.min_difficulty > 0 or self.settings.max_sequence_breakability is not None:
                     # Run difficulty analysis
-                    if self.settings.egg_goals: goals = analyzer.goals
-                    else: goals = analyzer.hard_to_reach_items
+                    if self.settings.egg_goals:
+                        goals = analyzer.goals
+                    else:
+                        goals = analyzer.hard_to_reach_items
                     difficulty_analysis = DifficultyAnalysis(self.data, analyzer, goals)
 
                 if self.settings.min_difficulty > 0:
                     if difficulty_analysis.difficulty_score < self.settings.min_difficulty:
                         success = False
 
-                if self.settings.max_sequence_breakability != None:
+                if self.settings.max_sequence_breakability is not None:
                     if difficulty_analysis.breakability_score > self.settings.max_sequence_breakability:
                         success = False
 
             if success:
                 break
-                    
 
         if not success:
             fail('Unable to generate a valid seed after %d attempts.' % MAX_ATTEMPTS)
@@ -69,4 +71,3 @@ class Generator(object):
 
     def shift_eggs_to_hard_to_reach(self, reachable_items, hard_to_reach_items):
         return self.allocation.shift_eggs_to_hard_to_reach(self.data, self.settings, reachable_items, hard_to_reach_items)
-
