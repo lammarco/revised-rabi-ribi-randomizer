@@ -86,7 +86,8 @@ class BackgroundShuffler(object):
             if areaid == 4 and posindex == to_tile_index(15,13): continue
             if areaid == 4 and posindex == to_tile_index(16,13): continue
             if areaid == 7 and posindex == to_tile_index(9,8): continue
-
+            
+            
             # Fix for bug where you can't enter warps if it has computer room background.
             if allocation[val] == 64:
                 # plurkwood warp from starting forest
@@ -137,6 +138,10 @@ class BackgroundShuffler(object):
 
                 # Cicini warp doesn't work
                 if areaid == 0 and posindex == to_tile_index(22,14): continue
+                
+                # Carrot boost doesn't work correctly for aurora palace whirl blocks template
+                if areaid == 3 and posindex == to_tile_index(1,9): continue
+                
 
             # Fix for Sysint2 background floating effect affecting constraints
             if allocation[val] == 66:
