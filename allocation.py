@@ -71,7 +71,7 @@ class Allocation(object):
             if settings.min_constraint_changes >= 0:
                 low = int(settings.min_constraint_changes)
             if settings.max_constraint_changes >= 0:
-                high = int(settings.max_constraint_changes)
+                high = int(settings.max_constraint_changes + 1)
             if low == high:return low
             return random.randrange(low, high)
 
