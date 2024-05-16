@@ -37,7 +37,15 @@ class Allocation(object):
         # Shuffle Locations
         self.construct_graph(data, settings)
 
-
+        # Shuffle Start Location
+        if settings.shuffle_start_location:
+            index = random.randrange(sum(l.weight for l in data.start_locations))
+            for current_location in data.start_locations:
+                if index < current_location.weight: break
+                index -= current_location.weight
+            self.start_location = current_location
+        else:
+            self.start_location = data.start_locations[0]
     def allocate_items(self, data, settings):
         item_slots = data.item_slots
 

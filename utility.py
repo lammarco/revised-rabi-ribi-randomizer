@@ -63,6 +63,13 @@ class MapTransition(object):
         self.rect_width = rect_width
         self.rect_height = rect_height
 
+class StartLocation(object):
+    def __init__(self, area, position, weight, location):
+        self.area = area
+        self.position = ast.literal_eval(position)
+        self.weight = weight
+        self.location = location
+
 class EdgeConstraintData(object):
     def __init__(self, from_location, to_location, prereq_expression):
         self.from_location = from_location

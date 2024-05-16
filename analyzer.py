@@ -2,7 +2,7 @@ import random
 from utility import *
 from difficultyanalysis import compute_average_goal_level
 
-START_LOCATION = 'FOREST_START'
+#START_LOCATION = 'FOREST_START'
 
 class Analyzer(object):
     # -- Results --
@@ -145,7 +145,7 @@ class Analyzer(object):
         unreached_pseudo_items = dict(data.pseudo_items)
         unsatisfied_item_conditions = dict(data.alternate_conditions)
 
-        forward_enterable = set((START_LOCATION,))
+        forward_enterable = set((allocation.start_location.location,))
         backward_exitable = set(backward_exitable)
         pending_exit_locations = set()
         locally_exitable_locations = {}
@@ -167,7 +167,7 @@ class Analyzer(object):
 
         first_loop = True
         current_level = 0
-        reachable_levels = {START_LOCATION : 0}
+        reachable_levels = {allocation.start_location.location : 0}
         while True:
             new_reachable_locations.clear()
             if first_loop: new_reachable_locations = forward_enterable.intersection(backward_exitable)
@@ -349,7 +349,6 @@ class Analyzer(object):
             current_level += 1
 
         if self.visualize:
-
             colors = [ \
                 (255,191,0), (128,224,0), (0,160,0), (32,255,160), \
                 (0,224,255), (0,160,255), (0,96,255), (128,96,255), \

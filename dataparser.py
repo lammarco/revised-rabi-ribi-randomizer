@@ -265,6 +265,7 @@ def parse_locations_and_items():
     shufflable_gift_items = []
     additional_items = {}
     map_transitions = []
+    start_locations = []
 
     lines = read_file_and_strip_comments('locations_items.txt')
 
@@ -280,6 +281,7 @@ def parse_locations_and_items():
     READING_ADDITIONAL_ITEMS = 3
     READING_SHUFFLABLE_GIFT_ITEMS = 4
     READING_ITEMS = 5
+    READING_START_LOCATIONS = 6
 
     currently_reading = READING_NOTHING
 
@@ -294,6 +296,8 @@ def parse_locations_and_items():
             currently_reading = READING_SHUFFLABLE_GIFT_ITEMS
         elif line.startswith('===Items==='):
             currently_reading = READING_ITEMS
+        elif line.startswith('===StartLocations==='):
+            currently_reading = READING_START_LOCATIONS
         elif currently_reading == READING_LOCATIONS:
             if len(line) <= 0: continue
             location, location_type = (x.strip() for x in line.split(':'))
@@ -340,6 +344,20 @@ def parse_locations_and_items():
                 walking_right = walking_right,
                 rect = rect,
              ))
+        elif currently_reading == READING_START_LOCATIONS:
+            if len(line) <= 0: continue
+            # Line format:
+            # area : (x, y) : location
+            area, position, weight, location = [x.strip() for x in line.split(':')]
+            if not location in locations:
+                fail('Location %s is not defined!' % location)
+            start_locations.append(StartLocation(
+                area = int(area),
+                position = position,
+                weight = int(weight),
+                location = location,
+            ))
+        
 
 
     # Validate map transition locations
@@ -348,7 +366,7 @@ def parse_locations_and_items():
             set(mt.origin_location for mt in map_transitions) - set(locations.keys())
         ))
 
-    return locations, map_transitions, items, additional_items, shufflable_gift_items
+    return locations, map_transitions, items, additional_items, shufflable_gift_items, start_locations
 
 # throws errors for invalid formats.
 def parse_edge_constraints(locations_set, variable_names_set, default_expressions):
@@ -579,6 +597,7 @@ class RandomizerData(object):
     # list: edge_constraints   (EdgeConstraintData objects)
     # list: item_constraints   (ItemConstraintData objects)
     # list: map_transitions   (MapTransition objects)
+    # list: start_locations   (StartLocation objects)
     #
     # obj: config_data  (ConfigData object. Used for analysis printing, not used in generation.)
     #
@@ -625,7 +644,7 @@ class RandomizerData(object):
         self.pessimistic_setting_flags.update(self.pessimistic_config_flags)
 
         self.pseudo_items = define_pseudo_items()
-        self.locations, self.map_transitions, self.items, self.all_additional_items, self.shufflable_gift_items = parse_locations_and_items()
+        self.locations, self.map_transitions, self.items, self.all_additional_items, self.shufflable_gift_items, self.start_locations = parse_locations_and_items()
         self.additional_items = dict(self.all_additional_items)
 
         self.gift_item_map_modifications = shufflable_gift_item_map_modifications()
