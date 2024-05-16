@@ -58,9 +58,9 @@ class Generator(object):
         print_ln('Seed generated after %d attempts in %s' % (attempts+1, time_string))
 
         # Generate Visualization and Print Output:
-        if False:
+        if self.settings.debug_visualize:
             Analyzer(self.data, self.settings, self.allocation, visualize=True)
-            self.allocation.print_important_item_locations()
+            #self.allocation.print_important_item_locations()
 
         return self.allocation, analyzer, difficulty_analysis
 

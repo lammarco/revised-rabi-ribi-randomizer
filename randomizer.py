@@ -42,6 +42,7 @@ def parse_args():
     args.add_argument('--egg-goals', action='store_true', help='Egg goals mode. Hard-to-reach items are replaced with easter eggs. All other eggs are removed from the map.')
     args.add_argument('-extra-eggs', default=0, type=int, help='Number of extra randomly-chosen eggs for egg-goals mode (in addition to the hard-to-reach eggs)')
     args.add_argument('-num-hard-to-reach', default=5, type=int, help='Number of hard to reach items/eggs. Default is 5.')
+    args.add_argument('--debug-visualize', action='store_true', help='Output debug info and node graph image.')
 
     return args.parse_args(sys.argv[1:])
 
@@ -395,6 +396,47 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
     if not settings.no_write:
         f = open('%s/%s' % (settings.output_dir, 'analysis.txt'), 'w+')
         f.write('\n'.join(analysis_lines))
+        f.close()
+        
+    if settings.debug_visualize:
+        levels = analyzer.levels
+        f = open('%s/spoiler/%s' % (settings.output_dir, 'chain.txt'), 'w+')
+
+        item_location_at_item = {}
+        for k, v in allocation.item_at_item_location.items():
+            if v != None:
+                item_location_at_item[v] = k
+                
+        lv = 0
+        while len(levels) > lv:
+            f.write("\n--- chain %d ---\n" % (lv/2+1))
+            if len(levels[lv]) > 0:
+                f.write("\npseudo items:\n\t")
+                f.write("\n\t".join(levels[lv]))
+            
+            level = levels[lv+1]
+            
+            locs = set(name for name in level if name in data.locations_set)
+            objs = sorted(set(level) - locs)
+            eggs = list(name for name in objs if is_egg(name))
+            items = list(name for name in objs if not is_potion(name) and not is_egg(name))
+            potions = list(name for name in objs if is_potion(name))
+            
+            sorted_items = eggs + items + potions
+            if len(sorted_items) > 0:
+                f.write("\nitems:\t")
+                for v in sorted_items:
+                    k = "[Additional items]"
+                    if v in item_location_at_item:
+                        k = item_location_at_item[v]
+                    f.write("\n\t%s @ %s" % (v, k))
+            if len(locs) > 0:
+                f.write("\nlocations:\n\t")
+                f.write("\n\t".join(sorted(locs)))
+            f.write("\n\n")
+            
+            lv += 2
+            
         f.close()
 
 def run_randomizer(seed, settings):

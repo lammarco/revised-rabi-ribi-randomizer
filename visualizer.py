@@ -3,9 +3,10 @@ import ast
 
 class Visualization(object):
 
-    def __init__(self):
+    def __init__(self, settings):
         self.nodes = {}
         self.edges = {}
+        self.settings = settings
 
     def load_graph(self, data, allocation):
         for node_name in data.graph_vertices:
@@ -63,7 +64,7 @@ class Visualization(object):
 
             draw.line((x1, y1-size_from, x2, y2+size_to), width=thickness, fill=color)
 
-        im.save(file_name)
+        im.save('%s/spoiler/%s' % (self.settings.output_dir, file_name))
 
 
 NODE_COORDS = {
