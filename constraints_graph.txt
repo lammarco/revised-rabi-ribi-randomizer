@@ -145,7 +145,7 @@ EXPLOSIVES_ENEMY & SLIDING_POWDER & PROLOGUE_TRIGGER & (
 
 {
 "edge": "FOREST_START -> FOREST_LOWER_RIVERBANK_EXIT",
-"prereq": "SLIDE_ZIP",
+"prereq": "ADV_HARD & SLIDE_ZIP",
 }
 
 {
@@ -591,13 +591,11 @@ PROLOGUE_TRIGGER & (
 (
 // First jump
     AIR_JUMP
-    | (RABI_SLIPPERS & (SLIDE_JUMP_BUNSTRIKE | (ADV_VHARD & AMULET_FOOD)))
+    | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
     | WHIRL_BONK
     | (AIR_DASH & (ITM_HARD | RABI_SLIPPERS))
-    // slide bonk
-    | (SLIDING_POWDER & ADV_VHARD)
     // damage boost
-    | ADV_STUPID
+    | ADV_VHARD
 ) & (
 // Second jump
     AIR_JUMP
