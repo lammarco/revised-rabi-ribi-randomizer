@@ -621,7 +621,7 @@
 {
 "item": "MP_UP_PARK",
 "from_location": "PARK_MAIN",
-"entry_prereq": "RABI_SLIPPERS | SLIDING_POWDER | AIR_DASH | AIR_JUMP | (ITM & SPEED2) | (OBS_VHARD & SPEED1) | (ADV_VHARD & AMULET_FOOD)",
+"entry_prereq": "RABI_SLIPPERS | SLIDING_POWDER | AIR_DASH | AIR_JUMP | (ITM & SPEED2) | (ADV_VHARD & AMULET_FOOD) | OBS_VHARD",
 "exit_prereq": "NONE",
 }
 
