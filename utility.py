@@ -141,7 +141,7 @@ def mean(values):
     return float(sum(values))/len(values)
 
 def is_potion(item_name):
-    return bool(re.match('^[A-Z]*_UP', item_name))
+    return bool(re.match('^[A-Z]*_UP_', item_name))
 
 def is_egg(item_name):
     return item_name!=None and item_name.startswith('EGG_')
