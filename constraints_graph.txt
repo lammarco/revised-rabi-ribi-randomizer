@@ -1746,11 +1746,9 @@ DARKNESS & (
     | (AIR_DASH & RABI_SLIPPERS)
     | WHIRL_BONK
     | (ADV_VHARD & WALL_JUMP & BUNNY_AMULET & AIR_DASH)
-    | (ADV_STUPID & (
-        RABI_SLIPPERS // damage boost off spider bullets
-        | AMULET_FOOD // wall jump, damage boost, wall kick, amulet
-        | AIR_DASH
-    ))
+    | (ADV_VHARD & RABI_SLIPPERS) // damage boost off spider bullets
+    // wall jump, damage boost, wall kick, amulet or air dash
+    | (ADV_STUPID & (AMULET_FOOD | AIR_DASH))
 ",
 }
 
