@@ -372,7 +372,7 @@ def display_hash(settings):
     print_ln('Hash: %s' % hash_digest)
 
 
-def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, settings):
+def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, settings, seed):
     analysis_lines = []
     def print_to_analysis(line=''):
         print_ln(line)
@@ -428,6 +428,7 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
     if not settings.hide_difficulty:
         print_to_analysis('Difficulty: %.2f' % difficulty_analysis.difficulty_score)
         print_to_analysis('Sequence Break Potential: %.2f' % difficulty_analysis.breakability_score)
+        print_to_analysis('Seed: %x' % seed)
         print_to_analysis_only()
     
 
@@ -483,13 +484,12 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
         f.close()
 
 def run_randomizer(seed, settings):
-    if seed != None: random.seed(seed)
     randomizer_data = RandomizerData(settings)
     generator = Generator(randomizer_data, settings)
-    allocation, analyzer, difficulty_analysis = generator.generate_seed()
+    allocation, analyzer, difficulty_analysis, seed = generator.generate_seed(seed)
     #print_ln('done')
 
-    generate_analysis_file(randomizer_data, allocation, analyzer, difficulty_analysis, settings)
+    generate_analysis_file(randomizer_data, allocation, analyzer, difficulty_analysis, settings, seed)
 
     if settings.no_write:
         print_ln('No maps generated as no-write flag is on.')
@@ -530,5 +530,5 @@ if __name__ == '__main__':
         reset_maps(args.source_dir, args.output_dir)
     else:
         if args.seed == None: seed = None
-        else: seed = string_to_integer_seed('%s_hd:%s' % (args.seed, args.hide_difficulty))
+        else: seed = string_to_integer_seed(args)
         run_randomizer(seed, args)

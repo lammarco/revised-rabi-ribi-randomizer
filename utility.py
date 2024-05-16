@@ -368,8 +368,14 @@ def read_file_and_strip_comments(filename):
 
 # Misc commands
 
-def string_to_integer_seed(s):
-    return int(hashlib.md5(s.encode('utf-8')).hexdigest(), base=16)
+def string_to_integer_seed(args):
+    seed = None
+    try:
+        seed = int(args.seed, base=16)
+    except ValueError:
+        s = '%s_hd:%s' % (args.seed, args.hide_difficulty)
+        seed = int(hashlib.md5(s.encode('utf-8')).hexdigest(), base=16)
+    return seed
 
 def hash_map_files(areaids, maps_dir):
     hash  = hashlib.md5()

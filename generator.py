@@ -2,7 +2,7 @@ from allocation import Allocation
 from analyzer import Analyzer
 from difficultyanalysis import DifficultyAnalysis
 from utility import fail, print_ln
-import time
+import time, random
 
 class Generator(object):
     def __init__(self, data, settings):
@@ -10,13 +10,20 @@ class Generator(object):
         self.settings = settings
         self.allocation = Allocation(data, settings)
 
-    def generate_seed(self):
+    def generate_seed(self, seed):
+        if seed != None:
+            random.seed(seed)
+        else:
+            state = random.getstate()[1]
+            seed = state[2] ^ (state[4] << 32) ^ (state[6] << 64) ^ (state[8] << 96)
+            random.seed(seed)
+
+        SEED_UPDATE_ATTEMPTS = 1000
         MAX_ATTEMPTS = self.settings.max_attempts
         success = False
-
+        
         start_time = time.time()
         for attempts in range(MAX_ATTEMPTS):
-
             self.shuffle()
             analyzer = Analyzer(self.data, self.settings, self.allocation)
             if analyzer.success:
@@ -47,7 +54,11 @@ class Generator(object):
 
             if success:
                 break
-                    
+            if (attempts + 1) % SEED_UPDATE_ATTEMPTS == 0:
+                state = random.getstate()[1]
+                seed = seed ^ state[2] ^ (state[4] << 32) ^ (state[6] << 64) ^ (state[8] << 96)
+                self.allocation = Allocation(self.data, self.settings)
+                random.seed(seed)
 
         if not success:
             fail('Unable to generate a valid seed after %d attempts.' % MAX_ATTEMPTS)
@@ -62,7 +73,7 @@ class Generator(object):
             Analyzer(self.data, self.settings, self.allocation, visualize=True)
             #self.allocation.print_important_item_locations()
 
-        return self.allocation, analyzer, difficulty_analysis
+        return self.allocation, analyzer, difficulty_analysis, seed
 
     def shuffle(self):
         self.allocation.shuffle(self.data, self.settings)
