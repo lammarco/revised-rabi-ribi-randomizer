@@ -177,7 +177,7 @@ ITM & (
         | RABI_SLIPPERS
         | WALL_JUMP_LV2
         | (ADV_VHARD & AIR_DASH)
-        | OBS_STUPID // rollbonk, whirlbonk bee
+        //| OBS_STUPID // rollbonk, whirlbonk bee
     ))
     | (ADV_STUPID & (
         // slide bonk
