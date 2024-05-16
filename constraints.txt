@@ -1184,6 +1184,13 @@
     | (OBS_VHARD & CARROT_SHOOTER)
     ",
 "exit_prereq": "NONE",
+
+"alternate_entries": {
+    "EVERNIGHT_NORTHWEST": "SLIDING_POWDER & EXPLOSIVES",
+},
+"alternate_exits": {
+    "EVERNIGHT_NORTHWEST": "SLIDING_POWDER",
+},
 }
 
 {
@@ -1781,7 +1788,7 @@
 
 {
 "item": "EGG_EVERNIGHT_MID",
-"from_location": "EVERNIGHT_SAYA",
+"from_location": "EVERNIGHT_NORTHWEST",
 "entry_prereq": "EXPLOSIVES_ENEMY",
 "exit_prereq": "NONE",
 }

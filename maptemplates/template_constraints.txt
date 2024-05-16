@@ -1741,3 +1741,192 @@
     ",
     }
 ]}
+
+// Additional Constraints
+{
+"name": "forest_green_uprprc_oneway",
+"weight": 25,
+"changes": [
+    {
+    "edge": "FOREST_START -> FOREST_NORTH_HP_UP_ROOM",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "park_warp_fireorb",
+"weight": 8,
+"changes": [
+    {
+    "edge": "PARK_MAIN -> PARK_WARP",
+    "prereq": "FIRE_ORB",
+    }
+    {
+    "edge": "PARK_WARP -> PARK_MAIN",
+    "prereq": "FIRE_ORB",
+    }
+]}
+
+{
+"name": "park_warp_whirlblocks",
+"weight": 8,
+"changes": [
+    {
+    "edge": "PARK_MAIN -> PARK_WARP",
+    "prereq": "BUNNY_WHIRL | EXPLOSIVES",
+    }
+    {
+    "edge": "PARK_WARP -> PARK_MAIN",
+    "prereq": "BUNNY_WHIRL | (CARROT_SHOOTER & BOOST)",
+    }
+]}
+
+{
+"name": "park_warp_oneway",
+"weight": 8,
+"changes": [
+    {
+    "edge": "PARK_WARP -> PARK_MAIN",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "aquarium_east_transition_oneway_slide",
+"weight": 5,
+"changes": [
+    {
+    "edge": "AQUARIUM_BOMB_WALLED_AREA -> AQUARIUM_BEACH_ENTRANCE",
+    "prereq": "UNDERWATER",
+    }
+    {
+    "edge": "AQUARIUM_BEACH_ENTRANCE -> AQUARIUM_BOMB_WALLED_AREA",
+    "prereq": "UNDERWATER & SLIDING_POWDER",
+    }
+]}
+
+{
+"name": "evernight_saya_left_wall",
+"weight": 10,
+"changes": [
+    {
+    "edge": "EVERNIGHT_NORTHWEST -> EVERNIGHT_SAYA",
+    "prereq": "EXPLOSIVES & SLIDING_POWDER",
+    }
+    {
+    "edge": "EVERNIGHT_SAYA -> EVERNIGHT_NORTHWEST",
+    "prereq": "EXPLOSIVES & SLIDING_POWDER",
+    }
+]}
+
+{
+"name": "ravine_chocolate_oneway",
+"weight": 10,
+"changes": [
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_CHOCOLATE",
+    "prereq": "OBS_VHARD & DOWNDRILL_SEMISOLID_CLIP",
+    }
+]}
+
+{
+"name": "ravine_upper_wall",
+"weight": 10,
+"changes": [
+    {
+    "edge": "RAVINE_UPPER_WEST -> RAVINE_UPPER_EAST",
+    "prereq": "IMPOSSIBLE",
+    }
+    {
+    "edge": "RAVINE_UPPER_EAST -> RAVINE_UPPER_WEST",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+
+{
+"name": "palace_attack_up_oneway",
+"weight": 5,
+"changes": [
+    {
+    "edge": "PALACE_WARP_LEVEL_1_2 -> PALACE_ATTACK_UP_TUNNEL",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "riverbank_lower_mid_wall",
+"weight": 10,
+"changes": [
+    {
+    "edge": "RIVERBANK_LOWER_LEFT -> RIVERBANK_LOWER_MID",
+    "prereq": "IMPOSSIBLE",
+    }
+    {
+    "edge": "RIVERBANK_LOWER_MID -> RIVERBANK_LOWER_LEFT",
+    "prereq": "IMPOSSIBLE",
+    }
+    // dummy constraints change for avoid get awful template combinations
+    {
+    "edge": "RIVERBANK_LOWER_MID -> RIVERBANK_MAIN_LEVEL1",
+    "prereq": "current",
+    }
+    {
+    "edge": "RIVERBANK_LOWER_RIGHT -> RIVERBANK_LOWER_MID",
+    "prereq": "current",
+    }
+]}
+
+{
+"name": "snowland_warp_nostupid",
+"weight": 25,
+"changes": [
+    {
+    "edge": "SNOWLAND_RITA -> SNOWLAND_WEST",
+    "prereq": "SLIDING_POWDER",
+    }
+]}
+
+{
+"name": "spectral_entrance_whirlblocks",
+"weight": 5,
+"changes": [
+    {
+    "edge": "CAVE_ENTRANCE -> SPECTRAL_UPPER",
+    "prereq": "BUNNY_WHIRL | EXPLOSIVES | SLIDING_POWDER",
+    }
+    {
+    "edge": "SPECTRAL_UPPER -> CAVE_ENTRANCE",
+    "prereq": "
+        SLIDING_POWDER | HAMMER_ROLL_ZIP
+        | ((BUNNY_WHIRL | (CARROT_SHOOTER & BOOST)) & (
+            WHIRL_BONK_CANCEL
+            | (ITM_HARD & HAMMER_ROLL)
+            | (RABI_SLIPPERS & (WALL_JUMP_LV2 | AIR_JUMP))
+            | (AIR_JUMP & WALL_JUMP)
+        ))
+    ",
+    }
+]}
+
+{
+"name": "spectral_entrance_fireorb",
+"weight": 5,
+"changes": [
+    {
+    "edge": "CAVE_ENTRANCE -> SPECTRAL_UPPER",
+    "prereq": "FIRE_ORB | SLIDING_POWDER",
+    }
+    {
+    "edge": "SPECTRAL_UPPER -> CAVE_ENTRANCE",
+    "prereq": "
+        SLIDING_POWDER | HAMMER_ROLL_ZIP
+        | (FIRE_ORB & (
+            WHIRL_BONK_CANCEL
+            | (ITM_HARD & HAMMER_ROLL)
+            | (RABI_SLIPPERS & (WALL_JUMP_LV2 | AIR_JUMP))
+            | (AIR_JUMP & WALL_JUMP)
+        ))
+    ",
+    }
+]}
