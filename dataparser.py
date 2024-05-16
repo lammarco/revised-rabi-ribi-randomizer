@@ -16,6 +16,7 @@ Difficulty levels:
 
 KNOWLEDGE_INTERMEDIATE = 'KNOWLEDGE_INTERMEDIATE'
 KNOWLEDGE_ADVANCED = 'KNOWLEDGE_ADVANCED'
+KNOWLEDGE_OBSCURE = 'KNOWLEDGE_OBSCURE'
 DIFFICULTY_HARD = 'DIFFICULTY_HARD'
 DIFFICULTY_V_HARD = 'DIFFICULTY_V_HARD'
 DIFFICULTY_STUPID = 'DIFFICULTY_STUPID'
@@ -25,7 +26,6 @@ OPEN_MODE = 'OPEN_MODE'
 def define_config_flags():
     d = {
         "ZIP_REQUIRED": False,
-        "BONK_ZIP_REQUIRED": False,
         "BUNSTRIKE_ZIP_REQUIRED": False,
         "SEMISOLID_CLIPS_REQUIRED": False,
         "BLOCK_CLIPS_REQUIRED": True,
@@ -48,6 +48,7 @@ def define_setting_flags(settings):
         # Difficulty Flags
         KNOWLEDGE_INTERMEDIATE: False,
         KNOWLEDGE_ADVANCED: False,
+        KNOWLEDGE_OBSCURE: False,
         DIFFICULTY_HARD: False,
         DIFFICULTY_V_HARD: False,
         DIFFICULTY_STUPID: False,
@@ -135,7 +136,7 @@ def define_alternate_conditions(settings, variable_names_set, default_expression
     if not settings.shuffle_gift_items:
         d.update({
             "SPEED_BOOST": "TOWN_SHOP",
-            "BUNNY_STRIKE": "SLIDING_POWDER & TOWN_SHOP",
+            "BUNNY_STRIKE": "SLIDING_POWDER & TOWN_SHOP & TM_CICINI",
             "P_HAIRPIN": "BOSS_KEKE_BUNNY & PLURKWOOD_MAIN",
         })
 
@@ -155,6 +156,7 @@ def define_default_expressions(variable_names_set):
     def1 = expr_all({
         "INTERMEDIATE": "KNOWLEDGE_INTERMEDIATE",
         "ADVANCED": "KNOWLEDGE_ADVANCED",
+        "OBSCURE": "KNOWLEDGE_OBSCURE",
         "HARD": "DIFFICULTY_HARD",
         "V_HARD": "DIFFICULTY_V_HARD",
         "STUPID": "DIFFICULTY_STUPID",
@@ -192,6 +194,9 @@ def define_default_expressions(variable_names_set):
         "ADV_HARD": "ADVANCED & HARD",
         "ADV_VHARD": "ADVANCED & V_HARD",
         "ADV_STUPID": "ADVANCED & STUPID",
+        "OBS": "OBSCURE",
+        "OBS_VHARD": "OBSCURE & V_HARD",
+        "OBS_STUPID": "OBSCURE & STUPID",
     })
     def1.update(def2)
 
@@ -199,7 +204,7 @@ def define_default_expressions(variable_names_set):
     def3 = expr_all({
         "HAMMER_ROLL_ZIP": "ZIP & HAMMER_ROLL_LV3",
         "SLIDE_ZIP": "ZIP & SLIDING_POWDER",
-        "ROLL_BONK_ZIP": "ZIP & BONK_ZIP_REQUIRED & HAMMER_ROLL",
+        "ROLL_BONK_ZIP": "ZIP & HAMMER_ROLL & OBSCURE",
         "BUNSTRIKE_ZIP": "ZIP & BUNSTRIKE_ZIP_REQUIRED & BUNNY_STRIKE",
         "WHIRL_BONK": "BUNNY_WHIRL & ITM_HARD",
         "WHIRL_BONK_CANCEL": "BUNNY_WHIRL & BUNNY_AMULET & ITM_HARD",
@@ -492,14 +497,21 @@ def read_config(default_setting_flags, item_locations_set, shufflable_gift_items
     if knowledge == 'BASIC':
         setting_flags[KNOWLEDGE_INTERMEDIATE] = False
         setting_flags[KNOWLEDGE_ADVANCED] = False
+        setting_flags[KNOWLEDGE_OBSCURE] = False
     elif knowledge == 'INTERMEDIATE':
         setting_flags[KNOWLEDGE_INTERMEDIATE] = True
         setting_flags[KNOWLEDGE_ADVANCED] = False
+        setting_flags[KNOWLEDGE_OBSCURE] = False
     elif knowledge == 'ADVANCED':
         setting_flags[KNOWLEDGE_INTERMEDIATE] = True
         setting_flags[KNOWLEDGE_ADVANCED] = True
+        setting_flags[KNOWLEDGE_OBSCURE] = False
+    elif knowledge == 'OBSCURE':
+        setting_flags[KNOWLEDGE_INTERMEDIATE] = True
+        setting_flags[KNOWLEDGE_ADVANCED] = True
+        setting_flags[KNOWLEDGE_OBSCURE] = True
     else:
-        fail('Unknown knowledge level: %s. Either BASIC, INTERMEDIATE or ADVANCED.' % knowledge)
+        fail('Unknown knowledge level: %s. Either BASIC, INTERMEDIATE, ADVANCED or OBSCURE.' % knowledge)
 
     # Difficulty
     if difficulty == 'NORMAL':

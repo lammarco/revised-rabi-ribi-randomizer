@@ -1,4 +1,4 @@
-// Knowledge is BASIC, INTERMEDIATE or ADVANCED
+// Knowledge is BASIC, INTERMEDIATE, ADVANCED or OBSCURE
 "knowledge": "BASIC",
 
 // Trick Difficulty is NORMAL, HARD, V_HARD or STUPID
@@ -9,7 +9,6 @@
     "DARKNESS_WITHOUT_LIGHT_ORB": false,
     "UNDERWATER_WITHOUT_WATER_ORB": false,
     "ZIP_REQUIRED": false,
-    "BONK_ZIP_REQUIRED": false,
     "BUNSTRIKE_ZIP_REQUIRED": false,
     "SEMISOLID_CLIPS_REQUIRED": false,
     "BLOCK_CLIPS_REQUIRED": false,
