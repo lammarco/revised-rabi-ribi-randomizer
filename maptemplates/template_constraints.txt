@@ -1930,3 +1930,17 @@
     ",
     }
 ]}
+
+{
+"name": "spectral_west_nothing",
+"weight": 10,
+"changes": [
+    {
+    "edge": "SPECTRAL_MID -> SPECTRAL_WARP",
+    "prereq": "NONE",
+    }
+    {
+    "edge": "SPECTRAL_WARP -> SPECTRAL_MID",
+    "prereq": "NONE",
+    }
+]}
