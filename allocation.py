@@ -6,7 +6,7 @@ INFTY = 99999
 
 class Allocation(object):
     # Attributes:
-    # 
+    #
     # list: items_to_allocate
     #
     # dict: item_at_item_location  (item location -> item at item location)
@@ -55,13 +55,19 @@ class Allocation(object):
         self.edge_replacements = {}
 
         templates = list(data.template_constraints)
-        def get_template_count(x):
-            if x <= 0: return 0
-            low = int(0.5*x)
-            high = int(1.5*x+2)
+        def get_template_count(settings):
+            low = int(0.5 * settings.constraint_changes)
+            high = int(1.5 * settings.constraint_changes + 2)
+            if settings.constraint_changes <= 0:
+                high = 0
+            if settings.min_constraint_changes >= 0:
+                low = int(settings.min_constraint_changes)
+            if settings.max_constraint_changes >= 0:
+                high = int(settings.max_constraint_changes)
+            if low == high:return low
             return random.randrange(low, high)
 
-        target_template_count = get_template_count(settings.constraint_changes)
+        target_template_count = get_template_count(settings)
 
         picked_templates = []
         while len(templates) > 0 and len(picked_templates) < target_template_count:
@@ -182,7 +188,7 @@ class Allocation(object):
             item_location_2, item_name_2 = z2
             self.item_at_item_location[item_location_1] = item_name_2
             self.item_at_item_location[item_location_2] = item_name_1
-        
+
         # Verification
         actual_n_eggs = sum(1 for item_location, item_name in self.item_at_item_location.items() if is_egg(item_name))
         assert n_eggs_in_map == actual_n_eggs
