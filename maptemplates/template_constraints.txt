@@ -1594,7 +1594,7 @@
 
 {
 "name": "shop_entrance_slide",
-"weight": 5,
+"weight": 6,
 "changes": [
     {
     "edge": "TOWN_MAIN -> TOWN_SHOP",
@@ -1604,7 +1604,7 @@
 
 {
 "name": "shop_entrance_fireorb",
-"weight": 10,
+"weight": 12,
 "changes": [
     {
     "edge": "TOWN_MAIN -> TOWN_SHOP",
@@ -1614,7 +1614,7 @@
 
 {
 "name": "shop_entrance_hammer_nobomb",
-"weight": 10,
+"weight": 12,
 "changes": [
     {
     "edge": "TOWN_MAIN -> TOWN_SHOP",
@@ -1745,7 +1745,7 @@
 // Additional Constraints
 {
 "name": "forest_green_uprprc_oneway",
-"weight": 25,
+"weight": 30,
 "changes": [
     {
     "edge": "FOREST_START -> FOREST_NORTH_HP_UP_ROOM",
@@ -1879,7 +1879,7 @@
 
 {
 "name": "snowland_warp_nostupid",
-"weight": 25,
+"weight": 30,
 "changes": [
     {
     "edge": "SNOWLAND_RITA -> SNOWLAND_WEST",
@@ -1889,7 +1889,7 @@
 
 {
 "name": "spectral_entrance_whirlblocks",
-"weight": 5,
+"weight": 6,
 "changes": [
     {
     "edge": "CAVE_ENTRANCE -> SPECTRAL_UPPER",
@@ -1911,7 +1911,7 @@
 
 {
 "name": "spectral_entrance_fireorb",
-"weight": 5,
+"weight": 6,
 "changes": [
     {
     "edge": "CAVE_ENTRANCE -> SPECTRAL_UPPER",
