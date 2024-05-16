@@ -429,6 +429,8 @@ PROLOGUE_TRIGGER & (
     | (ADV_HARD & HAMMER_ROLL)
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS)
     | (ADV_STUPID & SLIDING_POWDER) // slide bonk off bunny and wallkick up the hole
+    // wall jump, dboost blue mage uprprc bullets, wall kick, amulet, wall kick2, air dash
+    | (ADV_STUPID & AIR_DASH_LV3 & (RABI_SLIPPERS | (WALL_JUMP_LV2 & BUNNY_AMULET)))
 ",
 }
 
@@ -672,7 +674,7 @@ PROLOGUE_TRIGGER & (
     // quick drop jump, quick drop, airdash, wimpy wall jump, amulet, wall jump2
     | (AIR_DASH & WALL_JUMP & AMULET_FOOD & ADV_STUPID)
     // slide jump, wimpy amuclimbs
-    | (SLIDING_POWDER & RABI_SLIPPERS & WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & ADV_STUPID)
+    | (ADV_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & MANY_AMULET_FOOD & (SLIDING_POWDER | SPEED5))
 ",
 }
 
@@ -1359,8 +1361,9 @@ DARKNESS & (
         | (ADV_HARD & HAMMER_ROLL)
         | (ADV_STUPID & (RABI_SLIPPERS | SLIDING_POWDER)) // damage boost + maybe slide bonk
     ))
-    | (WALL_JUMP_LV2 & ( // buffered wall launch, facing left
-        (ADV_VHARD & (RABI_SLIPPERS | HAMMER_ROLL))
+    | (WALL_JUMP_LV2 & (
+		(ADV_HARD & RABI_SLIPPERS)
+		| (ADV_VHARD & HAMMER_ROLL)
         | (ADV_STUPID & SLIDING_POWDER)
     ))
     | WHIRL_BONK_CANCEL
@@ -1743,6 +1746,7 @@ DARKNESS & (
     | (ADV_STUPID & (
         RABI_SLIPPERS // damage boost off spider bullets
         | AMULET_FOOD // wall jump, damage boost, wall kick, amulet
+        | AIR_DASH
     ))
 ",
 }
@@ -1895,7 +1899,7 @@ DARKNESS & (
         | AIR_JUMP
         | (ITM_HARD & (SLIDING_POWDER | AIR_DASH | SPEED1))
         | (V_HARD & WHIRL_BONK)
-        | (ADV_STUPID & AMULET_FOOD)
+        | ADV_STUPID
     ))
     | (AIR_JUMP & (
         RABI_SLIPPERS
@@ -1924,6 +1928,7 @@ DARKNESS & (
     (AIR_JUMP & (ADV_VHARD | AIR_DASH | (ITM & SLIDING_POWDER)))
     | (AIR_DASH_LV3 & AMULET_FOOD & ADV_HARD)
     | (AIR_DASH & AMULET_FOOD & ADV_STUPID) // buffered wimpy, bounce, amulet
+    | (WALL_JUMP_LV2 & MANY_AMULET_FOOD & ADV_STUPID) // buffered wimpy, amulet, wall kick, amulet, wall kick2, amulet
 ",
 }
 
