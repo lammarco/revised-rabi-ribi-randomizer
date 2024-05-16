@@ -1296,8 +1296,12 @@
 
 {
 "item": "CYBER_FLOWER",
-"from_location": "UNREACHABLE_LOCATION",
-"entry_prereq": "POST_GAME & IMPOSSIBLE",
+"from_location": "SYSTEM_INTERIOR_MAIN",
+"entry_prereq": "
+    ((POST_GAME & IMPOSSIBLE) | (ADV_STUPID & WHIRL_BONK)) & (
+        (AIR_JUMP & (WALL_JUMP_LV2 | (WALL_JUMP & OBS)))
+        | (OBS & RABI_SLIPPERS & WALL_JUMP_LV2)
+    )",
 "exit_prereq": "NONE",
 }
 
