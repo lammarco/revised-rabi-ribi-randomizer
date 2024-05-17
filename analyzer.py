@@ -2,7 +2,7 @@ import random
 from utility import *
 from difficultyanalysis import compute_average_goal_level
 
-START_LOCATION = 'FOREST_START'
+#START_LOCATION = 'FOREST_START'
 
 class Analyzer(object):
     # -- Results --
@@ -127,7 +127,7 @@ class Analyzer(object):
     def verify_reachable_items(self, starting_variables, backward_exitable):
         if self.visualize:
             from visualizer import Visualization
-            vis = Visualization()
+            vis = Visualization(self.settings)
             vis.load_graph(self.data, self.allocation)
 
         data = self.data
@@ -145,7 +145,7 @@ class Analyzer(object):
         unreached_pseudo_items = dict(data.pseudo_items)
         unsatisfied_item_conditions = dict(data.alternate_conditions)
 
-        forward_enterable = set((START_LOCATION,))
+        forward_enterable = set((allocation.start_location.location,))
         backward_exitable = set(backward_exitable)
         pending_exit_locations = set()
         locally_exitable_locations = {}
@@ -159,13 +159,15 @@ class Analyzer(object):
         new_reachable_locations = set()
         newly_traversable_edges = set()
         temp_variable_storage = {}
-
-
+        test_mode = 0
+        
         variables['IS_BACKTRACKING'] = False
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
         variables['BACKTRACK_GOALS'] = None, None
 
         first_loop = True
+        current_level = 0
+        reachable_levels = {allocation.start_location.location : 0}
         while True:
             new_reachable_locations.clear()
             if first_loop: new_reachable_locations = forward_enterable.intersection(backward_exitable)
@@ -228,9 +230,11 @@ class Analyzer(object):
                             if target_location not in forward_enterable:
                                 new_forward_enterable.add(target_location)
                                 forward_enterable.add(target_location)
-
                                 if target_location in backward_exitable:
                                     new_reachable_locations.add(target_location)
+                                    if test_mode == 1:
+                                        if edges[edge_id].to_location not in reachable_levels:
+                                            reachable_levels[edges[edge_id].to_location] = current_level
                                 else:
                                     pending_exit_locations.add(target_location)
                 forward_frontier.clear()
@@ -251,12 +255,19 @@ class Analyzer(object):
                                 if target_location in forward_enterable:
                                     new_reachable_locations.add(target_location)
                                     pending_exit_locations.remove(target_location)
+                                    if test_mode == 2:
+                                        if edges[edge_id].from_location not in reachable_levels:
+                                            reachable_levels[edges[edge_id].from_location] = current_level
                 backward_frontier.clear()
                 backward_frontier, new_backward_exitable = new_backward_exitable, backward_frontier
 
 
             # STEP 4: Mark New Reachable Locations
             for location in new_reachable_locations:
+                if test_mode == 0:
+                    if location not in reachable_levels:
+                        reachable_levels[location] = current_level
+                    #reachable_levels[location] = current_level
                 if location in locations_set:
                     if not variables[location]:
                         current_level_part2.append(location)
@@ -304,7 +315,7 @@ class Analyzer(object):
                             if edge.edge_id not in untraversable_edges or edge.satisfied(variables):
                                 locally_exitable.add(edge.to_location)
                                 new_locally_backward_exitable.add(edge.to_location)
-                    
+
                     local_backward_frontier.clear()
                     local_backward_frontier, new_locally_backward_exitable = new_locally_backward_exitable, local_backward_frontier
 
@@ -335,15 +346,35 @@ class Analyzer(object):
                 break
             levels.append(current_level_part1)
             levels.append(current_level_part2)
+            current_level += 1
 
         if self.visualize:
-            for edge_id in untraversable_edges:
-                edge = edges[edge_id]
-                vis.set_edge_color(edge.from_location, edge.to_location, color=(191,32,32))
+            colors = [ \
+                (255,191,0), (128,224,0), (0,160,0), (32,255,160), \
+                (0,224,255), (0,160,255), (0,96,255), (128,96,255), \
+                (160,32,224), (255,64,255), (255,128,160), (255,192,192), \
+                (192,192,192), (160,160,160), (128,128,128), (64,64,64), \
+                (32,32,32), (32,16,16), (32,0,0), (0,0,0) \
+            ]
+            template_edges = []
+            for t in allocation.picked_templates:
+                for c in t.changes:
+                    template_edges.append(c.from_location + c.to_location)
+            for edge in edges:
+                if edge.from_location + edge.to_location in template_edges:
+                    if edge.edge_id in untraversable_edges:
+                        vis.set_edge_color(edge.from_location, edge.to_location, color=(255,32,255))
+                    else:
+                        vis.set_edge_color(edge.from_location, edge.to_location, color=(32,255,32))
+                elif edge.edge_id in untraversable_edges:
+                    vis.set_edge_color(edge.from_location, edge.to_location, color=(191,32,32))
             for loc in forward_enterable.intersection(backward_exitable):
-                vis.set_node_color(loc, (255,191,0))
+                if loc in reachable_levels:
+                    level = reachable_levels[loc]
+                else:
+                    level = 19
+                vis.set_node_color(loc, colors[level])
             vis.render()
-
         reachable = sorted(name for name, value in variables.items() if value)
         unreachable = sorted(name for name, value in variables.items() if not value)
 

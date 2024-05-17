@@ -431,7 +431,7 @@
 "changes": [
     {
     "edge": "PARK_MAIN -> UPRPRC_BASE",
-    "prereq": "SLIDE_ZIP | ROLL_BONK_ZIP",
+    "prereq": "SLIDE_ZIP",
     }
 ]}
 
@@ -497,7 +497,7 @@
 "changes": [
     {
     "edge": "PARK_MAIN -> UPRPRC_BASE",
-    "prereq": "FIRE_ORB | SLIDE_ZIP | ROLL_BONK_ZIP",
+    "prereq": "FIRE_ORB | SLIDE_ZIP",
     }
 ]}
 
@@ -595,7 +595,7 @@
     }
     {
     "edge": "RIVERBANK_MAIN_LEVEL1 -> RIVERBANK_LOWER_FOREST_ENTRANCE",
-    "prereq": "SLIDING_POWDER | HAMMER_ROLL_ZIP | (ADV_VHARD & ROLL_BONK_ZIP)",
+    "prereq": "SLIDING_POWDER | HAMMER_ROLL_ZIP",
     }
 ]}
 
@@ -840,14 +840,14 @@
     "edge": "FOREST_NIGHT_TOXIC_STRIKE -> FOREST_NIGHT_WEST",
     "prereq": "current & (
         AIR_JUMP | AIR_DASH_LV3 | BUNNY_STRIKE | CARROT_BOMB | (AIR_DASH & ITM_HARD) |
-        (CARROT_SHOOTER & (BOOST | CHARGE_RING | ADV_HARD | (AMULET_FOOD & ITM_HARD)))
+        (CARROT_SHOOTER & (BOOST | CHARGE_RING | (AMULET_FOOD & ITM_HARD)))
         )",
     }
     {
     "edge": "FOREST_NIGHT_NORTH_EAST -> FOREST_NIGHT_WEST",
     "prereq": "current & (
         AIR_JUMP | AIR_DASH_LV3 | BUNNY_STRIKE | CARROT_BOMB | (AIR_DASH & ITM_HARD) |
-        (CARROT_SHOOTER & (BOOST | CHARGE_RING | ADV_HARD | (AMULET_FOOD & ITM_HARD)))
+        (CARROT_SHOOTER & (BOOST | CHARGE_RING | (AMULET_FOOD & ITM_HARD)))
         )",
     }
     {
@@ -910,6 +910,8 @@
     "prereq": "
         WALL_JUMP | RABI_SLIPPERS | AIR_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL | WHIRL_BONK
         | (ADV_VHARD & SLIDING_POWDER)
+        | (ADV_VHARD & AIR_DASH_LV3 & SPEED2)
+        | (ADV_STUPID & AIR_DASH & BUNNY_AMULET_LV2)
         ",
     }
 ]}
@@ -919,7 +921,7 @@
 "weight": 30,
 "changes": [
     {
-    "edge": "PARK_MAIN -> PARK_KOTRI",
+    "edge": "PARK_WARP -> PARK_KOTRI",
     "prereq": "DOWNDRILL_SEMISOLID_CLIP",
     }
 ]}
@@ -941,9 +943,9 @@
     {
     "edge": "FOREST_START -> FOREST_EAST_ABOVE_SPRING",
     "prereq":
-        "AIR_JUMP | BUNNY_STRIKE | AIR_DASH_LV3 | (ADV_VHARD & SLIDE_ZIP)
+        "AIR_JUMP | BUNNY_STRIKE | AIR_DASH_LV3
         | (ADV_STUPID & WHIRL_BONK & CONSUMABLE_USE) // quick drop, item, whirl bonk off falling bunny
-        | (ADV_VHARD & AIR_DASH) // buffered launch from ribbon block ledge, airdash 
+        | (ADV_STUPID & AIR_DASH & 2_AMULET_FOOD) // quick drop, amulet, air dash, wall kick, amulet
         ",
     }
 ]}
@@ -953,7 +955,7 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "PARK_MAIN -> UPRPRC_BASE",
+    "edge": "PARK_WARP -> UPRPRC_LOWER",
     "prereq": "RABI_SLIPPERS | AIR_JUMP | AIR_DASH | SLIDE_JUMP_BUNSTRIKE | SLIDE_ZIP | (AMULET_FOOD & ADV_VHARD)",
     }
 ]}
@@ -1104,7 +1106,7 @@
 "changes": [
     {
     "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_MID",
-    "prereq": "(EXPLOSIVES_ENEMY & ((WATER_ORB & HAMMER_ROLL_ZIP) | SLIDING_POWDER | (ADV_STUPID & ROLL_BONK_ZIP))) | (ADV_STUPID & WATER_ORB & SLIDE_ZIP)",
+    "prereq": "(EXPLOSIVES_ENEMY & ((WATER_ORB & HAMMER_ROLL_ZIP) | SLIDING_POWDER)) | (ADV_STUPID & WATER_ORB & SLIDE_ZIP)",
     }
     {
     "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_WEST",
@@ -1220,7 +1222,7 @@
 "changes": [
     {
     "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_MID",
-    "prereq": "DOWNDRILL_SEMISOLID_CLIP | (EXPLOSIVES_ENEMY & SLIDING_POWDER) | (ADV_STUPID & WATER_ORB & SLIDE_ZIP)",
+    "prereq": "DOWNDRILL_SEMISOLID_CLIP | (EXPLOSIVES_ENEMY & SLIDING_POWDER)",
     }
     {
     "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_WEST",
@@ -1238,7 +1240,7 @@
     }
     {
     "edge": "SNOWLAND_LAKE -> SNOWLAND_EAST",
-    "prereq": "current & BUNNY_WHIRL",
+    "prereq": "current & (BUNNY_WHIRL | (ADV_STUPID & SLIDE_ZIP & BUNNY_AMULET))",
     }
 ]}
 
@@ -1432,9 +1434,8 @@
         AIR_JUMP
         | WHIRL_BONK
         | (ADV_HARD & WALL_JUMP_LV2) // turn off rabi slippers and do a 4-tile corner.
-        | (ADV_VHARD & RABI_SLIPPERS & WALL_JUMP & (SPEED1 | STUPID))
+        | (ADV_HARD & RABI_SLIPPERS & WALL_JUMP & (SPEED2 | V_HARD))
         | (ADV_STUPID & SLIDING_POWDER & WALL_JUMP)
-        | (ADV_STUPID & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL) // bunstrike, amulet, wimpy, bounce
     )",
     }
 ]}
@@ -1544,9 +1545,9 @@
     "edge": "RIVERBANK_LOWER_RIGHT -> RIVERBANK_LOWER_HEALTH_UP_ROOM",
     "prereq": "
         AIR_JUMP | (WALL_JUMP_LV2 & (ITM_HARD | RABI_SLIPPERS))
-        | (ADV_HARD & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & WALL_JUMP)
-        | (ITM_HARD & HAMMER_ROLL) | WHIRL_BONK_CANCEL | (ADV_STUPID & WHIRL_BONK)
+        | (ITM_HARD & HAMMER_ROLL) | WHIRL_BONK_CANCEL | (ADV_VHARD & WHIRL_BONK)
         | (ADV_VHARD & SLIDING_POWDER & (RABI_SLIPPERS | STUPID))
+        | (ADV_HARD & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & WALL_JUMP)
         ",
     }
 ]}
@@ -1593,7 +1594,7 @@
 
 {
 "name": "shop_entrance_slide",
-"weight": 5,
+"weight": 6,
 "changes": [
     {
     "edge": "TOWN_MAIN -> TOWN_SHOP",
@@ -1603,7 +1604,7 @@
 
 {
 "name": "shop_entrance_fireorb",
-"weight": 10,
+"weight": 12,
 "changes": [
     {
     "edge": "TOWN_MAIN -> TOWN_SHOP",
@@ -1613,7 +1614,7 @@
 
 {
 "name": "shop_entrance_hammer_nobomb",
-"weight": 10,
+"weight": 12,
 "changes": [
     {
     "edge": "TOWN_MAIN -> TOWN_SHOP",
@@ -1738,5 +1739,208 @@
             | (COCOA_1 & KOTRI_1 & CHAPTER_1)
         )
     ",
+    }
+]}
+
+// Additional Constraints
+{
+"name": "forest_green_uprprc_oneway",
+"weight": 30,
+"changes": [
+    {
+    "edge": "FOREST_START -> FOREST_NORTH_HP_UP_ROOM",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "park_warp_fireorb",
+"weight": 8,
+"changes": [
+    {
+    "edge": "PARK_MAIN -> PARK_WARP",
+    "prereq": "FIRE_ORB",
+    }
+    {
+    "edge": "PARK_WARP -> PARK_MAIN",
+    "prereq": "FIRE_ORB",
+    }
+]}
+
+{
+"name": "park_warp_whirlblocks",
+"weight": 8,
+"changes": [
+    {
+    "edge": "PARK_MAIN -> PARK_WARP",
+    "prereq": "BUNNY_WHIRL | EXPLOSIVES",
+    }
+    {
+    "edge": "PARK_WARP -> PARK_MAIN",
+    "prereq": "BUNNY_WHIRL | (CARROT_SHOOTER & BOOST)",
+    }
+]}
+
+{
+"name": "park_warp_oneway",
+"weight": 8,
+"changes": [
+    {
+    "edge": "PARK_WARP -> PARK_MAIN",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "aquarium_east_transition_oneway_slide",
+"weight": 5,
+"changes": [
+    {
+    "edge": "AQUARIUM_BOMB_WALLED_AREA -> AQUARIUM_BEACH_ENTRANCE",
+    "prereq": "UNDERWATER",
+    }
+    {
+    "edge": "AQUARIUM_BEACH_ENTRANCE -> AQUARIUM_BOMB_WALLED_AREA",
+    "prereq": "UNDERWATER & SLIDING_POWDER",
+    }
+]}
+
+{
+"name": "evernight_saya_left_wall",
+"weight": 10,
+"changes": [
+    {
+    "edge": "EVERNIGHT_NORTHWEST -> EVERNIGHT_SAYA",
+    "prereq": "EXPLOSIVES & SLIDING_POWDER",
+    }
+    {
+    "edge": "EVERNIGHT_SAYA -> EVERNIGHT_NORTHWEST",
+    "prereq": "EXPLOSIVES & SLIDING_POWDER",
+    }
+]}
+
+{
+"name": "ravine_chocolate_oneway",
+"weight": 10,
+"changes": [
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_CHOCOLATE",
+    "prereq": "OBS_VHARD & DOWNDRILL_SEMISOLID_CLIP",
+    }
+]}
+
+{
+"name": "ravine_upper_wall",
+"weight": 10,
+"changes": [
+    {
+    "edge": "RAVINE_UPPER_WEST -> RAVINE_UPPER_EAST",
+    "prereq": "IMPOSSIBLE",
+    }
+    {
+    "edge": "RAVINE_UPPER_EAST -> RAVINE_UPPER_WEST",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+
+{
+"name": "palace_attack_up_oneway",
+"weight": 5,
+"changes": [
+    {
+    "edge": "PALACE_WARP_LEVEL_1_2 -> PALACE_ATTACK_UP_TUNNEL",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "riverbank_lower_mid_wall",
+"weight": 10,
+"changes": [
+    {
+    "edge": "RIVERBANK_LOWER_LEFT -> RIVERBANK_LOWER_MID",
+    "prereq": "IMPOSSIBLE",
+    }
+    {
+    "edge": "RIVERBANK_LOWER_MID -> RIVERBANK_LOWER_LEFT",
+    "prereq": "IMPOSSIBLE",
+    }
+    // dummy constraints change for avoid get awful template combinations
+    {
+    "edge": "RIVERBANK_LOWER_MID -> RIVERBANK_MAIN_LEVEL1",
+    "prereq": "current",
+    }
+    {
+    "edge": "RIVERBANK_LOWER_RIGHT -> RIVERBANK_LOWER_MID",
+    "prereq": "current",
+    }
+]}
+
+{
+"name": "snowland_warp_nostupid",
+"weight": 30,
+"changes": [
+    {
+    "edge": "SNOWLAND_RITA -> SNOWLAND_WEST",
+    "prereq": "SLIDING_POWDER",
+    }
+]}
+
+{
+"name": "spectral_entrance_whirlblocks",
+"weight": 6,
+"changes": [
+    {
+    "edge": "CAVE_ENTRANCE -> SPECTRAL_UPPER",
+    "prereq": "BUNNY_WHIRL | EXPLOSIVES | SLIDING_POWDER",
+    }
+    {
+    "edge": "SPECTRAL_UPPER -> CAVE_ENTRANCE",
+    "prereq": "
+        SLIDING_POWDER | HAMMER_ROLL_ZIP
+        | ((BUNNY_WHIRL | (CARROT_SHOOTER & BOOST)) & (
+            WHIRL_BONK_CANCEL
+            | (ITM_HARD & HAMMER_ROLL)
+            | (RABI_SLIPPERS & (WALL_JUMP_LV2 | AIR_JUMP))
+            | (AIR_JUMP & WALL_JUMP)
+        ))
+    ",
+    }
+]}
+
+{
+"name": "spectral_entrance_fireorb",
+"weight": 6,
+"changes": [
+    {
+    "edge": "CAVE_ENTRANCE -> SPECTRAL_UPPER",
+    "prereq": "FIRE_ORB | SLIDING_POWDER",
+    }
+    {
+    "edge": "SPECTRAL_UPPER -> CAVE_ENTRANCE",
+    "prereq": "
+        SLIDING_POWDER | HAMMER_ROLL_ZIP
+        | (FIRE_ORB & (
+            WHIRL_BONK_CANCEL
+            | (ITM_HARD & HAMMER_ROLL)
+            | (RABI_SLIPPERS & (WALL_JUMP_LV2 | AIR_JUMP))
+            | (AIR_JUMP & WALL_JUMP)
+        ))
+    ",
+    }
+]}
+
+{
+"name": "spectral_west_nothing",
+"weight": 10,
+"changes": [
+    {
+    "edge": "SPECTRAL_MID -> SPECTRAL_WARP",
+    "prereq": "NONE",
+    }
+    {
+    "edge": "SPECTRAL_WARP -> SPECTRAL_MID",
+    "prereq": "NONE",
     }
 ]}

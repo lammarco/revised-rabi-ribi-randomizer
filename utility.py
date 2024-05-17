@@ -63,6 +63,13 @@ class MapTransition(object):
         self.rect_width = rect_width
         self.rect_height = rect_height
 
+class StartLocation(object):
+    def __init__(self, area, position, weight, location):
+        self.area = area
+        self.position = ast.literal_eval(position)
+        self.weight = weight
+        self.location = location
+
 class EdgeConstraintData(object):
     def __init__(self, from_location, to_location, prereq_expression):
         self.from_location = from_location
@@ -141,7 +148,7 @@ def mean(values):
     return float(sum(values))/len(values)
 
 def is_potion(item_name):
-    return bool(re.match('^[A-Z]*_UP', item_name))
+    return bool(re.match('^[A-Z]*_UP_', item_name))
 
 def is_egg(item_name):
     return item_name!=None and item_name.startswith('EGG_')
@@ -361,8 +368,14 @@ def read_file_and_strip_comments(filename):
 
 # Misc commands
 
-def string_to_integer_seed(s):
-    return int(hashlib.md5(s.encode('utf-8')).hexdigest(), base=16)
+def string_to_integer_seed(args):
+    seed = None
+    try:
+        seed = int(args.seed, base=16)
+    except ValueError:
+        s = '%s_hd:%s' % (args.seed, args.hide_difficulty)
+        seed = int(hashlib.md5(s.encode('utf-8')).hexdigest(), base=16)
+    return seed
 
 def hash_map_files(areaids, maps_dir):
     hash  = hashlib.md5()

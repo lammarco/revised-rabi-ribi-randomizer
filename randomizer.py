@@ -25,7 +25,10 @@ def parse_args():
     args.add_argument('--shuffle-backgrounds', action='store_true', help='Shuffles the backgrounds in the map.')
     args.add_argument('--shuffle-map-transitions', action='store_true', help='Shuffles map transitions between maps.')
     args.add_argument('--shuffle-gift-items', action='store_true', help='Shuffles certain gift items in the maps.')
-    args.add_argument('-constraint-changes', default=0, type=float, help='Expected number of changed map constraints')
+    args.add_argument('--shuffle-start-location', action='store_true', help='Shuffle start area.')
+    args.add_argument('-constraint-changes', default=0, type=float, help='Average number of changed map constraints')
+    args.add_argument('-min-constraint-changes', default=-1, type=float, help='Min number of changed map constraints')
+    args.add_argument('-max-constraint-changes', default=-1, type=float, help='Max number of changed map constraints')
     args.add_argument('--no-laggy-backgrounds', action='store_true', help='Don\'t include laggy backgrounds in background shuffle.')
     args.add_argument('--no-difficult-backgrounds', action='store_true', help='Don\'t include backgrounds in background shuffle that interfere with visibility.')
     args.add_argument('--super-attack-mode', action='store_true', help='Start the game with a bunch of attack ups, so you do lots more damage.')
@@ -40,6 +43,7 @@ def parse_args():
     args.add_argument('--egg-goals', action='store_true', help='Egg goals mode. Hard-to-reach items are replaced with easter eggs. All other eggs are removed from the map.')
     args.add_argument('-extra-eggs', default=0, type=int, help='Number of extra randomly-chosen eggs for egg-goals mode (in addition to the hard-to-reach eggs)')
     args.add_argument('-num-hard-to-reach', default=5, type=int, help='Number of hard to reach items/eggs. Default is 5.')
+    args.add_argument('--debug-visualize', action='store_true', help='Output debug info and node graph image.')
 
     return args.parse_args(sys.argv[1:])
 
@@ -135,6 +139,10 @@ def configure_shaft(mod, settings):
         # Turn on warp stones from the start
         event_flag_set_list += [(281,)]
 
+    if settings.shuffle_start_location:
+        # Disable starting forest warp from the start
+        event_flag_set_list += [(297,), (298,)]
+        
     if settings.shuffle_gift_items:
         # Disable event where miriam gives you speed boost and bunny strike.
         event_flag_set_list += [(374,), (378,)]
@@ -160,51 +168,58 @@ def configure_shaft(mod, settings):
     # Build shaft only if there is something to build.
     if len(events_list) > 0:
         for areaid, data in mod.stored_datas.items():
-            build_start_game_shaft(areaid, data, events_list)
+            build_start_game_shaft(areaid, data, events_list, settings)
 
 
-def build_start_game_shaft(areaid, data, events_list):
+def build_start_game_shaft(areaid, data, events_list, settings):
     # area 0 only.
     if areaid != 0: return
 
-    MAX_EVENTS = 37
+    bx, by, shaftx = 100, 0, 11
+    if settings.shuffle_start_location:
+        bx, by, shaftx = 60, 45, 10
+    MAX_EVENTS = 39
     EVENT_COUNT = len(events_list)
     if EVENT_COUNT > MAX_EVENTS:
         fail('Too many events in start game shaft: %d/%d' % (EVENT_COUNT, MAX_EVENTS))
     
     # EV_MOVEDOWN event to move erina down to start position
-    data.tiledata_event[xy_to_index(111,43)] = 554
+    data.tiledata_event[xy_to_index(bx + shaftx, by + 43)] = 554
 
     # Place events in shaft
     for i, ev_tuple in enumerate(events_list):
-        y = 43 - EVENT_COUNT + i
+        y = by + 43 - EVENT_COUNT + i
         for dx, ev in enumerate(ev_tuple):
-            data.tiledata_event[xy_to_index(111+dx,y)] = ev
+            data.tiledata_event[xy_to_index(bx + shaftx + dx,y)] = ev
 
     # Remove old start event
     data.tiledata_event[xy_to_index(113,98)] = 0
     # Place new start event
-    data.tiledata_event[xy_to_index(111,42-EVENT_COUNT)] = 34
+    data.tiledata_event[xy_to_index(bx + shaftx, by + 42 - EVENT_COUNT)] = 34
 
+    # Remove OoB light event
+    data.tiledata_event[xy_to_index(68,90)] = 0
+    
     # Add collision data
-    data.tiledata_map[xy_to_index(110,44)] = 1
-    data.tiledata_map[xy_to_index(111,44)] = 1
-    data.tiledata_map[xy_to_index(112,44)] = 1
+    data.tiledata_map[xy_to_index(bx + shaftx - 1, by + 44)] = 1
+    data.tiledata_map[xy_to_index(bx + shaftx + 0, by + 44)] = 1
+    data.tiledata_map[xy_to_index(bx + shaftx + 1, by + 44)] = 1
     for i in range(0,EVENT_COUNT+5):
-        y = 43-i
-        data.tiledata_map[xy_to_index(110,y)] = 1
-        data.tiledata_map[xy_to_index(112,y)] = 1
-    data.tiledata_map[xy_to_index(111,43-EVENT_COUNT-4)] = 1
+        y = by + 43 - i
+        data.tiledata_map[xy_to_index(bx + shaftx - 1, y)] = 1
+        data.tiledata_map[xy_to_index(bx + shaftx + 1, y)] = 1
+    data.tiledata_map[xy_to_index(bx + shaftx, by + 43 - EVENT_COUNT - 4)] = 1
 
     # Blanket with black graphical tiles
-    for y in range(0,45):
-        for x in range(100,120):
-            data.tiledata_tiles1[xy_to_index(x,y)] = 33
+    for y in range(by, by + 45):
+        for x in range(bx, bx + 20):
+            data.tiledata_tiles2[xy_to_index(x,y)] = 33
 
     # Change room type and background
-    for y in range(0,4):
-        data.tiledata_roombg[to_tile_index(5,y)] = 56
-        data.tiledata_roomtype[to_tile_index(5,y)] = 3
+    mapy = round(by / 11.25 + 0.5)
+    for y in range(mapy, mapy + 4):
+        data.tiledata_roombg[to_tile_index(bx // 20, y)] = 56
+        data.tiledata_roomtype[to_tile_index(bx // 20, y)] = 3
 
 
 def apply_diff_patch_fixes(mod, diff_patch_files):
@@ -299,6 +314,32 @@ def apply_map_transition_shuffle(mod, data, settings, allocation):
         set_target_in_map(ltr, rtr.area_current, rtr.entry_current)
 
 
+def apply_start_location_shuffle(mod, settings, allocation):
+    if not settings.shuffle_start_location: return
+    # Add start warp room and remove warp stone from FC2
+    apply_diff_patch_fixes(mod, [
+        './maptemplates/event_warps/ew_start_room.txt',
+        './maptemplates/event_warps/ew_fc2_to_start.txt',
+    ])
+    
+    start_area = allocation.start_location.area
+    for areaid, data in mod.stored_datas.items():
+        if areaid == 0:
+            # Add warp exit point to original start position
+            data.tiledata_event[xy_to_index(112, 91)] = 218
+            data.tiledata_event[xy_to_index(112, 92)] = 240
+            
+            cross_map_event_id = 242 + start_area
+            for y in range(130, 133):
+                for x in range(73, 78):
+                    if data.tiledata_event[xy_to_index(x, y)] == 243:
+                        data.tiledata_event[xy_to_index(x, y)] = cross_map_event_id
+        if areaid == start_area:
+            # Add warp exit point to the random start location
+            x, y = allocation.start_location.position
+            data.tiledata_event[xy_to_index(x, y)] = 220
+            data.tiledata_event[xy_to_index(x, y + 1)] = 240
+
 def insert_items_into_map(mod, data, settings, allocation):
     name_to_id = dict((item.name, item.itemid) for item in data.items)
     name_to_id.update(data.additional_items)
@@ -331,7 +372,7 @@ def display_hash(settings):
     print_ln('Hash: %s' % hash_digest)
 
 
-def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, settings):
+def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, settings, seed):
     analysis_lines = []
     def print_to_analysis(line=''):
         print_ln(line)
@@ -387,6 +428,7 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
     if not settings.hide_difficulty:
         print_to_analysis('Difficulty: %.2f' % difficulty_analysis.difficulty_score)
         print_to_analysis('Sequence Break Potential: %.2f' % difficulty_analysis.breakability_score)
+        print_to_analysis('Seed: %x' % seed)
         print_to_analysis_only()
     
 
@@ -394,15 +436,60 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
         f = open('%s/%s' % (settings.output_dir, 'analysis.txt'), 'w+')
         f.write('\n'.join(analysis_lines))
         f.close()
+        
+    if settings.debug_visualize:
+        levels = analyzer.levels
+        f = open('%s/spoiler/%s' % (settings.output_dir, 'chain.txt'), 'w+')
+
+        item_location_at_item = {}
+        for k, v in allocation.item_at_item_location.items():
+            if v != None:
+                item_location_at_item[v] = k
+                
+        f.write("start location: %s\n\n" % allocation.start_location.location)
+        f.write("picked templates: %s\n\t" % len(allocation.picked_templates))
+        f.write("\n\t".join(sorted([t.name for t in allocation.picked_templates])))
+        f.write("\n\n")
+        
+        lv = 0
+        while len(levels) > lv:
+            f.write("--- chain %d ---\n" % (lv/2))
+            if len(levels[lv]) > 0:
+                f.write("\npseudo items:\n\t")
+                f.write("\n\t".join(levels[lv]))
+            
+            level = levels[lv+1]
+            
+            locs = set(name for name in level if name in data.locations_set)
+            objs = sorted(set(level) - locs)
+            eggs = list(name for name in objs if is_egg(name))
+            items = list(name for name in objs if not is_potion(name) and not is_egg(name))
+            potions = list(name for name in objs if is_potion(name))
+            
+            sorted_items = eggs + items + potions
+            if len(sorted_items) > 0:
+                f.write("\nitems:\t")
+                for v in sorted_items:
+                    k = "[Additional items]"
+                    if v in item_location_at_item:
+                        k = item_location_at_item[v]
+                    f.write("\n\t%s @ %s" % (v, k))
+            if len(locs) > 0:
+                f.write("\nlocations:\n\t")
+                f.write("\n\t".join(sorted(locs)))
+            f.write("\n\n")
+            
+            lv += 2
+            
+        f.close()
 
 def run_randomizer(seed, settings):
-    if seed != None: random.seed(seed)
     randomizer_data = RandomizerData(settings)
     generator = Generator(randomizer_data, settings)
-    allocation, analyzer, difficulty_analysis = generator.generate_seed()
+    allocation, analyzer, difficulty_analysis, seed = generator.generate_seed(seed)
     #print_ln('done')
 
-    generate_analysis_file(randomizer_data, allocation, analyzer, difficulty_analysis, settings)
+    generate_analysis_file(randomizer_data, allocation, analyzer, difficulty_analysis, settings, seed)
 
     if settings.no_write:
         print_ln('No maps generated as no-write flag is on.')
@@ -419,6 +506,7 @@ def run_randomizer(seed, settings):
     pre_modify_map_data(mod, settings, allocation.map_modifications)
     apply_item_specific_fixes(mod, allocation)
     apply_map_transition_shuffle(mod, randomizer_data, settings, allocation)
+    apply_start_location_shuffle(mod, settings, allocation)
     insert_items_into_map(mod, randomizer_data, settings, allocation)
 
     mod.save(settings.output_dir)
@@ -442,5 +530,5 @@ if __name__ == '__main__':
         reset_maps(args.source_dir, args.output_dir)
     else:
         if args.seed == None: seed = None
-        else: seed = string_to_integer_seed('%s_hd:%s' % (args.seed, args.hide_difficulty))
+        else: seed = string_to_integer_seed(args)
         run_randomizer(seed, args)

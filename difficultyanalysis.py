@@ -1,4 +1,4 @@
-from dataparser import KNOWLEDGE_INTERMEDIATE, KNOWLEDGE_ADVANCED, DIFFICULTY_HARD, DIFFICULTY_V_HARD, DIFFICULTY_STUPID
+from dataparser import KNOWLEDGE_INTERMEDIATE, KNOWLEDGE_ADVANCED, KNOWLEDGE_OBSCURE, DIFFICULTY_HARD, DIFFICULTY_V_HARD, DIFFICULTY_STUPID
 from utility import fail
 import statistics
 
@@ -16,7 +16,6 @@ DIFFICULTY_CONFIGS = [
         weight=0.8,
         config_flags = {
             "ZIP_REQUIRED": False,
-            "BONK_ZIP_REQUIRED": False,
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": False,
             "BLOCK_CLIPS_REQUIRED": False,
@@ -30,6 +29,7 @@ DIFFICULTY_CONFIGS = [
             "EVENT_WARPS_REQUIRED": False,
             KNOWLEDGE_INTERMEDIATE: False,
             KNOWLEDGE_ADVANCED: False,
+            KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: False,
             DIFFICULTY_V_HARD: False,
             DIFFICULTY_STUPID: False,
@@ -42,7 +42,6 @@ DIFFICULTY_CONFIGS = [
         weight=1.0,
         config_flags = {
             "ZIP_REQUIRED": False,
-            "BONK_ZIP_REQUIRED": False,
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": False,
             "BLOCK_CLIPS_REQUIRED": False,
@@ -56,6 +55,7 @@ DIFFICULTY_CONFIGS = [
             "EVENT_WARPS_REQUIRED": False,
             KNOWLEDGE_INTERMEDIATE: True,
             KNOWLEDGE_ADVANCED: False,
+            KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: False,
             DIFFICULTY_STUPID: False,
@@ -68,7 +68,6 @@ DIFFICULTY_CONFIGS = [
         weight=1.0,
         config_flags = {
             "ZIP_REQUIRED": False,
-            "BONK_ZIP_REQUIRED": False,
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": False,
             "BLOCK_CLIPS_REQUIRED": True,
@@ -82,6 +81,7 @@ DIFFICULTY_CONFIGS = [
             "EVENT_WARPS_REQUIRED": False,
             KNOWLEDGE_INTERMEDIATE: True,
             KNOWLEDGE_ADVANCED: False,
+            KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: False,
             DIFFICULTY_STUPID: False,
@@ -94,7 +94,6 @@ DIFFICULTY_CONFIGS = [
         weight=1.0,
         config_flags = {
             "ZIP_REQUIRED": True,
-            "BONK_ZIP_REQUIRED": True,
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": True,
             "BLOCK_CLIPS_REQUIRED": True,
@@ -108,6 +107,7 @@ DIFFICULTY_CONFIGS = [
             "EVENT_WARPS_REQUIRED": True,
             KNOWLEDGE_INTERMEDIATE: True,
             KNOWLEDGE_ADVANCED: True,
+            KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: False,
             DIFFICULTY_STUPID: False,
@@ -120,7 +120,6 @@ DIFFICULTY_CONFIGS = [
         weight=1.0,
         config_flags = {
             "ZIP_REQUIRED": True,
-            "BONK_ZIP_REQUIRED": True,
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": True,
             "BLOCK_CLIPS_REQUIRED": True,
@@ -134,6 +133,7 @@ DIFFICULTY_CONFIGS = [
             "EVENT_WARPS_REQUIRED": True,
             KNOWLEDGE_INTERMEDIATE: True,
             KNOWLEDGE_ADVANCED: True,
+            KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: True,
             DIFFICULTY_STUPID: False,
@@ -147,7 +147,6 @@ DIFFICULTY_CONFIGS = [
         weight=0.5,
         config_flags = {
             "ZIP_REQUIRED": True,
-            "BONK_ZIP_REQUIRED": True,
             "BUNSTRIKE_ZIP_REQUIRED": True,
             "SEMISOLID_CLIPS_REQUIRED": True,
             "BLOCK_CLIPS_REQUIRED": True,
@@ -161,6 +160,7 @@ DIFFICULTY_CONFIGS = [
             "EVENT_WARPS_REQUIRED": True,
             KNOWLEDGE_INTERMEDIATE: True,
             KNOWLEDGE_ADVANCED: True,
+            KNOWLEDGE_OBSCURE: True,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: True,
             DIFFICULTY_STUPID: True,
