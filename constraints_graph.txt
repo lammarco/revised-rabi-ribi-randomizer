@@ -123,14 +123,20 @@ EXPLOSIVES_ENEMY & SLIDING_POWDER & PROLOGUE_TRIGGER & (
 {
 "edge": "FOREST_START -> FOREST_NORTH_HP_UP_ROOM",
 "prereq": "
-(
-    RABI_SLIPPERS
-    | AIR_JUMP
-    | (SLIDING_POWDER & ADV_STUPID)
-    | SLIDE_JUMP_BUNSTRIKE
-    | AIR_DASH
-    | WHIRL_BONK
-) & (SLIDING_POWDER | HAMMER_ROLL_ZIP)",
+HAMMER_ROLL_ZIP | (
+    SLIDING_POWDER & (
+        RABI_SLIPPERS
+        | AIR_JUMP
+        | SLIDE_JUMP_BUNSTRIKE
+        | AIR_DASH
+        | WHIRL_BONK
+        // 2 tile zip
+        | (SLIDE_ZIP & ADV_VHARD & WALL_JUMP)
+        | (SLIDE_ZIP & ADV_VHARD & AMULET_FOOD)
+        // slide bonk
+        | ADV_STUPID
+        )
+)",
 }
 
 {
@@ -301,6 +307,10 @@ ITM & DARKNESS & (
 "prereq": "NONE",
 }
 
+{
+"edge": "CAVE_COCOA -> FORGOTTEN_CAVE_2",
+"prereq": "POST_GAME & ((CHAPTER_6 & TM_MIRIAM) | SLIDE_ZIP)",
+}
 
 // Spectral
 
@@ -608,8 +618,8 @@ PROLOGUE_TRIGGER & (
     | SLIDE_JUMP_BUNSTRIKE_CANCEL
     // roll up drill
     | (ADV_VHARD & HAMMER_ROLL)
-    // never ever slide bonk
-    | (ADV_STUPID & (SLIDING_POWDER | WHIRL_BONK))
+    // slide bonk requires amulet, not sure about whirlbonk
+    | (ADV_STUPID & BUNNY_AMULET & (SLIDING_POWDER | WHIRL_BONK))
 )
 ",
 }
@@ -673,9 +683,10 @@ PROLOGUE_TRIGGER & (
     // slide jump, wall jump, airdash, wall jump2, amulet
     | (SLIDING_POWDER & RABI_SLIPPERS & WALL_JUMP & AIR_DASH & AMULET_FOOD & ADV_VHARD)
     // quick drop jump, quick drop, airdash, wimpy wall jump, amulet, wall jump2
-    | (AIR_DASH & WALL_JUMP & AMULET_FOOD & ADV_STUPID)
+    | (ADV_STUPID & AIR_DASH & WALL_JUMP & AMULET_FOOD)
     // slide jump, wimpy amuclimbs
     | (ADV_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & MANY_AMULET_FOOD & (SLIDING_POWDER | SPEED5))
+    | (ADV_STUPID & SLIDING_POWDER & WALL_JUMP_LV2 & BUNNY_AMULET_LV3)
 ",
 }
 
@@ -687,6 +698,159 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "SKY_ISLAND_MAIN -> BEACH_MAIN",
 "prereq": "EXPLOSIVES | (OBS_STUPID & BUNSTRIKE_ZIP & EXPLOSIVES_ENEMY)", // strike zip for lure an enemies, carrot shot
+}
+
+// Library
+
+{
+"edge": "GRAVEYARD_MAIN -> LIBRARY_OUTSIDE",
+"prereq": "
+    (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
+    | (AIR_DASH & (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
+    | (ADV_STUPID & MANY_AMULET_FOOD & (
+        WALL_JUMP_LV2 | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+    ))
+    | (ADV_STUPID & WALL_JUMP & AIR_DASH & BUNNY_AMULET_LV2)
+",
+}
+
+{
+"edge": "LIBRARY_OUTSIDE -> LIBRARY_ENTRANCE",
+"prereq": "POST_GAME & ((PARK_MAIN & SLIDE_ZIP) | SYSINT2_END) & ((15TM & TM_MIRIAM & TM_RUMI & CHAPTER_6) | SLIDE_ZIP)",
+}
+
+{
+"edge": "LIBRARY_ENTRANCE -> LIBRARY_BOTTOM",
+"prereq": "NONE",
+}
+
+{
+"edge": "LIBRARY_BOTTOM -> LIBRARY_ENTRANCE",
+"prereq": "
+    WALL_JUMP_LV2
+    | AIR_JUMP
+    | (AIR_DASH_LV3 & BUNNY_AMULET)
+    | (SLIDE_JUMP_BUNSTRIKE_CANCEL)
+    | (RABI_SLIPPERS & AMULET_FOOD & ADV_STUPID)
+"
+}
+
+{
+"edge": "LIBRARY_BOTTOM -> LIBRARY_MID_LOWER",
+"prereq": "
+    (( // big room to alcove
+        WHIRL_BONK
+        | (AIR_JUMP & AIR_DASH)
+        | (AIR_JUMP & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+        | (AIR_DASH & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+        // stupid amuclimb
+        | (ADV_STUPID & AIR_DASH & WALL_JUMP & BUNNY_AMULET_LV2 & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+    ) & ( // alcove up
+        AIR_JUMP
+        | AIR_DASH
+        | (RABI_SLIPPERS & ADV_STUPID & AMULET_FOOD)
+        | (WALL_JUMP & ADV_STUPID & 2_AMULET_FOOD)
+    )) // climb the shaft in the room to the right
+    | (WALL_JUMP_LV2 & AIR_JUMP & (AIR_DASH | BUNNY_STRIKE))
+",
+}
+
+{
+"edge": "LIBRARY_BOTTOM -> SKY_ISLAND_MAIN",
+"prereq": "
+    (SLIDE_ZIP & ADV_VHARD & EXPLOSIVES)
+    & ( // get to the ledge
+        AIR_JUMP
+        | (
+            (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL)
+            & SPEED3
+            & (WALL_JUMP_LV2 | AIR_DASH)
+        ) | (
+            (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL)
+            & WALL_JUMP_LV2 & AIR_DASH
+        )
+    )
+",
+}
+
+{
+"edge": "LIBRARY_MID_LOWER -> LIBRARY_BOTTOM",
+"prereq": "
+    (EXPLOSIVES_ENEMY & (SLIDING_POWDER | HAMMER_ROLL_ZIP))
+    | (
+        RABI_SLIPPERS
+        | AIR_JUMP
+        | AIR_DASH
+        | SLIDE_JUMP_BUNSTRIKE
+        | WHIRL_BONK
+        | (ADV_STUPID & AMULET_FOOD)
+    )
+",
+}
+
+{
+"edge": "GRAVEYARD_UPPER -> LIBRARY_MID_LOWER",
+"prereq": "POST_GAME & SLIDE_ZIP & SUNNY_BEAM & ADV_STUPID",
+}
+
+{
+"edge": "LIBRARY_MID_LOWER -> LIBRARY_MID_UPPER",
+"prereq": "8TILE_WALLJUMP",
+}
+
+{
+"edge": "LIBRARY_MID_UPPER -> LIBRARY_MID_LOWER",
+"prereq": "
+    RABI_SLIPPERS
+    | AIR_JUMP
+    | AIR_DASH
+    | SLIDE_JUMP_BUNSTRIKE
+    | WALL_JUMP
+    | ITM_HARD
+",
+}
+
+{
+"edge": "LIBRARY_MID_UPPER -> LIBRARY_IRISU",
+"prereq": "
+(
+    SLIDE_ZIP
+    // climb the shaft
+    | (WHIRL_BONK_CANCEL & (ADV_STUPID | WALL_JUMP_LV2))
+    | (AIR_JUMP & WALL_JUMP_LV2)
+    | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS & AIR_JUMP & WALL_JUMP)
+    | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS & WALL_JUMP_LV2)
+    // there is a stupid slide bonk here, just zip instead
+) & (
+    // the last little wall
+    AIR_DASH
+    | AIR_JUMP
+    | (ADV_VHARD & (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
+    | (ADV_STUPID & WALL_JUMP_LV2)
+)
+",
+}
+
+// This does not account for the Irisu fight
+// Hopefully you don't have all TM, or you do have slide
+{
+"edge": "LIBRARY_IRISU -> LIBRARY_MID_UPPER",
+"prereq": "NONE",
+}
+
+{
+"edge": "LIBRARY_IRISU -> SKY_ISLAND_UPPER",
+"prereq": "EXPLOSIVES_ENEMY",
+}
+
+{
+"edge": "SKY_ISLAND_UPPER -> LIBRARY_IRISU",
+"prereq": "POST_GAME & RABI_SLIPPERS & AIR_JUMP & AIR_DASH & WALL_JUMP_LV2 & MANY_AMULET_FOOD & ADV_STUPID"
+}
+
+{
+"edge": "SKY_ISLAND_UPPER -> LIBRARY_MID_LOWER",
+"prereq": "POST_GAME & RABI_SLIPPERS & AIR_JUMP & AIR_DASH & WALL_JUMP_LV2 & MANY_AMULET_FOOD & BUNNY_STRIKE & ADV_STUPID"
 }
 
 // Halloween
@@ -917,7 +1081,7 @@ PROLOGUE_TRIGGER & (
 "prereq": "(SLIDING_POWDER | PROLOGUE_TRIGGER) & (
         // going up the long chasm
         WALL_JUMP_LV2 & (AIR_JUMP | (ADV_VHARD & WHIRL_BONK_CANCEL))
-    )", 
+    )",
 }
 
 {
@@ -1354,9 +1518,9 @@ DARKNESS & (
     | WHIRL_BONK
     | (ADV_STUPID & WALL_JUMP_LV2 & BUNNY_AMULET_LV3) // amulet climb
     | (ADV_STUPID & SLIDING_POWDER) // slide bonk
-      
+
     ) & ( // Part 2: Actual reverse nixie
-    
+
     (AIR_JUMP & (
         ((RABI_SLIPPERS | (SLIDE_JUMP_BUNSTRIKE_CANCEL & ADV_VHARD)) & AIR_DASH)
         | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & ADV_VHARD)
@@ -1372,7 +1536,7 @@ DARKNESS & (
     | WHIRL_BONK_CANCEL
     | (ADV_VHARD & RABI_SLIPPERS & HAMMER_ROLL & AIR_DASH) // roll bonk, air dash, wall jump, wall kick
     | (ADV_STUPID & WHIRL_BONK) // bonk a falling uprprc
-    
+
     )",
 }
 
@@ -2128,6 +2292,11 @@ DARKNESS & (
 "prereq": "NONE",
 }
 
+{
+"edge": "VOLCANIC_MAIN -> HALL_OF_MEMORIES",
+"prereq": "POST_GAME & CHAPTER_6",
+}
+
 // .---------------------'
 // | Area 8 : Warp Destination
 // '---------------------.
@@ -2160,6 +2329,54 @@ DARKNESS & (
 "edge": "SYSTEM_INTERIOR_MAIN -> LAB_COMPUTER_ROOM",
 "prereq": "NONE",
 }
+
+// Assume players know how to disable items to shoot ribbon blocks
+{
+"edge": "SYSTEM_INTERIOR_MAIN -> SYSINT2_START",
+"prereq": "
+POST_GAME & (
+    // climb left wall
+    (WALL_JUMP & AIR_JUMP & (AIR_DASH | AMULET_FOOD))
+    | (WALL_JUMP_LV2 & AIR_DASH & AMULET_FOOD & ADV_VHARD)
+    | (WALL_JUMP_LV2 & 2_AMULET_FOOD & ADV_STUPID)
+    | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS & AIR_JUMP)
+    // column thing
+    | (CHAPTER_7 & SLIDING_POWDER & AIR_JUMP & (
+        SLIDE_JUMP_BUNSTRIKE_CANCEL
+        | WALL_JUMP_LV2
+        | (WALL_JUMP & AIR_DASH)
+    ))
+)
+",
+}
+
+// Two uses of explosives is enough for all of sysint2
+// so don't worry about BOOST_MANY
+{
+"edge": "SYSINT2_START -> SYSINT2_EGG_ROOM",
+"prereq": "
+EXPLOSIVES & (
+    SLIDING_POWDER
+    | AIR_DASH
+    | AIR_JUMP
+    | (MANY_AMULET_FOOD & ADV_STUPID)
+    | (WALL_JUMP & 3_AMULET_FOOD & ADV_STUPID)
+)
+",
+}
+
+// There are two columns to climb after the long spike room
+// Bunstrike may be usable but I struggled with it
+{
+"edge": "SYSINT2_EGG_ROOM -> SYSINT2_END",
+"prereq": "EXPLOSIVES & AIR_JUMP & (RABI_SLIPPERS | WALL_JUMP_LV2)",
+}
+
+{
+"edge": "SYSINT2_END -> SYSTEM_INTERIOR_MAIN",
+"prereq": "NONE",
+}
+// TODO: add stupid CFE and sysint2 backwards
 
 // .---------------------'
 // | Event Warp Constraints
