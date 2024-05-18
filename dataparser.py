@@ -219,7 +219,7 @@ def define_default_expressions(variable_names_set):
     def3 = expr_all({
         "HAMMER_ROLL_ZIP": "ZIP & HAMMER_ROLL_LV3",
         "SLIDE_ZIP": "ZIP & SLIDING_POWDER",
-        "ROLL_BONK_ZIP": "ZIP & HAMMER_ROLL & OBSCURE",
+        "ROLL_BONK_ZIP": "ZIP & HAMMER_ROLL & OBS_VHARD",
         "BUNSTRIKE_ZIP": "ZIP & BUNSTRIKE_ZIP_REQUIRED & BUNNY_STRIKE",
         "WHIRL_BONK": "BUNNY_WHIRL & ITM_HARD",
         "WHIRL_BONK_CANCEL": "BUNNY_WHIRL & ((BUNNY_AMULET & ITM_HARD) | OBS_VHARD)",
