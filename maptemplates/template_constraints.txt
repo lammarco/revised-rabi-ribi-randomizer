@@ -1836,7 +1836,7 @@
 "changes": [
     {
     "edge": "RAVINE_LOWER -> RAVINE_CHOCOLATE",
-    "prereq": "OBS_VHARD & DOWNDRILL_SEMISOLID_CLIP",
+    "prereq": "IMPOSSIBLE",
     }
 ]}
 
@@ -1930,5 +1930,15 @@
     {
     "edge": "SPECTRAL_WARP -> SPECTRAL_MID",
     "prereq": "NONE",
+    }
+]}
+
+{
+"name": "ravine_chocolate_nostupid",
+"weight": 30,
+"changes": [
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_ABOVE_CHOCOLATE",
+    "prereq": "IMPOSSIBLE",
     }
 ]}

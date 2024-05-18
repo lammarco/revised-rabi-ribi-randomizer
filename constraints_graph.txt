@@ -1154,32 +1154,45 @@ PROLOGUE_TRIGGER & (
 }
 
 {
-"edge": "RAVINE_UPPER_WEST -> RAVINE_CHOCOLATE",
+"edge": "RAVINE_UPPER_WEST -> RAVINE_ABOVE_CHOCOLATE",
 "prereq": "NONE",
 }
 
 {
-"edge": "RAVINE_CHOCOLATE -> RAVINE_UPPER_WEST",
+"edge": "RAVINE_ABOVE_CHOCOLATE -> RAVINE_UPPER_WEST",
 "prereq": "
-// From save room up to ledge below egg
-(
-    (ITM & RABI_SLIPPERS & AIR_DASH_LV3)
-    | (AIR_JUMP & (ITM_HARD | RABI_SLIPPERS))
-    | (ADV_VHARD & ((SLIDE_JUMP_BUNSTRIKE & RABI_SLIPPERS) | AIR_DASH))
-    | (ADV_STUPID & BUNNY_AMULET_LV2 & (
-        SLIDE_JUMP_BUNSTRIKE_CANCEL
-        | (RABI_SLIPPERS & (SPEED5 | SLIDING_POWDER | WALL_JUMP))
-    ))
-)
-// From ledge below egg to flower ledge
-& (AIR_DASH | AIR_JUMP | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE | ADV_VHARD)
-// Jumping up hole above chocolate arena
-& (
+    (
+        // From save room up to ledge below egg
+        (ITM & RABI_SLIPPERS & AIR_DASH_LV3)
+        | (AIR_JUMP & (ITM_HARD | RABI_SLIPPERS))
+        | (ADV_VHARD & ((SLIDE_JUMP_BUNSTRIKE & RABI_SLIPPERS) | AIR_DASH))
+        | (ADV_VHARD & SLIDE_JUMP_BUNSTRIKE & AMULET_FOOD)
+        // quick drop jump, wall jump, amulet
+        | (ADV_EXT & AMULET_FOOD & SPEED3)
+        // same as above but use roll3 for getting velocity
+        | (OBS_STUPID & AMULET_FOOD & HAMMER_ROLL_LV3)
+        
+        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD & RABI_SLIPPERS & (SLIDING_POWDER | WALL_JUMP))
+        | (ADV_EXT & BUNNY_AMULET_LV2 & 3_AMULET_FOOD & SLIDING_POWDER & WALL_JUMP)
+    ) & (
+        // From ledge below egg to flower ledge
+        AIR_DASH | AIR_JUMP | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE | ADV_VHARD
+    )
+",
+}
+
+{
+"edge": "RAVINE_ABOVE_CHOCOLATE -> RAVINE_CHOCOLATE",
+"prereq": "NONE",
+}
+
+{
+"edge": "RAVINE_CHOCOLATE -> RAVINE_ABOVE_CHOCOLATE",
+"prereq": "
     ((AIR_JUMP | WALL_JUMP_LV2) & (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
     | (AIR_JUMP & WALL_JUMP_LV2)
     | (AIR_JUMP & WALL_JUMP & AIR_DASH)
     | TM_CHOCOLATE
-)
 ",
 }
 
@@ -1195,15 +1208,27 @@ PROLOGUE_TRIGGER & (
     | WHIRL_BONK
     | (ADV_HARD & RABI_SLIPPERS & WALL_JUMP & AIR_DASH & (SLIDING_POWDER | SPEED5))
     | (ADV_VHARD & RABI_SLIPPERS & WALL_JUMP_LV2) // buffered wimpy
-    | (ADV_STUPID & (
+    | (ADV_EXT & (
         RABI_SLIPPERS // get dboost via falling potato
+        // slide bonk timing setup (casual): 4 max height jump for wait, slide jump
         | (SLIDING_POWDER & (SPEED2 | AIR_DASH)) // slide bonk, pacifist jump
+        | (WALL_JUMP_LV2 & AIR_DASH & AMULET_FOOD) // wj, qd, amulet, wj2, wj3. airdash
     ))
-	// 2-tile downdrill clip
-	| (OBS_VHARD & DOWNDRILL_SEMISOLID_CLIP)
+    // wall bufferd launch for getting x-velocity
+    // jump, wj, qd, amulet, ad to right side, wj2
+    | (ADV_STUPID & SPEED3 & WALL_JUMP & AIR_DASH & BUNNY_AMULET) 
 ",
 }
 
+{
+"edge": "RAVINE_LOWER -> RAVINE_ABOVE_CHOCOLATE",
+"prereq": "2TILE_DOWNDRILL_SEMISOLID_CLIP",
+}
+
+{
+"edge": "RAVINE_ABOVE_CHOCOLATE -> RAVINE_LOWER",
+"prereq": "NONE",
+}
 
 // Park and Sky Bridge
 {
