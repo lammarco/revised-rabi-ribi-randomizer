@@ -1,4 +1,4 @@
-from dataparser import KNOWLEDGE_INTERMEDIATE, KNOWLEDGE_ADVANCED, KNOWLEDGE_OBSCURE, DIFFICULTY_HARD, DIFFICULTY_V_HARD, DIFFICULTY_STUPID
+from dataparser import KNOWLEDGE_INTERMEDIATE, KNOWLEDGE_ADVANCED, KNOWLEDGE_OBSCURE, DIFFICULTY_HARD, DIFFICULTY_V_HARD, DIFFICULTY_EXTREME, DIFFICULTY_STUPID
 from utility import fail
 import statistics
 
@@ -19,6 +19,7 @@ DIFFICULTY_CONFIGS = [
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": False,
             "BLOCK_CLIPS_REQUIRED": False,
+            "BORING_TRICKS_REQUIRED": True,
             "POST_GAME_ALLOWED": False,
             "POST_IRISU_ALLOWED": False,
             "HALLOWEEN_REACHABLE": False,
@@ -32,6 +33,7 @@ DIFFICULTY_CONFIGS = [
             KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: False,
             DIFFICULTY_V_HARD: False,
+            DIFFICULTY_EXTREME: False,
             DIFFICULTY_STUPID: False,
         },
         score_multiplier_diff=0,
@@ -45,6 +47,7 @@ DIFFICULTY_CONFIGS = [
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": False,
             "BLOCK_CLIPS_REQUIRED": False,
+            "BORING_TRICKS_REQUIRED": True,
             "POST_GAME_ALLOWED": False,
             "POST_IRISU_ALLOWED": False,
             "HALLOWEEN_REACHABLE": False,
@@ -58,6 +61,7 @@ DIFFICULTY_CONFIGS = [
             KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: False,
+            DIFFICULTY_EXTREME: False,
             DIFFICULTY_STUPID: False,
         },
         score_multiplier_diff=0.1,
@@ -71,6 +75,7 @@ DIFFICULTY_CONFIGS = [
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": False,
             "BLOCK_CLIPS_REQUIRED": True,
+            "BORING_TRICKS_REQUIRED": True,
             "POST_GAME_ALLOWED": False,
             "POST_IRISU_ALLOWED": False,
             "HALLOWEEN_REACHABLE": False,
@@ -84,6 +89,7 @@ DIFFICULTY_CONFIGS = [
             KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: False,
+            DIFFICULTY_EXTREME: False,
             DIFFICULTY_STUPID: False,
         },
         score_multiplier_diff=0.0,
@@ -97,6 +103,7 @@ DIFFICULTY_CONFIGS = [
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": True,
             "BLOCK_CLIPS_REQUIRED": True,
+            "BORING_TRICKS_REQUIRED": True,
             "POST_GAME_ALLOWED": False,
             "POST_IRISU_ALLOWED": False,
             "HALLOWEEN_REACHABLE": False,
@@ -110,6 +117,7 @@ DIFFICULTY_CONFIGS = [
             KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: False,
+            DIFFICULTY_EXTREME: False,
             DIFFICULTY_STUPID: False,
         },
         score_multiplier_diff=0.3,
@@ -123,6 +131,7 @@ DIFFICULTY_CONFIGS = [
             "BUNSTRIKE_ZIP_REQUIRED": False,
             "SEMISOLID_CLIPS_REQUIRED": True,
             "BLOCK_CLIPS_REQUIRED": True,
+            "BORING_TRICKS_REQUIRED": True,
             "POST_GAME_ALLOWED": False,
             "POST_IRISU_ALLOWED": False,
             "HALLOWEEN_REACHABLE": False,
@@ -136,20 +145,49 @@ DIFFICULTY_CONFIGS = [
             KNOWLEDGE_OBSCURE: False,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: True,
+            DIFFICULTY_EXTREME: False,
             DIFFICULTY_STUPID: False,
         },
         score_multiplier_diff=0.45,
     ),
 
-
-    # Level 5 - STUPID and everything else.
+    # Level 5 - Extreme and Obscure tricks and bunstrike zip
     DifficultyConfig(
-        weight=0.5,
+        weight=0.2,
         config_flags = {
             "ZIP_REQUIRED": True,
             "BUNSTRIKE_ZIP_REQUIRED": True,
             "SEMISOLID_CLIPS_REQUIRED": True,
             "BLOCK_CLIPS_REQUIRED": True,
+            "BORING_TRICKS_REQUIRED": True,
+            "POST_GAME_ALLOWED": False,
+            "POST_IRISU_ALLOWED": False,
+            "HALLOWEEN_REACHABLE": False,
+            "PLURKWOOD_REACHABLE": True,
+            "WARP_DESTINATION_REACHABLE": False,
+            "DARKNESS_WITHOUT_LIGHT_ORB": True,
+            "UNDERWATER_WITHOUT_WATER_ORB": True,
+            "EVENT_WARPS_REQUIRED": True,
+            KNOWLEDGE_INTERMEDIATE: True,
+            KNOWLEDGE_ADVANCED: True,
+            KNOWLEDGE_OBSCURE: True,
+            DIFFICULTY_HARD: True,
+            DIFFICULTY_V_HARD: True,
+            DIFFICULTY_EXTREME: True,
+            DIFFICULTY_STUPID: False,
+        },
+        score_multiplier_diff=0.25,
+    ),
+
+    # Level 6 - STUPID and everything else.
+    DifficultyConfig(
+        weight=0.3,
+        config_flags = {
+            "ZIP_REQUIRED": True,
+            "BUNSTRIKE_ZIP_REQUIRED": True,
+            "SEMISOLID_CLIPS_REQUIRED": True,
+            "BLOCK_CLIPS_REQUIRED": True,
+            "BORING_TRICKS_REQUIRED": True,
             "POST_GAME_ALLOWED": True,
             "POST_IRISU_ALLOWED": True,
             "HALLOWEEN_REACHABLE": True,
@@ -163,9 +201,10 @@ DIFFICULTY_CONFIGS = [
             KNOWLEDGE_OBSCURE: True,
             DIFFICULTY_HARD: True,
             DIFFICULTY_V_HARD: True,
+            DIFFICULTY_EXTREME: True,
             DIFFICULTY_STUPID: True,
         },
-        score_multiplier_diff=0.7,
+        score_multiplier_diff=0.45,
     ),
 ]
 MAX_CONFIG_LEVEL = len(DIFFICULTY_CONFIGS)
@@ -237,7 +276,7 @@ class DifficultyAnalysis(object):
                 score += compute_average_goal_level(goals, levels)*score_multiplier
                 break
             #print_ln('  fail - levels: %d' % len(levels))
-            
+
             if config_level >= MAX_CONFIG_LEVEL-1: fail('Unable to reach goals at max config level')
             score += len(levels)/2 * score_multiplier
             score_multiplier += DIFFICULTY_CONFIGS[config_level+1].score_multiplier_diff

@@ -6,11 +6,13 @@ Knowledge levels:
     BASIC
     INTERMEDIATE
     ADVANCED
+    OBSCURE
 
 Difficulty levels:
     NORMAL
     HARD
     V_HARD
+    EXTREME
     STUPID
 """
 
@@ -19,6 +21,7 @@ KNOWLEDGE_ADVANCED = 'KNOWLEDGE_ADVANCED'
 KNOWLEDGE_OBSCURE = 'KNOWLEDGE_OBSCURE'
 DIFFICULTY_HARD = 'DIFFICULTY_HARD'
 DIFFICULTY_V_HARD = 'DIFFICULTY_V_HARD'
+DIFFICULTY_EXTREME = 'DIFFICULTY_EXTREME'
 DIFFICULTY_STUPID = 'DIFFICULTY_STUPID'
 OPEN_MODE = 'OPEN_MODE'
 
@@ -29,6 +32,7 @@ def define_config_flags():
         "BUNSTRIKE_ZIP_REQUIRED": False,
         "SEMISOLID_CLIPS_REQUIRED": False,
         "BLOCK_CLIPS_REQUIRED": True,
+        "BORING_TRICKS_REQUIRED": False,
         "POST_GAME_ALLOWED": True,
         "POST_IRISU_ALLOWED": True,
         "HALLOWEEN_REACHABLE": False,
@@ -51,6 +55,7 @@ def define_setting_flags(settings):
         KNOWLEDGE_OBSCURE: False,
         DIFFICULTY_HARD: False,
         DIFFICULTY_V_HARD: False,
+        DIFFICULTY_EXTREME: False,
         DIFFICULTY_STUPID: False,
         # Other Flags
         OPEN_MODE: settings.open_mode,
@@ -164,11 +169,13 @@ def define_default_expressions(variable_names_set):
         "OBSCURE": "KNOWLEDGE_OBSCURE",
         "HARD": "DIFFICULTY_HARD",
         "V_HARD": "DIFFICULTY_V_HARD",
+        "EXTREME": "DIFFICULTY_EXTREME",
         "STUPID": "DIFFICULTY_STUPID",
 
         "ZIP": "ZIP_REQUIRED",
         "SEMISOLID_CLIP": "SEMISOLID_CLIPS_REQUIRED",
         "BLOCK_CLIP": "BLOCK_CLIPS_REQUIRED",
+        "BORING": "BORING_TRICKS_REQUIRED",
         "POST_GAME": "POST_GAME_ALLOWED",
         "POST_IRISU": "POST_IRISU_ALLOWED",
         "HALLOWEEN": "HALLOWEEN_REACHABLE",
@@ -198,9 +205,11 @@ def define_default_expressions(variable_names_set):
         "ADV": "ADVANCED",
         "ADV_HARD": "ADVANCED & HARD",
         "ADV_VHARD": "ADVANCED & V_HARD",
+        "ADV_EXT": "ADVANCED & EXTREME",
         "ADV_STUPID": "ADVANCED & STUPID",
         "OBS": "OBSCURE",
         "OBS_VHARD": "OBSCURE & V_HARD",
+        "OBS_EXT": "OBSCURE & EXTREME",
         "OBS_STUPID": "OBSCURE & STUPID",
     })
     def1.update(def2)
@@ -544,21 +553,30 @@ def read_config(default_setting_flags, item_locations_set, shufflable_gift_items
     if difficulty == 'NORMAL':
         setting_flags[DIFFICULTY_HARD] = False
         setting_flags[DIFFICULTY_V_HARD] = False
+        setting_flags[DIFFICULTY_EXTREME] = False
         setting_flags[DIFFICULTY_STUPID] = False
     elif difficulty == 'HARD':
         setting_flags[DIFFICULTY_HARD] = True
         setting_flags[DIFFICULTY_V_HARD] = False
+        setting_flags[DIFFICULTY_EXTREME] = False
         setting_flags[DIFFICULTY_STUPID] = False
     elif difficulty == 'V_HARD':
         setting_flags[DIFFICULTY_HARD] = True
         setting_flags[DIFFICULTY_V_HARD] = True
+        setting_flags[DIFFICULTY_EXTREME] = False
+        setting_flags[DIFFICULTY_STUPID] = False
+    elif difficulty == 'EXTREME':
+        setting_flags[DIFFICULTY_HARD] = True
+        setting_flags[DIFFICULTY_V_HARD] = True
+        setting_flags[DIFFICULTY_EXTREME] = True
         setting_flags[DIFFICULTY_STUPID] = False
     elif difficulty == 'STUPID':
         setting_flags[DIFFICULTY_HARD] = True
         setting_flags[DIFFICULTY_V_HARD] = True
+        setting_flags[DIFFICULTY_EXTREME] = True
         setting_flags[DIFFICULTY_STUPID] = True
     else:
-        fail('Unknown difficulty level: %s. Either NORMAL, HARD, V_HARD or STUPID.' % difficulty)
+        fail('Unknown difficulty level: %s. Either NORMAL, HARD, V_HARD, EXTREME or STUPID.' % difficulty)
 
     if set(included_additional_items) - predefined_additional_items_set:
         fail('\n'.join([
