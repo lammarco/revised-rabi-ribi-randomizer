@@ -89,14 +89,25 @@ EXPLOSIVES_ENEMY & SLIDING_POWDER & PROLOGUE_TRIGGER & (
 "edge": "FOREST_EAST_ABOVE_SPRING -> FOREST_UPPER_EAST_EGG_LEDGE",
 "prereq": "
     (WALL_JUMP_LV2 & (AIR_JUMP | WHIRL_BONK_CANCEL))
+    | (SLIDE_JUMP_BUNSTRIKE_CANCEL & (
+        (AIR_JUMP & (RABI_SLIPPERS | WALL_JUMP_LV2 | OBS_VHARD))
+        | (ADV_HARD & RABI_SLIPPERS & WALL_JUMP_LV2 & AIR_DASH)
+    ))
     // whirl bonk, wimpy
     | (ADV_STUPID & WHIRL_BONK_CANCEL)
     // jump into hole to reset duck, then hammer roll bonk duck
     | (ADV_VHARD & HAMMER_ROLL & (
-        RABI_SLIPPERS
-        | AIR_JUMP
-        | (WALL_JUMP_LV2 & (AIR_DASH | OBS_STUPID))
+        AIR_JUMP
+        | (WALL_JUMP_LV2 & (AIR_DASH | OBS_EXT))
+        | (ADV_EXT & RABI_SLIPPERS)
     ))
+    // slide bonk duck for getting weird wave movement, slide jump, double airjump
+    // need lv -3 bunstrike for makes sliding 0 base damage
+    | (OBS_STUPID & rBUNNY_STRIKE & TOWN_SHOP & SLIDING_POWDER & (AIR_JUMP | WALL_JUMP_LV2))
+    // minimum requiments
+    // softlock potencial due to one hit ko the duck
+    // note: duck's lowest HP is 3
+    // | (OBS_STUPID & SLIDING_POWDER & AIR_JUMP)
 ",
 }
 
@@ -172,10 +183,10 @@ HAMMER_ROLL_ZIP | (
 "prereq": "
 ITM & (
     (AIR_JUMP & (RABI_SLIPPERS | (HARD & WALL_JUMP)))
-    | (WHIRL_BONK_CANCEL)
+    | WHIRL_BONK_CANCEL
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & (
         AIR_JUMP
-        | (WALL_JUMP_LV2 & (AIR_DASH | ADV_STUPID))
+        | (WALL_JUMP_LV2 & AIR_DASH)
     ))
     | (ADV_HARD & HAMMER_ROLL & (
         AIR_JUMP
@@ -184,15 +195,19 @@ ITM & (
         | (ADV_VHARD & AIR_DASH)
         //| OBS_STUPID // rollbonk, whirlbonk bee
     ))
-    | (ADV_STUPID & (
-        // slide bonk
-        (SLIDING_POWDER & (AIR_JUMP | RABI_SLIPPERS | WALL_JUMP))
+    // get bee into hole, slide bonk off bee, airjump
+    | (ADV_EXT & SLIDING_POWDER & (AIR_JUMP | WALL_JUMP_LV2))
+    // same as above, but required very precise positioning
+    | (ADV_STUPID & SLIDING_POWDER & (RABI_SLIPPERS | WALL_JUMP))
+    // misc stupid tricks
+    | (OBS_STUPID & (
+        // 5 tile wall jump from slope, amulet probably not needed
+        (RABI_SLIPPERS & WALL_JUMP_LV2 & AIR_DASH & SPEED5 & BUNNY_AMULET)
+        // bunstrike zip, amulet, wall jump, wall kick
+        | (BUNSTRIKE_ZIP & BUNNY_AMULET)
+        
         // 4 tile zip. amulet cancel needed for wall jump. consumables don't work.
         //| (SLIDE_ZIP & (AIR_JUMP | (BUNNY_AMULET & WALL_JUMP_LV2)))
-        // get bee into hole, airjump into hole and whirlbonk bee
-        | (WHIRL_BONK & AIR_JUMP)
-        // 5 tile wall jump from slope, amulet probably not needed
-        | (RABI_SLIPPERS & WALL_JUMP_LV2 & AIR_DASH & SPEED5 & BUNNY_AMULET)
     ))
 )
 ",
@@ -298,7 +313,7 @@ ITM & DARKNESS & (
 
 {
 "edge": "CAVE_ENTRANCE -> CAVE_COCOA",
-"prereq": "(KOTRI_1 & COCOA_1 & CHAPTER_1) | BUNSTRIKE_ZIP",
+"prereq": "(KOTRI_1 & COCOA_1 & CHAPTER_1) | BUNSTRIKE_ZIP | (OBS_STUPID & SLIDE_ZIP)",
 }
 
 {
@@ -414,11 +429,8 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "SPECTRAL_MID -> SPECTRAL_WEST_EGG_ROOM",
 "prereq": "PROLOGUE_TRIGGER & (
-    AIR_DASH & (
-        ITM_VHARD // launch off a 1 tile wall
-        | (SLIDING_POWDER & ITM_HARD) // slide jump into quickdrop airdash
-    )
-    | (ITM_HARD & AIR_DASH_LV3) // quickdrop airdash or launch off the lower wall
+    (ITM_VHARD & AMULET_FOOD) // launch off a 1 tile wall
+    | (ITM_HARD & AIR_DASH) // quickdrop airdash or launch off the lower wall
     | SLIDE_JUMP_BUNSTRIKE
     | AIR_JUMP
 )",
@@ -451,7 +463,10 @@ PROLOGUE_TRIGGER & (
 "edge": "SPECTRAL_WEST -> SPECTRAL_MID",
 "prereq": "
 PROLOGUE_TRIGGER & (
-    (ADV_STUPID & WHIRL_BONK & SPEED3 & (AMULET_FOOD | AIR_DASH))
+    (ADV_STUPID & WHIRL_BONK & (
+        (SPEED3 & (AMULET_FOOD | AIR_DASH))
+        | (OBSCURE & HAMMER_ROLL & (AMULET_FOOD | AIR_DASH | RABI_SLIPPERS))
+    ))
 )",
 }
 
