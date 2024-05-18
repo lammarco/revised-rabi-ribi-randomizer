@@ -1134,7 +1134,9 @@ PROLOGUE_TRIGGER & (
 "prereq": "(SLIDING_POWDER | PROLOGUE_TRIGGER) & (
         // going up the long chasm
         WALL_JUMP_LV2 & (AIR_JUMP | (ADV_VHARD & WHIRL_BONK_CANCEL))
-    )",
+        // bonk off the falling uprprc
+        | (OBS_STUPID & WHIRL_BONK & BUNNY_AMULET & (AIR_JUMP | RABI_SLIPPERS | WALL_JUMP))
+    )", 
 }
 
 {
@@ -1217,6 +1219,7 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "RAVINE_CHOCOLATE -> RAVINE_ABOVE_CHOCOLATE",
 "prereq": "
+    // Jumping up hole above chocolate arena
     ((AIR_JUMP | WALL_JUMP_LV2) & (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
     | (AIR_JUMP & WALL_JUMP_LV2)
     | (AIR_JUMP & WALL_JUMP & AIR_DASH)
@@ -1317,7 +1320,7 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "UPRPRC_LOWER -> UPRPRC_BASE",
 // reverse uprprc
-"prereq": "ADV_VHARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & AIR_JUMP & (RABI_SLIPPERS | OBS)",
+"prereq": "ADV_VHARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & AIR_JUMP & (RABI_SLIPPERS | OBS_VHARD)",
 }
 
 {
@@ -1734,9 +1737,10 @@ DARKNESS & (
 "edge": "PALACE_ATTACK_UP_TUNNEL -> PALACE_LEVEL_3",
 "prereq": "
     AIR_JUMP
-    | (WALL_JUMP_LV2 & (ITM_HARD | RABI_SLIPPERS))
+    | (WALL_JUMP_LV2 & (ITM_VHARD | RABI_SLIPPERS))
     | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & BUNNY_AMULET_LV2)
-    | (WHIRL_BONK_CANCEL)
+    | (WALL_JUMP & RABI_SLIPPERS & (SPEED1 | ADV_HARD))
+    | WHIRL_BONK_CANCEL
 ",
 }
 
@@ -1748,12 +1752,10 @@ DARKNESS & (
 {
 "edge": "PALACE_LEVEL_3 -> SNOWLAND_CHRISTMAS_TREE",
 "prereq": "
-    OBS_STUPID & SLIDE_ZIP & (
-        // burnout 4-tile zip, 4-tile zip, quick drop
-        RABI_SLIPPERS
-        // strike zip from egg spot, zip from oob room, quick drop
-        | BUNSTRIKE_ZIP
-    )",
+    // burnout 4-tile zip, 4-tile zip, quick drop
+    (OBS_STUPID & SLIDE_ZIP & RABI_SLIPPERS)
+    // strike zip from egg spot, zip from oob room, quick drop
+    | (OBS_VHARD & BUNSTRIKE_ZIP)",
 }
 
 {
@@ -2038,7 +2040,7 @@ DARKNESS & (
     | (AIR_JUMP & (ITM_HARD | RABI_SLIPPERS))
     | (AIR_DASH & RABI_SLIPPERS)
     | WHIRL_BONK
-    | (ADV_VHARD & WALL_JUMP & BUNNY_AMULET & AIR_DASH)
+    | (ADV_VHARD & WALL_JUMP & AIR_DASH & (BUNNY_AMULET | OBSCURE))
     | (ADV_VHARD & RABI_SLIPPERS) // damage boost off spider bullets
     // wall jump, damage boost, wall kick, amulet or air dash
     | (ADV_EXT & (AMULET_FOOD | AIR_DASH))
@@ -2309,10 +2311,10 @@ DARKNESS & (
     (WALL_JUMP_LV2 & (
         AIR_JUMP
         | (ADV_VHARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & (AIR_DASH | RABI_SLIPPERS | SPEED5 | (STUPID & SPEED3)))
-        | (ADV_HARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & (AIR_DASH & RABI_SLIPPERS))
+        | (ADV_HARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & AIR_DASH & RABI_SLIPPERS)
     ))
     | (ITM_HARD & AIR_JUMP & (
-        ((RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL) & (SPEED3 | AIR_DASH))
+        ((RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL) & (SPEED3 | AIR_DASH | V_HARD))
         | ((RABI_SLIPPERS | OBS_VHARD) & SLIDE_JUMP_BUNSTRIKE_CANCEL)
     ))
 ",

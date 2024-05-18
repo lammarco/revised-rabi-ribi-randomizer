@@ -897,7 +897,7 @@
 {
 "item": "PACK_UP_ICY_SUMMIT",
 "from_location": "ICY_SUMMIT_UPPER",
-"entry_prereq": "AIR_JUMP | AIR_DASH | (WHIRL_BONK & ADV_VHARD)",
+"entry_prereq": "AIR_JUMP | AIR_DASH | (WHIRL_BONK & ADV_VHARD) | (ADV_EXT & MANY_AMULET_FOOD)", // 3 amulets, wall kick, amulet
 "exit_prereq": "NONE",
 }
 
@@ -1051,7 +1051,11 @@
     // slide zip from bomb block slide tunnel in room to the left
     | SLIDE_ZIP
 ",
-"exit_prereq": "BUNNY_WHIRL | (CARROT_SHOOTER_ENTRY & BOOST & ADV_HARD) | DOWNDRILL_SEMISOLID_CLIP",
+"exit_prereq": "
+    BUNNY_WHIRL
+    | (CARROT_SHOOTER_ENTRY & BOOST & ADV_HARD)
+    | DOWNDRILL_SEMISOLID_CLIP
+",
 }
 
 {
@@ -1352,7 +1356,7 @@
 {
 "item": "CYBER_FLOWER",
 "from_location": "SYSINT2_END",
-"entry_prereq": "POST_GAME",
+"entry_prereq": "NONE",
 "exit_prereq": "NONE",
 }
 
@@ -1693,8 +1697,8 @@
         (RABI_SLIPPERS & AMULET_FOOD)
         | SLIDING_POWDER // slide bonk off stone
     ))
-    | (ADV_STUPID & WALL_JUMP & BUNNY_AMULET & 2_AMULET_FOOD)
-    | (ADV_STUPID & SPEED2 & 3_AMULET_FOOD)
+    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
+    | (ADV_STUPID & MANY_AMULET_FOOD)
 ",
 "exit_prereq": "NONE",
 }
@@ -1757,8 +1761,8 @@
 
 {
 "item": "EGG_AQUARIUM",
-"from_location": "AQUARIUM_WEST",
-"entry_prereq": "DARKNESS | SLIDING_POWDER",
+"from_location": "AQUARIUM_EAST",
+"entry_prereq": "NONE",
 "exit_prereq": "NONE",
 }
 

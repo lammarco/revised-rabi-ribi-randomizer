@@ -131,7 +131,12 @@
 "changes": [
     {
     "edge": "SNOWLAND_WEST -> PALACE_WARP_LEVEL_1_2",
-    "prereq": "AIR_JUMP & WALL_JUMP_LV2 & (ITM_HARD | RABI_SLIPPERS)",
+    "prereq": "
+        (AIR_JUMP & WALL_JUMP_LV2 & (ITM_HARD | RABI_SLIPPERS))
+        // needs turn off v1.08 hammer roll
+        // slide jump, airjump, bunstrike, amulet, wall jumps
+        | (OBS_STUPID & AIR_JUMP & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+    ",
     }
 ]}
 
