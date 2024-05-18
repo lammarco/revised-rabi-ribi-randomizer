@@ -1525,7 +1525,7 @@
 {
 "item": "EGG_HALLOWEEN_LEFT_PILLAR",
 "from_location": "HALLOWEEN_EXIT",
-"entry_prereq": "AIR_JUMP | RABI_SLIPPERS | SLIDING_POWDER | BUNNY_WHIRL",
+"entry_prereq": "AIR_JUMP | RABI_SLIPPERS | SLIDING_POWDER | BUNNY_WHIRL | ADV_VHARD",
 "exit_prereq": "NONE",
 }
 
@@ -1557,19 +1557,28 @@
 "item": "EGG_HALLOWEEN_PAST_PILLARS2",
 "from_location": "HALLOWEEN_PAST_PILLARS",
 "entry_prereq": "
-        (BUNNY_WHIRL & AIR_DASH_LV3 & (ADV_VHARD | AIR_JUMP))
-        | (BUNNY_WHIRL & AIR_JUMP & WALL_JUMP_LV2 & ADV)
+    BUNNY_WHIRL & (
+        (AIR_DASH_LV3 & (ADV_VHARD | AIR_JUMP))
+        | (ITM_HARD & BUNNY_STRIKE & AIR_JUMP)
+        | (AIR_JUMP & WALL_JUMP_LV2 & ADV_VHARD)
+    )
 ",
 "exit_prereq": "
-        (BUNNY_WHIRL & AIR_DASH_LV3 & (ADV_VHARD | AIR_JUMP))
-        | (BUNNY_WHIRL & AIR_JUMP & WALL_JUMP_LV2 & ADV)
+    (BUNNY_WHIRL | EXPLOSIVES) & (
+        (AIR_DASH_LV3 & (ADV_VHARD | AIR_JUMP))
+        | (ITM_HARD & BUNNY_STRIKE & AIR_JUMP)
+        | (AIR_JUMP & WALL_JUMP_LV2 & ADV_VHARD)
+    )
 ",
 "alternate_entries": {
     "HALLOWEEN_PUMPKIN_HALL": "
-// Bunstrike out of a tunnel jump zip then either
-// amulet climb the right wall or use precise wall kicks to reach the egg
-        ADV_STUPID & SLIDE_ZIP & EXPLOSIVES_ENEMY & BUNNY_AMULET_LV2 &
-        BUNNY_STRIKE & AIR_JUMP & WALL_JUMP_LV2 & AIR_DASH
+        // Bunstrike out of a tunnel jump zip then either
+        ADV_STUPID & SLIDE_ZIP & EXPLOSIVES_ENEMY & (
+            // amulet climb the right wall or use precise wall kicks to reach the egg
+            (BUNNY_AMULET & BUNNY_STRIKE & AIR_JUMP & WALL_JUMP & AIR_DASH)
+            // double airjump
+            | (OBS_STUPID & SLIDE_JUMP_BUNSTRIKE & AIR_JUMP)
+        )
     ",
     },
 "alternate_exits": {
@@ -1580,7 +1589,7 @@
 {
 "item": "EGG_HALLOWEEN_RIGHT_PILLAR",
 "from_location": "HALLOWEEN_EXIT",
-"entry_prereq": "AIR_JUMP | RABI_SLIPPERS | SLIDING_POWDER | BUNNY_WHIRL",
+"entry_prereq": "AIR_JUMP | RABI_SLIPPERS | SLIDING_POWDER | BUNNY_WHIRL | ADV_VHARD",
 "exit_prereq": "NONE",
 }
 
@@ -1597,9 +1606,9 @@
 "entry_prereq": "
     WHIRL_BONK
     | (AIR_JUMP & (AIR_DASH | ADV_STUPID))
-    | (ADV_STUPID & AIR_DASH & WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & (
-        SLIDE_JUMP_BUNSTRIKE_CANCEL
-        | (RABI_SLIPPERS & SLIDING_POWDER)
+    | (ADV_EXT & AIR_DASH & SLIDING_POWDER & (
+        (RABI_SLIPPERS & WALL_JUMP & BUNNY_AMULET)
+        | (WALL_JUMP_LV2 & BUNNY_AMULET_LV2)
         // probably speed something
     ) )
 ",
@@ -1618,13 +1627,13 @@
 "from_location": "HALLOWEEN_DARK_SHAFT",
 "entry_prereq": "
     //SLIDING_POWDER & DARKNESS & (FIRE_ORB | (ADV_HARD & RIBBON)) &
-    SLIDING_POWDER & DARKNESS & (FIRE_ORB | ADV_HARD) &
-    (BUNNY_WHIRL | (
-        CARROT_SHOOTER
-        & BOOST_MANY
-        & (CARROT_BOMB | PIKO_HAMMER)
-        & ADV_STUPID
-    ))
+    SLIDING_POWDER & DARKNESS & (FIRE_ORB | ADV_HARD) & (
+        BUNNY_WHIRL
+        // many boosts method
+        // step 1: break lower bomb blocks (2 boosts)
+        // step 2: break upper bomb blocks from the slide tunnel (4 boosts)
+        | (ADV_STUPID & BOOST_MANY & CARROT_SHOOTER)
+    )
 ",
 "exit_prereq": "SLIDING_POWDER | HAMMER_ROLL_ZIP",
 }
