@@ -2105,7 +2105,7 @@ DARKNESS & (
 {
 "edge": "EVERNIGHT_CORRIDOR_BELOW_SAYA -> EVERNIGHT_SAYA",
 "prereq": "
-    FIRE_ORB
+    (ITM & FIRE_ORB)
     | (WHIRL_BONK_CANCEL & (ADV_VHARD | WALL_JUMP_LV2))
     | (AIR_JUMP & (WALL_JUMP_LV2 | (WHIRL_BONK & ADV_HARD)))
     | (ITM_HARD & HAMMER_ROLL & (
@@ -2133,7 +2133,7 @@ DARKNESS & (
 {
 "edge": "EVERNIGHT_EAST_OF_WARP -> EVERNIGHT_CORRIDOR_BELOW_SAYA",
 "prereq": "
-    (FIRE_ORB & (
+    (ITM & FIRE_ORB & (
         RABI_SLIPPERS
         | AIR_JUMP
         | (ITM_HARD & (SLIDING_POWDER | AIR_DASH | SPEED1))
@@ -2163,11 +2163,12 @@ DARKNESS & (
 
 {
 "edge": "EVERNIGHT_LOWER -> EVERNIGHT_EAST_OF_WARP",
-"prereq": "
-    (AIR_JUMP & (ADV_VHARD | AIR_DASH | (ITM & SLIDING_POWDER)))
-    | (AIR_DASH_LV3 & AMULET_FOOD & ADV_HARD)
-    | (AIR_DASH & AMULET_FOOD & ADV_STUPID) // buffered wimpy, bounce, amulet
-    | (WALL_JUMP_LV2 & MANY_AMULET_FOOD & ADV_STUPID) // buffered wimpy, amulet, wall kick, amulet, wall kick2, amulet
+"prereq": "ITM & (
+        (AIR_JUMP & (ADV_VHARD | AIR_DASH | SLIDING_POWDER | (ITM_HARD & SPEED3)))
+        | (AIR_DASH_LV3 & AMULET_FOOD & ADV_HARD)
+        | (AIR_DASH & AMULET_FOOD & ADV_EXT) // buffered wimpy, bounce, amulet
+        | (WALL_JUMP_LV2 & MANY_AMULET_FOOD & ADV_STUPID) // buffered wimpy, wall kick, amulet, wall kick2, amulet
+    )
 ",
 }
 
@@ -2183,7 +2184,7 @@ DARKNESS & (
 
 {
 "edge": "EVERNIGHT_WARP -> EVERNIGHT_EAST_OF_WARP",
-"prereq": "FIRE_ORB | (
+"prereq": "(ITM & FIRE_ORB) | (
     (SLIDING_POWDER | HAMMER_ROLL_ZIP) & (
         // Methods to get up on the ledge
         RABI_SLIPPERS | AIR_JUMP | AIR_DASH | SLIDE_JUMP_BUNSTRIKE
@@ -2199,7 +2200,7 @@ DARKNESS & (
 
 {
 "edge": "EVERNIGHT_EAST_OF_WARP -> EVERNIGHT_WARP",
-"prereq": "SLIDING_POWDER | FIRE_ORB",
+"prereq": "SLIDING_POWDER | (ITM & FIRE_ORB)",
 }
 
 {

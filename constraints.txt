@@ -264,13 +264,14 @@
 
 "alternate_entries": {
     "SPECTRAL_CICINI_LEDGE": "
-        AIR_JUMP
-        | SLIDE_JUMP_BUNSTRIKE_CANCEL
-        | (ITM_HARD & (WALL_JUMP_LV2 | AIR_DASH))
-        | (RABI_SLIPPERS & (ADV_VHARD | (ADV_HARD & SPEED3)))
-        | (ADV_VHARD & PROLOGUE_TRIGGER & SLIDING_POWDER & BUNNY_AMULET)
-        | (ADV_STUPID & PROLOGUE_TRIGGER & SPEED3)
-        ",
+        ITM & (
+            AIR_JUMP
+            | SLIDE_JUMP_BUNSTRIKE_CANCEL
+            | (ITM_HARD & (WALL_JUMP_LV2 | AIR_DASH))
+            | (RABI_SLIPPERS & (ADV_VHARD | (ADV_HARD & SPEED3)))
+            | (ADV_VHARD & PROLOGUE_TRIGGER & SLIDING_POWDER & BUNNY_AMULET)
+            | (ADV_STUPID & PROLOGUE_TRIGGER & SPEED3)
+        )",
     },
 }
 
@@ -1444,7 +1445,8 @@
 "exit_prereq": "NONE",
 
 "alternate_entries": {
-    "SPECTRAL_CICINI_LEDGE": "SLIDING_POWDER & (
+    "SPECTRAL_CICINI_LEDGE": "
+        ITM & SLIDING_POWDER & (
             AIR_JUMP
             | SLIDE_JUMP_BUNSTRIKE_CANCEL
             | (ITM_HARD & (WALL_JUMP_LV2 | AIR_DASH))
