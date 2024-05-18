@@ -275,6 +275,10 @@ def apply_post_game_fixes(areaid, data):
 
     # sysint2
     if areaid == 9:
+        # entrance
+        data.tiledata_event[xy_to_index(197, 73)] = 0
+        data.tiledata_event[xy_to_index(197, 74)] = 0
+
         # before the egg room
         data.tiledata_event[xy_to_index(150, 156)] = 0
         data.tiledata_event[xy_to_index(150, 157)] = 0
