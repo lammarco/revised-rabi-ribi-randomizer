@@ -1259,14 +1259,14 @@
 {
 "item": "RIBBON_BADGE",
 "from_location": "TOWN_MAIN",
-"entry_prereq": "POST_IRISU & SLIDING_POWDER",
+"entry_prereq": "POST_IRISU & TM_IRISU & SLIDING_POWDER",
 "exit_prereq": "NONE",
 }
 
 {
 "item": "ERINA_BADGE",
 "from_location": "TOWN_MAIN",
-"entry_prereq": "POST_IRISU & SLIDING_POWDER",
+"entry_prereq": "POST_IRISU & TM_IRISU & SLIDING_POWDER",
 "exit_prereq": "NONE",
 }
 

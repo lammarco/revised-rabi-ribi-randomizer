@@ -100,6 +100,7 @@ def define_pseudo_items():
         "TM_KEKE_BUNNY": "BOSS_KEKE_BUNNY & PLURKWOOD_MAIN & TOWN_MAIN",
         "TM_MIRIAM": "HALL_OF_MEMORIES",
         "TM_RUMI": "FORGOTTEN_CAVE_2",
+        "TM_IRISU": "WARP_DESTINATION_HOSPITAL & CHAPTER_5 & 15TM & TM_MIRIAM & TM_RUMI & LIBRARY_IRISU",
 
         "2TM": lambda v: count_town_members(v) >= 2,
         "3TM": lambda v: count_town_members(v) >= 3,
