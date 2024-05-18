@@ -131,11 +131,10 @@ HAMMER_ROLL_ZIP | (
         | AIR_DASH
         | WHIRL_BONK
         // 2 tile zip
-        | (SLIDE_ZIP & ADV_VHARD & WALL_JUMP)
-        | (SLIDE_ZIP & ADV_VHARD & AMULET_FOOD)
+        | (SLIDE_ZIP & ADV_VHARD & (WALL_JUMP | AMULET_FOOD))
         // slide bonk
-        | ADV_STUPID
-        )
+        | ADV_EXT
+    )
 )",
 }
 
@@ -342,7 +341,7 @@ ITM & DARKNESS & (
     (AIR_JUMP & (RABI_SLIPPERS | AIR_DASH | ITM_HARD))
     | (BUNNY_STRIKE & ITM_HARD)
     | AIR_DASH_LV3
-    | (ADV_STUPID & AIR_DASH & AMULET_FOOD) // wimpy, airdash, bounce, amulet
+    | (ADV_EXT & AIR_DASH & AMULET_FOOD) // wimpy, airdash, bounce, amulet
     | WHIRL_BONK
 ",
 }
@@ -402,14 +401,13 @@ PROLOGUE_TRIGGER & (
         AIR_DASH
         | (SPEED5 & ADV_HARD)
         | (BUNNY_STRIKE & ITM_HARD)
-        | ADV_STUPID
-        | OBS_VHARD
+        | ADV_EXT
     ))
     | (AIR_DASH_LV3 & ADV_VHARD) // buffered wall launch
     | (BUNNY_STRIKE & RABI_SLIPPERS & AIR_DASH & ADV_VHARD)
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS & AIR_DASH_LV3)
-    | (SLIDE_JUMP_BUNSTRIKE & BUNNY_AMULET & ADV_STUPID)
-    | (RABI_SLIPPERS & AIR_DASH & BUNNY_AMULET & 2_AMULET_FOOD & ADV_STUPID) // buffered wimpy, airdash, amulet, bounce, amulet
+    | (SLIDE_JUMP_BUNSTRIKE & ADV_EXT)
+    | (RABI_SLIPPERS & AIR_DASH & AMULET_FOOD & ADV_STUPID) // buffered wimpy, airdash, bounce, amulet
 )",
 }
 
@@ -440,8 +438,12 @@ PROLOGUE_TRIGGER & (
     | (ADV_HARD & HAMMER_ROLL)
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS)
     | (ADV_STUPID & SLIDING_POWDER) // slide bonk off bunny and wallkick up the hole
-    // wall jump, dboost blue mage uprprc bullets, wall kick, amulet, wall kick2, air dash
-    | (ADV_STUPID & AIR_DASH_LV3 & (RABI_SLIPPERS | (WALL_JUMP_LV2 & BUNNY_AMULET)))
+    | (ADV_EXT & (
+        // wall jump, dboost blue mage uprprc bullets, wall kick, (amulet, wall kick2), air dash
+        (AIR_DASH_LV3 & (RABI_SLIPPERS | (WALL_JUMP_LV2 & BUNNY_AMULET)))
+        // wall jump. dboost, wall jump2, air dash to the right ledge, launch, air dash
+        | (AIR_DASH & WALL_JUMP)
+    ))
 ",
 }
 
@@ -1125,9 +1127,14 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "RAVINE_UPPER_EAST -> RAVINE_NORTH_ATTACK_UP_ROOM",
 "prereq": "
-// Jumping up the chasm
-(ADV_VHARD & WALL_JUMP_LV2 & AIR_JUMP & (SLIDING_POWDER | SPEED5 | (SPEED2 & STUPID)))
-| (ADV_STUPID & SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS & (WALL_JUMP_LV2 | (WALL_JUMP & AIR_JUMP)))
+    // Jumping up the chasm
+    // speed5: normal jump
+    // speed2: quick drop jump
+    // speed0: quick drop air jump from the right side wall, quick drop, jump
+    (ADV_VHARD & WALL_JUMP_LV2 & AIR_JUMP & (SLIDING_POWDER | SPEED5 | (SPEED2 & EXTREME) | (OBS_EXT)))
+    | (ADV_EXT & SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS & (WALL_JUMP_LV2 | (WALL_JUMP & AIR_JUMP)))
+    // double airjump
+    | (OBS_EXT & SLIDE_JUMP_BUNSTRIKE_CANCEL & AIR_JUMP)
 ",
 }
 
@@ -1322,11 +1329,12 @@ PROLOGUE_TRIGGER & (
 DARKNESS & (
     EXPLOSIVES_ENEMY
     | (ADV_HARD & HAMMER_ROLL & AIR_JUMP)
-    | (ADV_VHARD & AIR_JUMP & WALL_JUMP_LV2)
-    | (ADV_STUPID & (
-        WHIRL_BONK_CANCEL // whirl bonk off falling card soldier
-        | (AIR_JUMP & SLIDE_JUMP_BUNSTRIKE_CANCEL)
-    ))
+    | (ADV_HARD & AIR_JUMP & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+    | (OBS_VHARD & AIR_JUMP & WALL_JUMP_LV2)
+    // slide bonk
+    | (ADV_EXT & SLIDING_POWDER & ((OBSCURE & WALL_JUMP_LV2) | AIR_JUMP))
+    // whirl bonk off falling card soldier
+    | (ADV_STUPID & WHIRL_BONK_CANCEL)
 )
 ",
 }
@@ -1364,8 +1372,8 @@ DARKNESS & (
         | ((ADV_HARD | (ITM_HARD & BUNNY_AMULET)) & (
             SLIDING_POWDER
             | HAMMER_ROLL_ZIP
-            | (ADV_VHARD & (RABI_SLIPPERS & AMULET_FOOD))
-            | (ADV_STUPID & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
+            | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
+            | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
         ))
 ",
 }
@@ -1407,8 +1415,8 @@ DARKNESS & (
         | AIR_JUMP
         | SLIDING_POWDER
         | HAMMER_ROLL_ZIP
-        | (ADV_VHARD & (RABI_SLIPPERS & AMULET_FOOD))
-        | (ADV_STUPID & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
+        | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
+        | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
 ",
 }
 
@@ -1524,9 +1532,13 @@ DARKNESS & (
     (ITM & AIR_JUMP & AIR_DASH)
     | (AIR_JUMP & SLIDE_JUMP_BUNSTRIKE_CANCEL)
     | (WHIRL_BONK & (ADV_VHARD | AIR_JUMP))
-    | (ADV_STUPID & (
-        (SLIDE_JUMP_BUNSTRIKE_CANCEL & BUNNY_AMULET_LV2 & WALL_JUMP & AIR_DASH)
+    | (ADV_EXT & (
+        (SLIDE_JUMP_BUNSTRIKE_CANCEL & WALL_JUMP & AIR_DASH & (BUNNY_AMULET_LV2 | (BUNNY_AMULET & OBSCURE)))
         | (AIR_JUMP & SLIDING_POWDER & BUNNY_AMULET)
+    ))
+    | (ADV_STUPID & AIR_JUMP & (
+        (WALL_JUMP & BUNNY_AMULET_LV2)
+        | (SPEED5 & BUNNY_AMULET_LV3)
     ))
 ",
 }
@@ -1548,7 +1560,12 @@ DARKNESS & (
 
 {
 "edge": "ICY_SUMMIT_MAIN -> SNOWLAND_EAST",
-"prereq": "OBS_STUPID & PIKO_HAMMER_LEVELED & SLIDE_ZIP", // down drill for get slide into missing collision tunnel, slide tunnel zip
+"prereq": "
+    // down drill for get slide into missing collision tunnel, slide tunnel zip
+    (OBS_EXT & PIKO_HAMMER_LEVELED & SLIDE_ZIP)
+    // burnout zip from the warp stone room
+    | (OBS_STUPID & SLIDE_ZIP)
+",
 }
 
 {
@@ -1569,27 +1586,27 @@ DARKNESS & (
     (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
     | (AIR_DASH & (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL | (ADV_VHARD & WALL_JUMP & BUNNY_AMULET)))
     | WHIRL_BONK
-    | (ADV_STUPID & WALL_JUMP_LV2 & BUNNY_AMULET_LV3) // amulet climb
-    | (ADV_STUPID & SLIDING_POWDER) // slide bonk
-
+    | (ADV_EXT & WALL_JUMP_LV2 & BUNNY_AMULET_LV3) // amulet climb
+    | (ADV_EXT & SLIDING_POWDER) // slide bonk
+      
     ) & ( // Part 2: Actual reverse nixie
-
+    
     (AIR_JUMP & (
         ((RABI_SLIPPERS | (SLIDE_JUMP_BUNSTRIKE_CANCEL & ADV_VHARD)) & AIR_DASH)
         | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & ADV_VHARD)
-        | (WALL_JUMP_LV2)
+        | WALL_JUMP_LV2
         | (ADV_HARD & HAMMER_ROLL)
-        | (ADV_STUPID & (RABI_SLIPPERS | SLIDING_POWDER)) // damage boost + maybe slide bonk
+        | (ADV_EXT & (RABI_SLIPPERS | SLIDING_POWDER)) // damage boost / slide bonk
     ))
     | (WALL_JUMP_LV2 & (
 		(ADV_HARD & RABI_SLIPPERS)
 		| (ADV_VHARD & HAMMER_ROLL)
-        | (ADV_STUPID & SLIDING_POWDER)
+        | (ADV_EXT & SLIDING_POWDER)
     ))
     | WHIRL_BONK_CANCEL
     | (ADV_VHARD & RABI_SLIPPERS & HAMMER_ROLL & AIR_DASH) // roll bonk, air dash, wall jump, wall kick
     | (ADV_STUPID & WHIRL_BONK) // bonk a falling uprprc
-
+    
     )",
 }
 
@@ -1637,13 +1654,15 @@ DARKNESS & (
 "edge": "PALACE_WARP_LEVEL_1_2 -> PALACE_ATTACK_UP_TUNNEL",
 "prereq": "
     AIR_JUMP
-    | (WALL_JUMP_LV2 & (ITM_HARD | RABI_SLIPPERS))
-    | ((RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL) & AIR_DASH)
+    | (WALL_JUMP_LV2 & (ITM_VHARD | RABI_SLIPPERS))
     | (ADV_HARD & WHIRL_BONK)
     | (ADV_VHARD & SLIDING_POWDER) // bonk cyan five floating swords
-    | (ADV_STUPID & (
-        (SPEED2 & AIR_DASH_LV3)
-        | (AIR_DASH & BUNNY_AMULET)
+    | (ADV_EXT & WALL_JUMP & RABI_SLIPPERS) // land on edge of the block for dodge the cat
+    | (AIR_DASH & (
+        (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL)
+        | (ITM_VHARD & WALL_JUMP)
+        | (ADV_EXT & BUNNY_AMULET)
+        | ADV_STUPID // 3-width 8-tile wall jump + air dash
     ))
     ",
 }
@@ -1792,7 +1811,7 @@ DARKNESS & (
         | (WALL_JUMP_LV2 & AIR_JUMP)
         | (WALL_JUMP_LV2 & WHIRL_BONK_CANCEL)
         | (WHIRL_BONK_CANCEL & AIR_JUMP & RABI_SLIPPERS & ADV_HARD)
-        | (WHIRL_BONK_CANCEL & ADV_STUPID)
+        | (WHIRL_BONK_CANCEL & ADV_EXT)
     )
 ",
 }
@@ -1803,7 +1822,7 @@ DARKNESS & (
     DARKNESS & WATER_ORB & (
         WALL_JUMP_LV2
         | (RABI_SLIPPERS & ITM_HARD & (
-            AIR_DASH_LV3 | WALL_JUMP | ADV_STUPID
+            AIR_DASH_LV3 | WALL_JUMP | ADV_EXT
         ))
         | (AIR_JUMP & (
             WALL_JUMP
@@ -1813,7 +1832,7 @@ DARKNESS & (
             // aj, rwj, qd, amulet, wk
             | (ADV_HARD & AMULET_FOOD)
             // wimpy, bounce
-            | ADV_STUPID
+            | ADV_EXT
         ))
     )
 ",
@@ -1851,7 +1870,7 @@ DARKNESS & (
 
 {
 "edge": "AQUARIUM_BOMB_WALLED_AREA -> AQUARIUM_BEACH_ENTRANCE",
-"prereq": "EXPLOSIVES | (ADV_STUPID & SLIDE_ZIP)",
+"prereq": "EXPLOSIVES | (OBS_STUPID & SLIDE_ZIP)",
 }
 
 {
@@ -1965,7 +1984,7 @@ DARKNESS & (
     | (ADV_VHARD & WALL_JUMP & BUNNY_AMULET & AIR_DASH)
     | (ADV_VHARD & RABI_SLIPPERS) // damage boost off spider bullets
     // wall jump, damage boost, wall kick, amulet or air dash
-    | (ADV_STUPID & (AMULET_FOOD | AIR_DASH))
+    | (ADV_EXT & (AMULET_FOOD | AIR_DASH))
 ",
 }
 
@@ -1977,7 +1996,7 @@ DARKNESS & (
     | AIR_JUMP
     | WHIRL_BONK
     | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-    | (ADV_STUPID & AMULET_FOOD) // damage boost off jumping pig
+    | OBS_EXT // damage boost blue uprprc bullets
 ",
 }
 
@@ -2054,7 +2073,7 @@ DARKNESS & (
     | WHIRL_BONK
     | (SLIDING_POWDER & (ITM_HARD | RABI_SLIPPERS))
     | (ADV_VHARD & AMULET_FOOD)
-    | (ADV_STUPID & RABI_SLIPPERS & SPEED5)
+    //| (ADV_STUPID & RABI_SLIPPERS & SPEED5)
 ",
 }
 
@@ -2096,14 +2115,13 @@ DARKNESS & (
     ))
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & (
         (RABI_SLIPPERS & WALL_JUMP_LV2)
-        | (RABI_SLIPPERS & AIR_JUMP & (WALL_JUMP | SPEED1))
-        | (OBS_VHARD & AIR_JUMP)
+        | (AIR_JUMP & (RABI_SLIPPERS | OBS_VHARD))
     ))
-    | (ADV_STUPID & (
+    | (ADV_EXT & (
         (WHIRL_BONK & (RABI_SLIPPERS | SLIDING_POWDER)) // reverse wall jump and whirlbonk fairy
         | (SLIDING_POWDER & AIR_JUMP)
-        | (SLIDING_POWDER & WALL_JUMP_LV2 & (PIKO_HAMMER | CARROT_BOMB))
     ))
+    | (OBS_EXT & SLIDING_POWDER & WALL_JUMP_LV2 & (PIKO_HAMMER | CARROT_BOMB))
 ",
 }
 
@@ -2120,20 +2138,20 @@ DARKNESS & (
         | AIR_JUMP
         | (ITM_HARD & (SLIDING_POWDER | AIR_DASH | SPEED1))
         | (V_HARD & WHIRL_BONK)
-        | ADV_STUPID
+        | ADV_EXT
     ))
     | (AIR_JUMP & (
         RABI_SLIPPERS
         | SLIDE_JUMP_BUNSTRIKE_CANCEL
         | (ITM_HARD & HAMMER_ROLL)
         | (ADV_VHARD & AIR_DASH_LV3)  // airdash from step
-        | (ADV_STUPID & SLIDING_POWDER) // slide bonk off bunny
+        | (ADV_VHARD & BORING & SLIDING_POWDER) // slide bonk off bunny
     ))
     | WHIRL_BONK_CANCEL
     | (ADV_STUPID & HAMMER_ROLL)
     | (ADV_VHARD & WALL_JUMP_LV2 & (
-        (SLIDING_POWDER & (RABI_SLIPPERS | STUPID))
-        | ((SPEED5 | STUPID) & (RABI_SLIPPERS | AIR_JUMP))
+        (SLIDING_POWDER & (RABI_SLIPPERS | ADV_STUPID))
+        | ((SPEED5 | ADV_EXT) & (RABI_SLIPPERS | AIR_JUMP))
     ))
 ",
 }

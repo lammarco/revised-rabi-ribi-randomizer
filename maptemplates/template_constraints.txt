@@ -667,8 +667,8 @@
             | WHIRL_BONK
             | (SLIDING_POWDER & (ITM_HARD | RABI_SLIPPERS))
             // stupid hover launch tricks
-            | (ADV_STUPID & BUNNY_AMULET & (
-                (RABI_SLIPPERS & SPEED2)
+            | (ADV_EXT & BUNNY_AMULET & (
+                (RABI_SLIPPERS & SPEED1)
                 | (RABI_SLIPPERS & 2_AMULET_FOOD)
                 | (SPEED2 & 2_AMULET_FOOD)
                 | 3_AMULET_FOOD
@@ -761,7 +761,7 @@
     "prereq": "
         AIR_JUMP | AIR_DASH | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
         | (ADV_VHARD & RABI_SLIPPERS) // need bunny amulet
-        | (ADV_STUPID & 2_AMULET_FOOD & (WALL_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL))
+        | (ADV_EXT & 2_AMULET_FOOD & (WALL_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL))
         ",
     }
 ]}
@@ -792,7 +792,7 @@
             SLIDING_POWDER | AIR_JUMP | AIR_DASH | WHIRL_BONK
             | (SPEED5 & ADV_HARD)
             | (SPEED3 & ADV_VHARD) // quick drop jump
-            | (ADV_STUPID & BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
         )
         ",
     }
@@ -809,7 +809,7 @@
             SLIDING_POWDER | AIR_JUMP
             | (SPEED5 & ADV_HARD)
             | (SPEED3 & ADV_VHARD) // quick drop jump
-            | (ADV_STUPID & BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
         )
         ",
     }
@@ -1448,9 +1448,9 @@
     "prereq": "ITM_HARD & (
         AIR_JUMP
         | WHIRL_BONK
-        | (ADV_HARD & WALL_JUMP_LV2) // turn off rabi slippers and do a 4-tile corner.
-        | (ADV_HARD & RABI_SLIPPERS & WALL_JUMP & (SPEED2 | V_HARD))
-        | (ADV_STUPID & SLIDING_POWDER & WALL_JUMP)
+        | (ADV_VHARD & WALL_JUMP_LV2) // turn off rabi slippers and do a 4-tile corner.
+        | (ADV_VHARD & RABI_SLIPPERS & WALL_JUMP)
+        | (OBS_EXT & SLIDING_POWDER & WALL_JUMP)
     )",
     }
 ]}
@@ -1466,7 +1466,7 @@
         | (ADV_STUPID & (
             WHIRL_BONK // whirl bonk off falling stone
             // do slide and attack in same frame for cancel sliding motion, then jump and bonk off falling stone
-            | (SLIDING_POWDER & (PIKO_HAMMER | CARROT_BOMB))
+            | (OBSCURE & SLIDING_POWDER & (PIKO_HAMMER | CARROT_BOMB))
         ))",
     }
 ]}
@@ -1502,8 +1502,8 @@
         | WHIRL_BONK
         | (SLIDING_POWDER & (ITM_HARD | RABI_SLIPPERS))
         // stupid hover launch tricks
-        | (ADV_STUPID & BUNNY_AMULET & (
-            (RABI_SLIPPERS & SPEED2)
+        | (ADV_EXT & BUNNY_AMULET & (
+            (RABI_SLIPPERS & SPEED1)
             | (RABI_SLIPPERS & 2_AMULET_FOOD)
             | (SPEED2 & 2_AMULET_FOOD)
             | 3_AMULET_FOOD
