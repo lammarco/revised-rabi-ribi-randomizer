@@ -917,8 +917,6 @@
     "prereq": "
         WALL_JUMP | RABI_SLIPPERS | AIR_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL | WHIRL_BONK
         | (ADV_VHARD & SLIDING_POWDER)
-        | (ADV_VHARD & AIR_DASH_LV3 & SPEED2)
-        | (ADV_STUPID & AIR_DASH & BUNNY_AMULET_LV2)
         ",
     }
 ]}
