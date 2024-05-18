@@ -951,8 +951,12 @@
     "edge": "FOREST_START -> FOREST_EAST_ABOVE_SPRING",
     "prereq":
         "AIR_JUMP | BUNNY_STRIKE | AIR_DASH_LV3
-        | (ADV_STUPID & WHIRL_BONK & CONSUMABLE_USE) // quick drop, item, whirl bonk off falling bunny
-        | (ADV_STUPID & AIR_DASH & 2_AMULET_FOOD) // quick drop, amulet, air dash, wall kick, amulet
+        | (ADV_VHARD & BORING & WHIRL_BONK) // bufferd wall launch, whirl bonk off falling bunny
+        | (ADV_VHARD & AIR_DASH) // buffered wall launch, air dash
+        | (ADV_VHARD & SLIDE_ZIP) // 2-tile zip
+        | (ADV_EXT & RABI_SLIPPERS & WALL_JUMP_LV2 & MANY_AMULET_FOOD) // 5 velocity cancels
+        // 7 velocity cancels, not enough shop items on BEX without item hover
+        // | (ADV_STUPID & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
         ",
     }
 ]}
