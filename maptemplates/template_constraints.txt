@@ -1758,10 +1758,6 @@
 "weight": 8,
 "changes": [
     {
-    "edge": "PARK_MAIN -> PARK_WARP",
-    "prereq": "FIRE_ORB",
-    }
-    {
     "edge": "PARK_WARP -> PARK_MAIN",
     "prereq": "FIRE_ORB",
     }
@@ -1771,10 +1767,6 @@
 "name": "park_warp_whirlblocks",
 "weight": 8,
 "changes": [
-    {
-    "edge": "PARK_MAIN -> PARK_WARP",
-    "prereq": "BUNNY_WHIRL | EXPLOSIVES",
-    }
     {
     "edge": "PARK_WARP -> PARK_MAIN",
     "prereq": "BUNNY_WHIRL | (CARROT_SHOOTER & BOOST)",
