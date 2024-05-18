@@ -1940,3 +1940,13 @@
     "prereq": "IMPOSSIBLE",
     }
 ]}
+
+{
+"name": "graveyard_upper_wall",
+"weight": 20,
+"changes": [
+    {
+    "edge": "GRAVEYARD_MAIN -> GRAVEYARD_UPPER",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
