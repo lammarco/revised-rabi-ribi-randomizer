@@ -657,11 +657,6 @@ PROLOGUE_TRIGGER & (
 }
 
 {
-"edge": "GRAVEYARD_MAIN -> SKY_ISLAND_MAIN",
-"prereq": "BUNSTRIKE_ZIP & ADV_STUPID",
-}
-
-{
 "edge": "GRAVEYARD_KOTRI -> GRAVEYARD_MAIN",
 "prereq": "NONE",
 }
