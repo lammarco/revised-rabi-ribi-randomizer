@@ -359,7 +359,7 @@
     & (SLIDE_ZIP | (EXPLOSIVES & (SLIDING_POWDER | HAMMER_ROLL_ZIP)))
 ",
 "alternate_exits": {
-    "LIBRARY_IRISU": "RABI_SLIPPERS & SLIDE_ZIP & ADV_VHARD",
+    "LIBRARY_IRISU": "(RABI_SLIPPERS & SLIDE_ZIP & ADV_VHARD) | BUNSTRIKE_ZIP",
     },
 }
 
@@ -465,9 +465,9 @@
 "from_location": "LIBRARY_BOTTOM",
 "entry_prereq": "
     ( // stupid direct path
-        CARROT_SHOOTER & BOOST & MANY_AMULET_FOOD & ADV_STUPID
-        & ( AIR_JUMP
-            | (AIR_DASH & (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
+        CARROT_SHOOTER & BOOST & BUNNY_AMULET_LV2 & 3_AMULET_FOOD & ADV_STUPID
+        & (
+            AIR_JUMP| AIR_DASH | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL
         )
     ) | ( // the intended route
         CARROT_BOMB
