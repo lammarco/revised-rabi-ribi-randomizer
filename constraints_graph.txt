@@ -696,6 +696,16 @@ PROLOGUE_TRIGGER & (
 }
 
 {
+"edge": "SKY_ISLAND_MAIN -> SKY_ISLAND_AIR_DASH_ROOM",
+"prereq": "EXPLOSIVES & SLIDING_POWDER",
+}
+
+{
+"edge": "SKY_ISLAND_AIR_DASH_ROOM -> SKY_ISLAND_MAIN",
+"prereq": "EXPLOSIVES | (OBS_STUPID & BUNSTRIKE_ZIP)",
+}
+
+{
 "edge": "SKY_ISLAND_MAIN -> BEACH_MAIN",
 "prereq": "EXPLOSIVES | (OBS_STUPID & BUNSTRIKE_ZIP & EXPLOSIVES_ENEMY)", // strike zip for lure an enemies, carrot shot
 }
@@ -767,9 +777,9 @@ PROLOGUE_TRIGGER & (
 }
 
 {
-"edge": "LIBRARY_BOTTOM -> SKY_ISLAND_MAIN",
+"edge": "LIBRARY_BOTTOM -> SKY_ISLAND_AIR_DASH_ROOM",
 "prereq": "
-    (SLIDE_ZIP & ADV_VHARD & EXPLOSIVES)
+    (SLIDE_ZIP & ADV_VHARD)
     & ( // get to the ledge
         AIR_JUMP
         | (

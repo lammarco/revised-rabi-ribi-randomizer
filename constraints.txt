@@ -492,24 +492,9 @@
 
 {
 "item": "AIR_DASH",
-"from_location": "SKY_ISLAND_MAIN",
-"entry_prereq": "EXPLOSIVES & SLIDING_POWDER",
-"exit_prereq": "EXPLOSIVES",
-"alternate_entries": {
-    "LIBRARY_BOTTOM": "
-        SLIDE_ZIP & ADV_VHARD & (
-        // get to the ledge
-            AIR_JUMP
-            | (
-                (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL)
-                & SPEED3
-                & (WALL_JUMP_LV2 | AIR_DASH)
-            ) | (
-                (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL)
-                & WALL_JUMP_LV2 & AIR_DASH
-            )
-        )"
-    }
+"from_location": "SKY_ISLAND_AIR_DASH_ROOM",
+"entry_prereq": "NONE",
+"exit_prereq": "NONE",
 }
 
 {
