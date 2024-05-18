@@ -1738,7 +1738,7 @@
 
 {
 "name": "ravine_upper_wall",
-"weight": 10,
+"weight": 6,
 "changes": [
     {
     "edge": "RAVINE_UPPER_WEST -> RAVINE_UPPER_EAST",
@@ -1750,6 +1750,33 @@
     }
 ]}
 
+{
+"name": "ravine_upper_hammer_nobomb",
+"weight": 7,
+"changes": [
+    {
+    "edge": "RAVINE_UPPER_WEST -> RAVINE_UPPER_EAST",
+    "prereq": "current & PIKO_HAMMER",
+    }
+    {
+    "edge": "RAVINE_UPPER_EAST -> RAVINE_UPPER_WEST",
+    "prereq": "current & PIKO_HAMMER",
+    }
+]}
+
+{
+"name": "ravine_upper_fireorb",
+"weight": 7,
+"changes": [
+    {
+    "edge": "RAVINE_UPPER_WEST -> RAVINE_UPPER_EAST",
+    "prereq": "current & FIRE_ORB",
+    }
+    {
+    "edge": "RAVINE_UPPER_EAST -> RAVINE_UPPER_WEST",
+    "prereq": "current & FIRE_ORB",
+    }
+]}
 
 {
 "name": "palace_attack_up_oneway",
