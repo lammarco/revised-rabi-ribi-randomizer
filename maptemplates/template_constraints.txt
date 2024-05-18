@@ -970,41 +970,6 @@
 ]}
 
 {
-"name": "ravine_mana_surge_airdash",
-"weight": 10,
-"changes": [
-    {
-    "edge": "RAVINE_LOWER -> RAVINE_MANA_SURGE",
-    "prereq": "current & (AIR_DASH_LV3 |
-            (ADV_HARD & (
-                (AIR_JUMP & (WALL_JUMP_LV2 | HAMMER_ROLL | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL | (SLIDING_POWDER & V_HARD)))
-                | (WHIRL_BONK_CANCEL & (V_HARD | WALL_JUMP_LV2))
-            ))
-            | (ADV_VHARD & AIR_DASH & (SLIDE_JUMP_BUNSTRIKE_CANCEL | AIR_JUMP))
-            | (ADV_STUPID & (
-                (AMULET_FOOD & (AIR_DASH | AIR_JUMP))
-                | (BUNNY_STRIKE & BUNNY_AMULET & 2_AMULET_FOOD)
-            ))
-        )",
-    }
-]}
-
-{
-"name": "ravine_mid_wall",
-"weight": 10,
-"changes": [
-    {
-    "edge": "RAVINE_LOWER -> RAVINE_UPPER_EAST",
-    "prereq": "IMPOSSIBLE",
-    }
-
-    {
-    "edge": "RAVINE_UPPER_EAST -> RAVINE_LOWER",
-    "prereq": "IMPOSSIBLE",
-    }
-]}
-
-{
 "name": "skybridge_eastwest_slippers",
 "weight": 10,
 "changes": [
@@ -1039,73 +1004,6 @@
     {
     "edge": "PARK_KOTRI -> PARK_TOWN_ENTRANCE",
     "prereq": "PIKO_HAMMER | SLIDING_POWDER",
-    }
-]}
-
-{
-"name": "ravine_mid_whirlblocks",
-"weight": 10,
-"changes": [
-    {
-    "edge": "RAVINE_LOWER -> RAVINE_UPPER_EAST",
-    "prereq": "BUNNY_WHIRL | (CARROT_SHOOTER & BOOST)",
-    }
-
-    {
-    "edge": "RAVINE_UPPER_EAST -> RAVINE_LOWER",
-    "prereq": "BUNNY_WHIRL | EXPLOSIVES",
-    }
-]}
-
-{
-"name": "ravine_mana_surge_hammer",
-"weight": 10,
-"changes": [
-    {
-    "edge": "RAVINE_LOWER -> RAVINE_MANA_SURGE",
-    "prereq": "current & (PIKO_HAMMER | EXPLOSIVES |
-            (ADV_HARD & AIR_JUMP & (WALL_JUMP_LV2 | RABI_SLIPPERS | (SLIDING_POWDER & V_HARD)))
-            // going up the 3-wide chasm
-            | (ADV_VHARD & (
-                (RABI_SLIPPERS & WALL_JUMP & (SLIDING_POWDER | SPEED5 | (SPEED2 & STUPID)))
-                | (ADV_STUPID & WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & (SLIDING_POWDER | SPEED5))
-            ))
-        )",
-    }
-]}
-
-{
-"name": "ravine_mid_fireorb",
-"weight": 10,
-"changes": [
-    {
-    "edge": "RAVINE_LOWER -> RAVINE_UPPER_EAST",
-    "prereq": "FIRE_ORB",
-    }
-
-    {
-    "edge": "RAVINE_UPPER_EAST -> RAVINE_LOWER",
-    "prereq": "FIRE_ORB",
-    }
-]}
-
-{
-"name": "ravine_mana_surge_fireorb",
-"weight": 10,
-"changes": [
-    {
-    "edge": "RAVINE_LOWER -> RAVINE_MANA_SURGE",
-    "prereq": "current & (FIRE_ORB |
-            (ADV_HARD & (
-                (AIR_JUMP & (WALL_JUMP_LV2 | HAMMER_ROLL | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL | (SLIDING_POWDER & V_HARD)))
-                | (WHIRL_BONK_CANCEL & (V_HARD | WALL_JUMP_LV2))
-            ))
-            // going up the 3-wide chasm
-            | (ADV_VHARD & (
-                (RABI_SLIPPERS & WALL_JUMP & (SLIDING_POWDER | SPEED5 | (SPEED2 & STUPID)))
-                | (ADV_STUPID & WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & (SLIDING_POWDER | SPEED5))
-            ))
-        )",
     }
 ]}
 
@@ -1889,6 +1787,102 @@
 "changes": [
     {
     "edge": "GRAVEYARD_MAIN -> GRAVEYARD_UPPER",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "ravine_lower_to_mid_airdash",
+"weight": 5,
+"changes": [
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_MANA_SURGE",
+    "prereq": "current & (AIR_DASH_LV3 |
+            (ITM_HARD & AIR_DASH & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+            | (ADV_EXT & (
+                (AMULET_FOOD & (AIR_DASH | AIR_JUMP))
+                // bufferd slide jump from the gap of double airdash blocks, bunstrike, cancel, bufferd launch, amulet
+                | (SLIDE_JUMP_BUNSTRIKE_CANCEL & BUNNY_AMULET & 2_AMULET_FOOD)
+            ))
+            | (ADV_HARD & (
+                (AIR_JUMP & (AIR_DASH | WALL_JUMP_LV2 | HAMMER_ROLL | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL | (SLIDING_POWDER & V_HARD)))
+                | (WHIRL_BONK_CANCEL & (V_HARD | WALL_JUMP_LV2))
+            ))
+        )",
+    }
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_UPPER_EAST",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "ravine_lower_to_mid_wall",
+"weight": 5,
+"changes": [
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_MANA_SURGE",
+    "prereq": "current & (
+            (ADV_HARD & (
+                (AIR_JUMP & (AIR_DASH | WALL_JUMP_LV2 | HAMMER_ROLL | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL | (SLIDING_POWDER & V_HARD)))
+                | (WHIRL_BONK_CANCEL & (V_HARD | WALL_JUMP_LV2))
+            ))
+            // going up the 3-wide chasm
+            | (ADV_EXT & (
+                ((RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL) & WALL_JUMP & (SLIDING_POWDER | SPEED3 | (SPEED2 & STUPID)))
+                | (WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & (SLIDING_POWDER | SPEED3))
+                | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL) // wimpy
+            ))
+        )",
+    }
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_UPPER_EAST",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "ravine_lower_to_mid_hammer",
+"weight": 10,
+"changes": [
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_MANA_SURGE",
+    "prereq": "current & (PIKO_HAMMER | EXPLOSIVES |
+            (ADV_HARD & AIR_JUMP & (WALL_JUMP_LV2 | RABI_SLIPPERS | (SLIDING_POWDER & V_HARD)))
+            // going up the 3-wide chasm
+            | (ADV_EXT & (
+                (RABI_SLIPPERS & WALL_JUMP & (SLIDING_POWDER | SPEED3 | (SPEED2 & STUPID)))
+                | (WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & (SLIDING_POWDER | SPEED3))
+            ))
+        )",
+    }
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_UPPER_EAST",
+    "prereq": "IMPOSSIBLE",
+    }
+]}
+
+{
+"name": "ravine_lower_to_mid_fireorb",
+"weight": 10,
+"changes": [
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_MANA_SURGE",
+    "prereq": "current & (FIRE_ORB |
+            (ADV_HARD & (
+                (AIR_JUMP & (AIR_DASH | WALL_JUMP_LV2 | HAMMER_ROLL | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL | (SLIDING_POWDER & V_HARD)))
+                | (WHIRL_BONK_CANCEL & (V_HARD | WALL_JUMP_LV2))
+            ))
+            // going up the 3-wide chasm
+            | (ADV_EXT & (
+                ((RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL) & WALL_JUMP & (SLIDING_POWDER | SPEED3 | (SPEED2 & STUPID)))
+                | (WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & (SLIDING_POWDER | SPEED3))
+                | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL) // wimpy
+            ))
+        )",
+    }
+    {
+    "edge": "RAVINE_LOWER -> RAVINE_UPPER_EAST",
     "prereq": "IMPOSSIBLE",
     }
 ]}
