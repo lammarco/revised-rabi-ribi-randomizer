@@ -377,7 +377,7 @@ def parse_locations_and_items():
                 weight = int(weight),
                 location = location,
             ))
-        
+
 
 
     # Validate map transition locations
@@ -457,12 +457,16 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
     return item_constraints
 
 DIR_TEMPLATE_PATCH_FILES = './maptemplates/constraint_shuffle/'
-def parse_template_constraints(locations_set, variable_names_set, default_expressions, edge_constraints):
+
+def parse_template_constraints(settings, locations_set, variable_names_set, default_expressions, edge_constraints):
     lines = read_file_and_strip_comments('maptemplates/template_constraints.txt')
+    if settings.shuffle_start_location:
+        lines += read_file_and_strip_comments('maptemplates/start_rando_template_constraints.txt')
     jsondata = ' '.join(lines)
     jsondata = re.sub(',\s*}', '}', jsondata)
     jsondata = '},{'.join(re.split('}\s*{', jsondata))
     jsondata = '[' + jsondata + ']'
+
     cdicts = parse_json(jsondata)
 
     patch_files = sorted(os.listdir(DIR_TEMPLATE_PATCH_FILES))
@@ -474,7 +478,7 @@ def parse_template_constraints(locations_set, variable_names_set, default_expres
     name_to_patch_file = dict(zip(patch_names, patch_files))
 
     original_prereqs = dict(((e.from_location, e.to_location), e.prereq_expression) for e in edge_constraints)
-    
+
     def parse_change(change):
         from_location, to_location = (x.strip() for x in change['edge'].split('->'))
         if from_location not in locations_set: fail('Unknown location: %s' % from_location)
@@ -652,8 +656,8 @@ class RandomizerData(object):
     #
     # list: items_to_allocate
     #
-    # list: walking_left_transitions 
-    # list: walking_right_transitions 
+    # list: walking_left_transitions
+    # list: walking_right_transitions
     #
     # int: nLocations
     # int: nNormalItems
@@ -687,7 +691,7 @@ class RandomizerData(object):
 
         self.nHardToReach = settings.num_hard_to_reach
 
-        # Do some preprocessing of variable names        
+        # Do some preprocessing of variable names
         self.item_names = [item.name for item in self.items]
         self.location_list = sorted(list(self.locations.keys()))
         self.variable_names_list = self.location_list + \
@@ -702,7 +706,7 @@ class RandomizerData(object):
             # Repeats detected! Fail.
             repeat_names = [x for x in variable_names_set if self.variable_names_list.count(x) > 1]
             fail('Repeat names detected: %s' % ','.join(repeat_names))
-        
+
         self.locations_set = set(self.location_list)
         items_set = set(self.item_names)
 
@@ -716,7 +720,7 @@ class RandomizerData(object):
         self.alternate_conditions = define_alternate_conditions(settings, variable_names_set, default_expressions)
         self.edge_constraints = parse_edge_constraints(self.locations_set, variable_names_set, default_expressions)
         self.item_constraints = parse_item_constraints(settings, items_set, shufflable_gift_items_set, self.locations_set, variable_names_set, default_expressions)
-        self.template_constraints = parse_template_constraints(self.locations_set, variable_names_set, default_expressions, self.edge_constraints)
+        self.template_constraints = parse_template_constraints(settings, self.locations_set, variable_names_set, default_expressions, self.edge_constraints)
 
         self.preprocess_data(settings)
         self.preprocess_variables(settings)
@@ -875,7 +879,6 @@ class RandomizerData(object):
 
     def generate_variables(self):
         return dict(self.configured_variables)
-        
+
     def generate_pessimistic_variables(self):
         return dict(self.pessimistic_variables)
-        
