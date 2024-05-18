@@ -635,8 +635,8 @@ PROLOGUE_TRIGGER & (
     | SLIDE_JUMP_BUNSTRIKE_CANCEL
     // roll up drill
     | (ADV_VHARD & HAMMER_ROLL)
-    // slide bonk requires amulet, not sure about whirlbonk
-    | (ADV_STUPID & BUNNY_AMULET & (SLIDING_POWDER | WHIRL_BONK))
+    // bonk off the wisp enemy
+    | (ADV_STUPID & (SLIDING_POWDER | WHIRL_BONK))
 )
 ",
 }
@@ -653,12 +653,27 @@ PROLOGUE_TRIGGER & (
 
 {
 "edge": "GRAVEYARD_TOP_OF_BRIDGE -> GRAVEYARD_UPPER",
-"prereq": "AIR_JUMP & RABI_SLIPPERS & (SPEED1 | AIR_DASH)",
+"prereq": "
+    AIR_JUMP & (
+        (RABI_SLIPPERS & (
+            AIR_DASH
+            | (ITM_VHARD & SPEED1 & (WALL_JUMP | ADV_STUPID))
+            | (ITM_HARD & SPEED3)
+        ))
+        | SLIDE_JUMP_BUNSTRIKE_CANCEL
+    )
+",
 }
 
 {
 "edge": "GRAVEYARD_MAIN -> GRAVEYARD_TOP_OF_BRIDGE",
-"prereq": "WHIRL_BONK | (RABI_SLIPPERS & AIR_JUMP & (AIR_DASH | ADV_VHARD))",
+"prereq": "
+    WHIRL_BONK
+    | ((RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL) & AIR_JUMP & AIR_DASH)
+    | (ADV_VHARD & AIR_JUMP)
+    | (ADV_VHARD & SLIDING_POWDER & AIR_DASH)
+    | (ADV_EXT & SLIDING_POWDER & RABI_SLIPPERS & AMULET_FOOD)
+",
 }
 
 {
@@ -693,12 +708,15 @@ PROLOGUE_TRIGGER & (
     | (AIR_JUMP & ((RABI_SLIPPERS & SPEED1) | AIR_DASH | WALL_JUMP | ITM_HARD))
     | (AIR_DASH_LV3 & (WALL_JUMP | ADV_HARD))
     // slide jump, wall jump, airdash, wall jump2, amulet
-    | (SLIDING_POWDER & RABI_SLIPPERS & WALL_JUMP & AIR_DASH & AMULET_FOOD & ADV_VHARD)
+    // slide jump, double wall jump, airdash (obscure method)
+    | (ADV_VHARD & SLIDING_POWDER & RABI_SLIPPERS & WALL_JUMP & AIR_DASH & (AMULET_FOOD | OBSCURE))
     // quick drop jump, quick drop, airdash, wimpy wall jump, amulet, wall jump2
     | (ADV_STUPID & AIR_DASH & WALL_JUMP & AMULET_FOOD)
     // slide jump, wimpy amuclimbs
     | (ADV_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & MANY_AMULET_FOOD & (SLIDING_POWDER | SPEED5))
     | (ADV_STUPID & SLIDING_POWDER & WALL_JUMP_LV2 & BUNNY_AMULET_LV3)
+    // theoretically possible by amulet and item hover only but it takes forever
+    // (OBS_STUPID & MANY_AMULET_FOOD)
 ",
 }
 

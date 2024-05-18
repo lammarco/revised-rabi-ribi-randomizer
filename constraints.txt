@@ -353,6 +353,13 @@
 ",
 "exit_prereq": "AIR_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL",
 
+"alternate_entries": {
+    "GRAVEYARD_MAIN": "ADV_VHARD & WHIRL_BONK & (
+        AIR_JUMP
+        | (OBS_EXT & HAMMER_ROLL)
+        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD)
+    )",
+    },
 "alternate_exits": {
     "GRAVEYARD_MAIN": "NONE",
     },
@@ -525,9 +532,12 @@
 "entry_prereq": "
     EXPLOSIVES & (
         SLIDING_POWDER
-        | (OBS_STUPID & HAMMER_ROLL_ZIP & AIR_JUMP & MANY_AMULET_FOOD & (
-            (WALL_JUMP_LV2 & (RABI_SLIPPERS | AIR_DASH))
-            | (RABI_SLIPPERS & AIR_DASH_LV3)
+        // oob tricks
+        | (HAMMER_ROLL_ZIP & MANY_AMULET_FOOD & (
+            (OBS_VHARD & RABI_SLIPPERS & AIR_JUMP & AIR_DASH)
+            | (OBS_EXT & AIR_JUMP & WALL_JUMP_LV2 & (RABI_SLIPPERS | AIR_DASH))
+            // 9-tiles climb: jump, spd0 wj1, spd3 amulet, spd0 wj2, spd3 amulet, wj3, airdash
+            | (OBS_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & SPEED3 & AIR_DASH)
         ))
     )",
 "exit_prereq": "SLIDING_POWDER | HAMMER_ROLL_ZIP",
