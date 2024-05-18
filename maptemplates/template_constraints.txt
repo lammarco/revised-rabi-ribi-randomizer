@@ -1855,29 +1855,6 @@
 ]}
 
 {
-"name": "riverbank_lower_mid_wall",
-"weight": 10,
-"changes": [
-    {
-    "edge": "RIVERBANK_LOWER_LEFT -> RIVERBANK_LOWER_MID",
-    "prereq": "IMPOSSIBLE",
-    }
-    {
-    "edge": "RIVERBANK_LOWER_MID -> RIVERBANK_LOWER_LEFT",
-    "prereq": "IMPOSSIBLE",
-    }
-    // dummy constraints change for avoid get awful template combinations
-    {
-    "edge": "RIVERBANK_LOWER_MID -> RIVERBANK_MAIN_LEVEL1",
-    "prereq": "current",
-    }
-    {
-    "edge": "RIVERBANK_LOWER_RIGHT -> RIVERBANK_LOWER_MID",
-    "prereq": "current",
-    }
-]}
-
-{
 "name": "snowland_warp_nostupid",
 "weight": 30,
 "changes": [
