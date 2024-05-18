@@ -2010,7 +2010,7 @@
 {
 "item": "BUNNY_STRIKE",
 "from_location": "TOWN_SHOP",
-"entry_prereq": "SLIDING_POWDER",
+"entry_prereq": "SLIDING_POWDER & TM_CICINI",
 "exit_prereq": "NONE",
 }
 
