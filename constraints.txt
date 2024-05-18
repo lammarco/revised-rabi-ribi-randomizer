@@ -1952,21 +1952,23 @@
 {
 "item": "EGG_CRESPIRIT",
 "from_location": "WARP_DESTINATION_OUTSIDE",
-"entry_prereq": "WARP_DESTINATION & CHAPTER_4",
+"entry_prereq": "NONE",
 "exit_prereq": "NONE",
 }
 
 {
 "item": "EGG_HOSPITAL_WALL",
 "from_location": "WARP_DESTINATION_HOSPITAL",
-"entry_prereq": "WARP_DESTINATION & POST_GAME & CHAPTER_5 & EXPLOSIVES",
+"entry_prereq": "NONE",
+//"entry_prereq": "EXPLOSIVES",
 "exit_prereq": "NONE",
 }
 
 {
 "item": "EGG_HOSPITAL_BOX",
 "from_location": "WARP_DESTINATION_HOSPITAL",
-"entry_prereq": "WARP_DESTINATION & POST_GAME & CHAPTER_5 & EXPLOSIVES",
+"entry_prereq": "NONE",
+//"entry_prereq": "EXPLOSIVES | BLOCK_CLIP",
 "exit_prereq": "NONE",
 }
 

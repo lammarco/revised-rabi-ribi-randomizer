@@ -64,6 +64,17 @@ def apply_item_specific_fixes(mod, allocation):
         data.tiledata_map[xy_to_index(271,51)] = 0
         data.tiledata_tiles1[xy_to_index(271,51)] = 0
 
+    if is_egg(item_at_location['EGG_HOSPITAL_BOX']):
+        data = mod.stored_datas[8]
+        data.tiledata_map[xy_to_index(486,73)] = 0
+        data.tiledata_tiles1[xy_to_index(486,73)] = 0
+
+    if is_egg(item_at_location['EGG_HOSPITAL_WALL']):
+        data = mod.stored_datas[8]
+        data.tiledata_map[xy_to_index(438,64)] = 0
+        data.tiledata_tiles1[xy_to_index(438,64)] = 0
+
+
 def apply_fixes_for_randomizer(areaid, data):
     if areaid == 0:
         # Remove save point and autosave point before Cocoa1
@@ -249,6 +260,19 @@ def apply_post_game_fixes(areaid, data):
 
         data.tiledata_event[xy_to_index(309, 16)] = 0
         data.tiledata_event[xy_to_index(309, 17)] = 0
+
+    # warp destination
+    if areaid == 8:
+        # replace hospital bomb block to ribbon block for prevent softlock
+
+        # box room
+        data.tiledata_event[xy_to_index(485, 73)] = 6
+        data.tiledata_event[xy_to_index(486, 73)] = 6
+
+        # wall
+        data.tiledata_event[xy_to_index(438, 64)] = 6
+        data.tiledata_event[xy_to_index(438, 65)] = 6
+
     # sysint2
     if areaid == 9:
         # before the egg room

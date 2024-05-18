@@ -2530,3 +2530,24 @@ EXPLOSIVES & (
 "edge": "SKY_ISLAND_MAIN -> FOREST_START",
 "prereq": "EVENT_WARP & TM_LILITH",
 }
+
+
+{
+"edge": "TOWN_MAIN -> WARP_DESTINATION_OUTSIDE",
+"prereq": "WARP_DESTINATION & CHAPTER_4",
+}
+
+{
+"edge": "WARP_DESTINATION_OUTSIDE -> TOWN_MAIN",
+"prereq": "NONE",
+}
+
+{
+"edge": "TOWN_MAIN -> WARP_DESTINATION_HOSPITAL",
+"prereq": "WARP_DESTINATION & CHAPTER_5 & POST_GAME",
+}
+
+{
+"edge": "WARP_DESTINATION_HOSPITAL -> TOWN_MAIN",
+"prereq": "NONE",
+}
