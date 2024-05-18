@@ -345,7 +345,7 @@ def configure_shaft(mod, settings):
     if settings.shuffle_start_location:
         # Disable starting forest warp from the start
         event_flag_set_list += [(297,), (298,)]
-        
+
     if settings.shuffle_gift_items:
         # Disable event where miriam gives you speed boost and bunny strike.
         event_flag_set_list += [(374,), (378,)]
@@ -402,7 +402,7 @@ def build_start_game_shaft(areaid, data, events_list, settings):
 
     # Remove OoB light event
     data.tiledata_event[xy_to_index(68,90)] = 0
-    
+
     # Add collision data
     data.tiledata_map[xy_to_index(bx + shaftx - 1, by + 44)] = 1
     data.tiledata_map[xy_to_index(bx + shaftx + 0, by + 44)] = 1
@@ -530,14 +530,14 @@ def apply_start_location_shuffle(mod, settings, allocation):
         './maptemplates/event_warps/ew_start_room.txt',
         './maptemplates/event_warps/ew_fc2_to_start.txt',
     ])
-    
+
     start_area = allocation.start_location.area
     for areaid, data in mod.stored_datas.items():
         if areaid == 0:
             # Add warp exit point to original start position
             data.tiledata_event[xy_to_index(112, 91)] = 218
             data.tiledata_event[xy_to_index(112, 92)] = 240
-            
+
             cross_map_event_id = 242 + start_area
             for y in range(130, 133):
                 for x in range(73, 78):
@@ -596,10 +596,20 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
     def print_setting_int(setting_name, setting_int):
         print_to_analysis_only('%s: %d' % (setting_name, setting_int))
 
+    low = int(0.5 * settings.constraint_changes)
+    high = int(1.5 * settings.constraint_changes + 2)
+    if settings.constraint_changes <= 0:
+        high = 0
+    if settings.min_constraint_changes >= 0:
+        low = int(settings.min_constraint_changes)
+    if settings.max_constraint_changes >= 0:
+        high = int(settings.max_constraint_changes + 2)
+    changes = int((high + low) / 2 - 1)
+
     print_to_analysis_only('--- Randomizer Flags ---')
     print_setting_bool('Shuffle Gift Items', settings.shuffle_gift_items)
     print_setting_bool('Shuffle Map Transitions', settings.shuffle_map_transitions)
-    print_setting_int('Approximate Number of Constraint Changes', settings.constraint_changes)
+    print_setting_int('Approximate Number of Constraint Changes', changes)
     print_setting_bool('Shuffle Music', settings.shuffle_music)
     print_setting_bool('Shuffle Backgrounds', settings.shuffle_backgrounds)
     print_setting_bool('No Laggy Backgrounds', settings.no_laggy_backgrounds)
@@ -645,7 +655,7 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
         f = open('%s/%s' % (settings.output_dir, 'analysis.txt'), 'w+')
         f.write('\n'.join(analysis_lines))
         f.close()
-        
+
     if settings.debug_visualize:
         levels = analyzer.levels
         f = open('%s/spoiler/%s' % (settings.output_dir, 'chain.txt'), 'w+')
@@ -654,27 +664,27 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
         for k, v in allocation.item_at_item_location.items():
             if v != None:
                 item_location_at_item[v] = k
-                
+
         f.write("start location: %s\n\n" % allocation.start_location.location)
         f.write("picked templates: %s\n\t" % len(allocation.picked_templates))
         f.write("\n\t".join(sorted([t.name for t in allocation.picked_templates])))
         f.write("\n\n")
-        
+
         lv = 0
         while len(levels) > lv:
             f.write("--- chain %d ---\n" % (lv/2))
             if len(levels[lv]) > 0:
                 f.write("\npseudo items:\n\t")
                 f.write("\n\t".join(levels[lv]))
-            
+
             level = levels[lv+1]
-            
+
             locs = set(name for name in level if name in data.locations_set)
             objs = sorted(set(level) - locs)
             eggs = list(name for name in objs if is_egg(name))
             items = list(name for name in objs if not is_potion(name) and not is_egg(name))
             potions = list(name for name in objs if is_potion(name))
-            
+
             sorted_items = eggs + items + potions
             if len(sorted_items) > 0:
                 f.write("\nitems:\t")
@@ -687,9 +697,9 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
                 f.write("\nlocations:\n\t")
                 f.write("\n\t".join(sorted(locs)))
             f.write("\n\n")
-            
+
             lv += 2
-            
+
         f.close()
 
 def run_randomizer(seed, settings):
