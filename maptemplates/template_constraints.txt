@@ -196,6 +196,8 @@
             RABI_SLIPPERS | AIR_JUMP | SLIDE_JUMP_BUNSTRIKE
             | (COCOA_1 & KOTRI_1 & CHAPTER_1)
         )
+        // roll bonk off the sparkle in the left room, upforce airdash
+        | (OBS_STUPID & HAMMER_ROLL & AIR_DASH & PROLOGUE_TRIGGER)
     ",
     }
 ]}
@@ -231,6 +233,8 @@
             RABI_SLIPPERS | AIR_JUMP | SLIDE_JUMP_BUNSTRIKE
             | (COCOA_1 & KOTRI_1 & CHAPTER_1)
         )
+        // roll bonk off the sparkle in the left room, upforce airdash
+        | (OBS_STUPID & HAMMER_ROLL & AIR_DASH & PROLOGUE_TRIGGER)
     ",
     }
 ]}
@@ -956,7 +960,11 @@
 "changes": [
     {
     "edge": "PARK_WARP -> UPRPRC_LOWER",
-    "prereq": "RABI_SLIPPERS | AIR_JUMP | AIR_DASH | SLIDE_JUMP_BUNSTRIKE | SLIDE_ZIP | (AMULET_FOOD & ADV_VHARD)",
+    "prereq": "
+        RABI_SLIPPERS | AIR_JUMP | AIR_DASH
+        | SLIDE_JUMP_BUNSTRIKE | SLIDE_ZIP | (AMULET_FOOD & ADV_VHARD)
+        | (OBS_STUPID & HAMMER_ROLL) // roll bonk off an enemy in the left room
+    ",
     }
 ]}
 
@@ -1721,6 +1729,8 @@
             RABI_SLIPPERS | AIR_JUMP | SLIDE_JUMP_BUNSTRIKE
             | (COCOA_1 & KOTRI_1 & CHAPTER_1)
         )
+        // roll bonk off the sparkle in the left room, upforce airdash
+        | (OBS_STUPID & HAMMER_ROLL & AIR_DASH & PROLOGUE_TRIGGER)
     ",
     }
 ]}
@@ -1738,6 +1748,8 @@
             RABI_SLIPPERS | AIR_JUMP | SLIDE_JUMP_BUNSTRIKE
             | (COCOA_1 & KOTRI_1 & CHAPTER_1)
         )
+        // roll bonk off the sparkle in the left room, upforce airdash
+        | (OBS_STUPID & HAMMER_ROLL & AIR_DASH & PROLOGUE_TRIGGER)
     ",
     }
 ]}
