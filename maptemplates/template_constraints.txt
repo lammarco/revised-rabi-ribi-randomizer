@@ -1151,7 +1151,7 @@
     }
     {
     "edge": "SNOWLAND_LAKE -> SNOWLAND_EAST",
-    "prereq": "current & (BUNNY_WHIRL | (ADV_STUPID & SLIDE_ZIP & BUNNY_AMULET))",
+    "prereq": "current & BUNNY_WHIRL",
     }
 ]}
 
@@ -1718,11 +1718,11 @@
 "changes": [
     {
     "edge": "EVERNIGHT_NORTHWEST -> EVERNIGHT_SAYA",
-    "prereq": "EXPLOSIVES & SLIDING_POWDER",
+    "prereq": "IMPOSSIBLE",
     }
     {
     "edge": "EVERNIGHT_SAYA -> EVERNIGHT_NORTHWEST",
-    "prereq": "EXPLOSIVES & SLIDING_POWDER",
+    "prereq": "IMPOSSIBLE",
     }
 ]}
 
