@@ -244,7 +244,7 @@
 
 {
 "item": "MP_UP_EAST_FOREST",
-"from_location": "FOREST_START",
+"from_location": "FOREST_EAST_ABOVE_SPRING",
 "entry_prereq": "NONE",
 "exit_prereq": "NONE",
 }
