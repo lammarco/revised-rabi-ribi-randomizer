@@ -1454,8 +1454,38 @@ DARKNESS & (
 }
 
 {
-"edge": "SNOWLAND_MID -> SNOWLAND_LAKE",
+"edge": "SNOWLAND_MID -> SNOWLAND_QUICK_BARRETTE_ROOM",
+"prereq": "NONE",
+}
+
+{
+"edge": "SNOWLAND_QUICK_BARRETTE_ROOM -> SNOWLAND_MID",
+"prereq": "NONE",
+}
+
+{
+"edge": "SNOWLAND_QUICK_BARRETTE_ROOM -> SNOWLAND_EAST",
+"prereq": "(OBS_STUPID & SLIDE_ZIP & BUNNY_AMULET)",
+}
+
+{
+"edge": "SNOWLAND_QUICK_BARRETTE_ROOM -> SNOWLAND_LAKE",
 "prereq": "UNDERWATER",
+}
+
+{
+"edge": "SNOWLAND_LAKE -> SNOWLAND_QUICK_BARRETTE_ROOM",
+"prereq": "NONE",
+}
+
+{
+"edge": "SNOWLAND_LAKE -> SNOWLAND_SPIKE_ROOM",
+"prereq": "(ITM & FIRE_ORB) | SLIDING_POWDER",
+}
+
+{
+"edge": "SNOWLAND_SPIKE_ROOM -> SNOWLAND_LAKE",
+"prereq": "(ITM & FIRE_ORB) | SLIDING_POWDER | (WATER_ORB & HAMMER_ROLL_ZIP)",
 }
 
 {
@@ -1743,12 +1773,12 @@ DARKNESS & (
 }
 
 {
-"edge": "SNOWLAND_LAKE -> AQUARIUM_MID",
+"edge": "SNOWLAND_SPIKE_ROOM -> AQUARIUM_MID",
 "prereq": "FIRE_ORB",
 }
 
 {
-"edge": "AQUARIUM_MID -> SNOWLAND_LAKE",
+"edge": "AQUARIUM_MID -> SNOWLAND_SPIKE_ROOM",
 "prereq": "FIRE_ORB",
 }
 

@@ -1168,11 +1168,11 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "SNOWLAND_MID -> SNOWLAND_LAKE",
+    "edge": "SNOWLAND_MID -> SNOWLAND_QUICK_BARRETTE_ROOM",
     "prereq": "IMPOSSIBLE",
     }
     {
-    "edge": "SNOWLAND_LAKE -> SNOWLAND_MID",
+    "edge": "SNOWLAND_QUICK_BARRETTE_ROOM -> SNOWLAND_MID",
     "prereq": "IMPOSSIBLE",
     }
 ]}
@@ -1182,7 +1182,7 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "SNOWLAND_MID -> SNOWLAND_LAKE",
+    "edge": "SNOWLAND_MID -> SNOWLAND_QUICK_BARRETTE_ROOM",
     "prereq": "current & DOWNDRILL_SEMISOLID_CLIP",
     }
 ]}
@@ -1249,11 +1249,11 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "SNOWLAND_MID -> SNOWLAND_LAKE",
+    "edge": "SNOWLAND_MID -> SNOWLAND_QUICK_BARRETTE_ROOM",
     "prereq": "current & (BUNNY_WHIRL | EXPLOSIVES_ENEMY)",
     }
     {
-    "edge": "SNOWLAND_LAKE -> SNOWLAND_MID",
+    "edge": "SNOWLAND_QUICK_BARRETTE_ROOM -> SNOWLAND_MID",
     "prereq": "current & BUNNY_WHIRL",
     }
 ]}

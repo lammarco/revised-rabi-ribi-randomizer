@@ -909,7 +909,7 @@
 
 {
 "item": "QUICK_BARRETTE",
-"from_location": "SNOWLAND_LAKE",
+"from_location": "SNOWLAND_QUICK_BARRETTE_ROOM",
 "entry_prereq": "NONE",
 "exit_prereq": "NONE",
 }
@@ -930,8 +930,8 @@
 
 {
 "item": "REGEN_UP_SNOWLAND_WATER",
-"from_location": "SNOWLAND_LAKE",
-"entry_prereq": "NONE",
+"from_location": "SNOWLAND_QUICK_BARRETTE_ROOM",
+"entry_prereq": "NONE", // borderline of UNDERWATER
 "exit_prereq": "NONE",
 }
 
@@ -1738,8 +1738,8 @@
 
 {
 "item": "EGG_SNOWLAND_SPIKES_ROOM",
-"from_location": "SNOWLAND_LAKE",
-"entry_prereq": "DARKNESS & (SLIDING_POWDER | FIRE_ORB)",
+"from_location": "SNOWLAND_SPIKE_ROOM",
+"entry_prereq": "DARKNESS",
 "exit_prereq": "NONE",
 }
 
