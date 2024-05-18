@@ -71,7 +71,7 @@ class Analyzer(object):
         #print_ln(set(reachable) - set(all_levels))
         #print_ln(len(all_levels), len(set(all_levels)), len(reachable), len(unreachable))
         #print_ln(set(all_levels) - set(reachable))
-        
+
         allocated_items_set = set(self.data.items_to_allocate)
         nHardToReach = self.data.nHardToReach
         minHardToReachPoolSize = nHardToReach * 5
@@ -160,7 +160,7 @@ class Analyzer(object):
         newly_traversable_edges = set()
         temp_variable_storage = {}
         test_mode = 0
-        
+
         variables['IS_BACKTRACKING'] = False
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
         variables['BACKTRACK_GOALS'] = None, None
@@ -232,7 +232,7 @@ class Analyzer(object):
                                 forward_enterable.add(target_location)
                                 if target_location in backward_exitable:
                                     new_reachable_locations.add(target_location)
-                                    if test_mode == 1:
+                                    if self.visualize and test_mode == 1:
                                         if edges[edge_id].to_location not in reachable_levels:
                                             reachable_levels[edges[edge_id].to_location] = current_level
                                 else:
@@ -255,7 +255,7 @@ class Analyzer(object):
                                 if target_location in forward_enterable:
                                     new_reachable_locations.add(target_location)
                                     pending_exit_locations.remove(target_location)
-                                    if test_mode == 2:
+                                    if self.visualize and test_mode == 2:
                                         if edges[edge_id].from_location not in reachable_levels:
                                             reachable_levels[edges[edge_id].from_location] = current_level
                 backward_frontier.clear()
@@ -264,7 +264,7 @@ class Analyzer(object):
 
             # STEP 4: Mark New Reachable Locations
             for location in new_reachable_locations:
-                if test_mode == 0:
+                if self.visualize and test_mode == 0:
                     if location not in reachable_levels:
                         reachable_levels[location] = current_level
                     #reachable_levels[location] = current_level
@@ -373,6 +373,7 @@ class Analyzer(object):
                     level = reachable_levels[loc]
                 else:
                     level = 19
+                level = min(level, 19)
                 vis.set_node_color(loc, colors[level])
             vis.render()
         reachable = sorted(name for name, value in variables.items() if value)
@@ -389,5 +390,5 @@ class Analyzer(object):
         result, backward_exitable = self.verify_warps_reachable(starting_variables)
         reachable, unreachable, levels, ending_variables = self.verify_reachable_items(starting_variables, backward_exitable)
         return reachable, unreachable, levels, ending_variables
-        
+
 
