@@ -178,7 +178,7 @@ def apply_post_game_fixes(areaid, data):
             data.tiledata_map[xy_to_index(308, y)] = 0
             data.tiledata_tiles1[xy_to_index(308, y)] = 0
             data.tiledata_event[xy_to_index(308, y)] = 0
-        for y in range(35, 42):
+        for y in range(35, 43):
             data.tiledata_map[xy_to_index(312, y)] = 0
             data.tiledata_tiles1[xy_to_index(312, y)] = 0
             data.tiledata_event[xy_to_index(312, y)] = 0
