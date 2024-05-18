@@ -1792,12 +1792,12 @@
 ]}
 
 {
-"name": "aquarium_east_transition_oneway_slide",
+"name": "aquarium_east_transition_slide",
 "weight": 5,
 "changes": [
     {
     "edge": "AQUARIUM_BOMB_WALLED_AREA -> AQUARIUM_BEACH_ENTRANCE",
-    "prereq": "UNDERWATER",
+    "prereq": "UNDERWATER & SLIDING_POWDER",
     }
     {
     "edge": "AQUARIUM_BEACH_ENTRANCE -> AQUARIUM_BOMB_WALLED_AREA",
