@@ -1988,3 +1988,45 @@
     "prereq": "IMPOSSIBLE",
     }
 ]}
+
+{
+"name": "aquarium_bomb_walled_hammer",
+"weight": 10,
+"changes": [
+    {
+    "edge": "AQUARIUM_EAST -> AQUARIUM_BOMB_WALLED_AREA",
+    "prereq": "PIKO_HAMMER | EXPLOSIVES | (WATER_ORB & SLIDE_ZIP & OBS_VHARD)",
+    }
+    {
+    "edge": "AQUARIUM_BOMB_WALLED_AREA -> AQUARIUM_EAST",
+    "prereq": "PIKO_HAMMER | EXPLOSIVES",
+    }
+]}
+
+{
+"name": "aquarium_bomb_walled_fireorb",
+"weight": 10,
+"changes": [
+    {
+    "edge": "AQUARIUM_EAST -> AQUARIUM_BOMB_WALLED_AREA",
+    "prereq": "FIRE_ORB | (WATER_ORB & HAMMER_ROLL_ZIP) | (WATER_ORB & SLIDE_ZIP & OBS_VHARD)",
+    }
+    {
+    "edge": "AQUARIUM_BOMB_WALLED_AREA -> AQUARIUM_EAST",
+    "prereq": "FIRE_ORB",
+    }
+]}
+
+{
+"name": "snowland_west_entrance_5tile",
+"weight": 20,
+"changes": [
+    {
+    "edge": "SNOWLAND_EVERNIGHT_ENTRANCE -> SNOWLAND_WEST",
+    "prereq": "
+        AIR_JUMP | AIR_DASH | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
+        | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
+        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD & (WALL_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL))
+    ",
+    }
+]}
