@@ -1332,10 +1332,12 @@ ADV_VHARD & (
 "prereq": "
     (
         // From save room up to ledge below egg
-        (ITM & RABI_SLIPPERS & AIR_DASH_LV3)
-        | (AIR_JUMP & (ITM_HARD | RABI_SLIPPERS))
-        | (ADV_VHARD & ((SLIDE_JUMP_BUNSTRIKE & RABI_SLIPPERS) | AIR_DASH))
-        | (ADV_VHARD & SLIDE_JUMP_BUNSTRIKE & AMULET_FOOD)
+        AIR_JUMP
+        | ((ITM & AIR_DASH_LV3) & (RABI_SLIPPERS | (ADV_HARD & AMULET_FOOD)))
+        | (ADV_VHARD & (
+            AIR_DASH
+            | (SLIDE_JUMP_BUNSTRIKE & (RABI_SLIPPERS | AMULET_FOOD))
+        ))
         // quick drop jump, wall jump, amulet
         | (ADV_EXT & AMULET_FOOD & SPEED3)
         // same as above but use roll3 for getting velocity
@@ -1588,7 +1590,7 @@ DARKNESS & (
         | AIR_DASH
         | (ADV_HARD | (ITM_HARD & BUNNY_AMULET))
     ))
-    | (STUPID & ROLL_BONK_ZIP & BUNNY_AMULET)
+    | (STUPID & ROLL_BONK_ZIP & (BUNNY_AMULET | AIR_JUMP | AIR_DASH))
     | (SLIDING_POWDER & EXPLOSIVES)
 )
 ",
@@ -1596,7 +1598,7 @@ DARKNESS & (
 
 {
 "edge": "SKY_BRIDGE_REGEN_UP_LEDGE -> SKY_BRIDGE_SLIDE_AREA",
-"prereq": "CARROT_BOMB & SLIDING_POWDER",
+"prereq": "SLIDING_POWDER & (CARROT_BOMB | (ITM_VHARD & EXPLOSIVES_ENEMY))",
 }
 
 {
