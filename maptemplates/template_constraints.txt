@@ -180,7 +180,7 @@
 "changes": [
     {
     "edge": "FOREST_EAST_ABOVE_SPRING -> FOREST_UPPER_EAST",
-    "prereq": "FIRE_ORB",
+    "prereq": "(current & FIRE_ORB) | (OBS_STUPID & RABI_SLIPPERS & BUNSTRIKE_ZIP)",
     }
 ]}
 
@@ -264,7 +264,7 @@
 "changes": [
     {
     "edge": "FOREST_EAST_ABOVE_SPRING -> FOREST_UPPER_EAST",
-    "prereq": "BUNNY_WHIRL",
+    "prereq": "BUNNY_WHIRL | (OBS_STUPID & RABI_SLIPPERS & BUNSTRIKE_ZIP)",
     }
 ]}
 
@@ -822,7 +822,7 @@
 "changes": [
     {
     "edge": "FOREST_EAST_ABOVE_SPRING -> FOREST_UPPER_EAST",
-    "prereq": "IMPOSSIBLE",
+    "prereq": "OBS_STUPID & RABI_SLIPPERS & BUNSTRIKE_ZIP",
     }
 ]}
 

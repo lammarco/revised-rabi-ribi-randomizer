@@ -119,7 +119,7 @@
 "entry_prereq": "
     AIR_JUMP
     | ((RABI_SLIPPERS | ITM_HARD) & WALL_JUMP_LV2)
-    | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & (SPEED1 | WALL_JUMP | ITM_VHARD))
+    | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & (SPEED2 | WALL_JUMP | ITM_VHARD))
     | (ADV_HARD & (WHIRL_BONK_CANCEL | HAMMER_ROLL))
     | (ADV_EXT & (WHIRL_BONK | SLIDING_POWDER)) // bonk off jumping uprprc
 ",
@@ -163,9 +163,9 @@
 
 {
 "item": "HP_UP_FOREST_POST_COCOA",
-"entry_prereq": "PIKO_HAMMER | EXPLOSIVES | (CARROT_SHOOTER & ADV_VHARD)",
-"exit_prereq": "PIKO_HAMMER | EXPLOSIVES | (CHARGE_CARROT_SHOOTER_ENTRY & ADV_HARD) | (CARROT_SHOOTER_ENTRY & ADV_VHARD)",
 "from_location": "FOREST_WARP",
+"entry_prereq": "PIKO_HAMMER | EXPLOSIVES | (CARROT_SHOOTER & OBS_VHARD)",
+"exit_prereq": "PIKO_HAMMER | EXPLOSIVES | (CARROT_SHOOTER_ENTRY & OBS_VHARD)",
 
 "alternate_entries": {
     "FOREST_COCOA_ROOM": "EXPLOSIVES_ENEMY",
@@ -221,7 +221,7 @@
         | (ADV_HARD & AIR_JUMP & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE & (SPEED5 | ADV_VHARD))
         | (ADV_EXT & AIR_JUMP & AIR_DASH_LV3 & WALL_JUMP_LV2 & BUNNY_AMULET & 2_AMULET_FOOD)
         // slide airjump, bonk the bee, airjump
-        | (OBS_EXT & AIR_JUMP & SLIDING_POWDER)
+        | (ADV_EXT & AIR_JUMP & SLIDING_POWDER & (RABI_SLIPPERS | OBSCURE))
         // | (ADV_VHARD & HAMMER_ROLL & AIR_JUMP)
     ",
     },
@@ -235,16 +235,22 @@
     | (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
     | (AIR_DASH & (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
     // 4 tile corner rwj, airdash, wallkick, amulet cancel
-    | (ADV_VHARD & AIR_DASH_LV3 & AMULET_FOOD)
-    // slide bonk off big bunny
-    | (ADV_VHARD & BORING & SLIDING_POWDER & (RABI_SLIPPERS | AMULET_FOOD))
-    // hammer slide bonk mushroom, carrot bomb does not work due to longer action frames
-    | (OBS_STUPID & SLIDING_POWDER & PIKO_HAMMER)
+    | (ADV_HARD & AIR_DASH_LV3 & AMULET_FOOD)
+    // same as Crisis Boost
+    | (OBS_EXT & AIR_DASH & (BUNNY_AMULET_LV2 | (BUNNY_AMULET & STUPID)))
+    | (ADV_VHARD & SLIDING_POWDER & (
+        // slide bonk off big bunny
+        AIR_DASH
+        | (BORING & (RABI_SLIPPERS | AMULET_FOOD))
+        // hammer slide bonk mushroom, carrot bomb does not work due to longer action frames
+        | (OBS_STUPID & PIKO_HAMMER)
+    ))
     // dboost big mushroom
-    | (ADV_STUPID & BORING & RABI_SLIPPERS & AMULET_FOOD)
+    | (ADV_STUPID & BORING & (AIR_DASH | (RABI_SLIPPERS & AMULET_FOOD)))
     // amuclimbs
     | (ADV_VHARD & WALL_JUMP & AIR_DASH & (BUNNY_AMULET | OBSCURE))
     | (ADV_EXT & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
+    | (ADV_EXT & WALL_JUMP & RABI_SLIPPERS & 2_AMULET_FOOD & BUNNY_AMULET)
     ",
 "exit_prereq": "NONE",
 }
@@ -276,8 +282,13 @@
             | SLIDE_JUMP_BUNSTRIKE_CANCEL
             | (ITM_HARD & (WALL_JUMP_LV2 | AIR_DASH))
             | (RABI_SLIPPERS & (ADV_VHARD | (ADV_HARD & SPEED3)))
-            | (ADV_VHARD & PROLOGUE_TRIGGER & SLIDING_POWDER & BUNNY_AMULET)
-            | (ADV_STUPID & PROLOGUE_TRIGGER & SPEED3)
+            | (PROLOGUE_TRIGGER & (
+                (ADV_VHARD & SLIDING_POWDER & (BUNNY_AMULET | OBS_EXT))
+                | (ADV_EXT & BUNNY_AMULET & 3_AMULET_FOOD)
+                | (ADV_STUPID & SPEED3)
+                // done by TAS
+                // | (ADV_STUPID & SPEED2)
+            ))
         )",
     },
 }
@@ -303,8 +314,7 @@
 "item": "HEALTH_WAGER",
 "from_location": "GRAVEYARD_UPPER",
 "entry_prereq": "
-    (AIR_JUMP & AIR_DASH)
-    | (AIR_JUMP & ITM_HARD)
+    (AIR_JUMP & (AIR_DASH | BUNNY_STRIKE | ITM_HARD))
     | (AIR_DASH_LV3 & (
         ADV_VHARD | (ITM_HARD & (WALL_JUMP | BUNNY_AMULET))
     ))
@@ -1501,10 +1511,14 @@
             | SLIDE_JUMP_BUNSTRIKE_CANCEL
             | (ITM_HARD & (WALL_JUMP_LV2 | AIR_DASH))
             | (RABI_SLIPPERS & (ADV_VHARD | (ADV_HARD & SPEED3)))
-            | (ADV_VHARD & PROLOGUE_TRIGGER & SLIDING_POWDER & BUNNY_AMULET)
-            | (ADV_STUPID & PROLOGUE_TRIGGER & SPEED3)
-        )
-        ",
+            | (PROLOGUE_TRIGGER & (
+                (ADV_VHARD & SLIDING_POWDER & (BUNNY_AMULET | OBS_EXT))
+                | (ADV_EXT & BUNNY_AMULET & 3_AMULET_FOOD)
+                | (ADV_STUPID & SPEED3)
+                // done by TAS
+                // | (ADV_STUPID & SPEED2)
+            ))
+        )",
     },
 }
 
