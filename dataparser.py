@@ -238,6 +238,17 @@ def define_default_expressions(variable_names_set):
         "SPEED5": "SPEED_BOOST_LV3 & SPEEDY",
     })
     def1.update(def3)
+
+    expr = lambda s : parse_expression(s, variable_names_set, def1)
+    def4 = expr_all({
+        "1TILE_ZIP": "SLIDE_ZIP",
+        "2TILE_ZIP": "SLIDE_ZIP & ADV_VHARD",
+        "3TILE_ZIP": "SLIDE_ZIP & HARD",
+        "4TILE_ZIP": "SLIDE_ZIP & HARD",
+        "5TILE_ZIP": "RABI_SLIPPERS & SLIDE_ZIP & ADV_VHARD",
+    })
+    def1.update(def4)
+
     return def1
 
 def shufflable_gift_item_map_modifications():

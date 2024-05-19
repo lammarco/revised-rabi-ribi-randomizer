@@ -443,7 +443,7 @@
 "changes": [
     {
     "edge": "PARK_MAIN -> UPRPRC_BASE",
-    "prereq": "SLIDE_ZIP | ROLL_BONK_ZIP",
+    "prereq": "3TILE_ZIP | ROLL_BONK_ZIP",
     }
 ]}
 
@@ -509,7 +509,7 @@
 "changes": [
     {
     "edge": "PARK_MAIN -> UPRPRC_BASE",
-    "prereq": "FIRE_ORB | SLIDE_ZIP | ROLL_BONK_ZIP",
+    "prereq": "FIRE_ORB | 3TILE_ZIP | ROLL_BONK_ZIP",
     }
 ]}
 
@@ -575,7 +575,7 @@
 "changes": [
     {
     "edge": "PARK_MAIN -> UPRPRC_BASE",
-    "prereq": "EXPLOSIVES_ENEMY | BUNNY_WHIRL | SLIDE_ZIP",
+    "prereq": "EXPLOSIVES_ENEMY | BUNNY_WHIRL | 3TILE_ZIP",
     }
 ]}
 
@@ -836,7 +836,7 @@
     }
     {
     "edge": "FOREST_NIGHT_WEST -> FOREST_NIGHT_NORTH_EAST",
-    "prereq": "(EXPLOSIVES & (SLIDING_POWDER | HAMMER_ROLL_ZIP)) | (ADV_VHARD & SLIDE_ZIP)",
+    "prereq": "(EXPLOSIVES & (SLIDING_POWDER | HAMMER_ROLL_ZIP)) | 2TILE_ZIP",
     }
 ]}
 
@@ -950,10 +950,12 @@
     "edge": "FOREST_WARP -> FOREST_EAST_ABOVE_SPRING",
     "prereq":
         "AIR_JUMP | BUNNY_STRIKE | AIR_DASH_LV3
-        | (ADV_VHARD & BORING & WHIRL_BONK) // bufferd wall launch, whirl bonk off falling bunny
-        | (ADV_VHARD & AIR_DASH) // buffered wall launch, air dash
-        | (ADV_VHARD & SLIDE_ZIP) // 2-tile zip
-        | (ADV_EXT & RABI_SLIPPERS & WALL_JUMP_LV2 & MANY_AMULET_FOOD) // 5 velocity cancels
+        | 2TILE_ZIP
+        | (ADV_VHARD & (
+            AIR_DASH // buffered wall launch, air dash
+            | (BORING & WHIRL_BONK) // bufferd wall launch, whirl bonk off falling bunny
+        ))
+        | (ADV_EXT & (RABI_SLIPPERS | (OBS_STUPID & DOWNDRILL_SEMISOLID_CLIP)) & WALL_JUMP_LV2 & MANY_AMULET_FOOD) // 5 (6) velocity cancels
         // 7 velocity cancels, not enough shop items on BEX without item hover
         // | (ADV_STUPID & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
         ",
@@ -1137,7 +1139,7 @@
         DOWNDRILL_SEMISOLID_CLIP
         | (
             (EXPLOSIVES_ENEMY & SLIDING_POWDER)
-            | (ADV_EXT & WATER_ORB & SLIDE_ZIP)
+            | (ADV_EXT & WATER_ORB & 3TILE_ZIP)
         )",
     }
     {

@@ -287,7 +287,7 @@
 "from_location": "FOREST_UPPER_EAST",
 "entry_prereq": "
     (EXPLOSIVES_ENEMY & SLIDING_POWDER)
-    | (OBS_VHARD & RABI_SLIPPERS & SLIDE_ZIP) // 5-tile zip from missing collision spot
+    | (OBS_VHARD & 5TILE_ZIP) // 5-tile zip from missing collision spot
     ",
 "exit_prereq": "SLIDING_POWDER & (CARROT_SHOOTER_ENTRY | EXPLOSIVES)",
 }
@@ -381,7 +381,7 @@
     & (SLIDE_ZIP | (EXPLOSIVES & (SLIDING_POWDER | HAMMER_ROLL_ZIP)))
 ",
 "alternate_exits": {
-    "LIBRARY_IRISU": "(RABI_SLIPPERS & SLIDE_ZIP & ADV_VHARD) | BUNSTRIKE_ZIP",
+    "LIBRARY_IRISU": "5TILE_ZIP | BUNSTRIKE_ZIP",
     },
 }
 
@@ -441,7 +441,7 @@
 "exit_prereq": "NONE",
 
 "alternate_exits": {
-    "PYRAMID_LOWER": "SLIDE_ZIP & EXPLOSIVES & ADV_VHARD"
+    "PYRAMID_LOWER": "EXPLOSIVES & 2TILE_ZIP"
     },
 }
 
@@ -643,9 +643,9 @@
 "from_location": "SKY_BRIDGE_MAIN",
 "entry_prereq": "
     (EXPLOSIVES & SLIDING_POWDER)
-    | (ADV_VHARD & SLIDE_ZIP & RABI_SLIPPERS) // 5-tile zip
-    | (ADV_EXT & SLIDE_ZIP & (WHIRL_BONK_CANCEL | AIR_JUMP | WALL_JUMP | BUNNY_AMULET)) // 2-tile zip
-    | (ADV_VHARD & BUNSTRIKE_ZIP) // 4-tile strike zip
+    | 5TILE_ZIP
+    | (ADV_EXT & 2TILE_ZIP & (WHIRL_BONK_CANCEL | AIR_JUMP | RABI_SLIPPERS | WALL_JUMP | BUNNY_AMULET | OBSCURE)) // 2-tile zip
+    | BUNSTRIKE_ZIP // 4-tile strike zip (j6 n11)
     ",
 "exit_prereq": "(EXPLOSIVES & SLIDING_POWDER) | SLIDE_ZIP | HAMMER_ROLL_ZIP",
 }
@@ -763,8 +763,8 @@
 "item": "REGEN_UP_RAVINE",
 "from_location": "RAVINE_LOWER",
 // cramped 2 tile zip in and out
-"entry_prereq": "EXPLOSIVES | (OBS_EXT & ((SLIDE_ZIP & BUNNY_AMULET) | BUNSTRIKE_ZIP))",
-"exit_prereq": "EXPLOSIVES | (ADV_EXT & SLIDE_ZIP)",
+"entry_prereq": "EXPLOSIVES | (OBS_EXT & (BUNSTRIKE_ZIP | (2TILE_ZIP & BUNNY_AMULET)))",
+"exit_prereq": "EXPLOSIVES | (ADV_EXT & 2TILE_ZIP)",
 }
 
 {
@@ -1304,7 +1304,7 @@
     "LAB_ENTRANCE": "EXPLOSIVES_ENEMY & HAMMER_ROLL_ZIP",
 },
 "alternate_exits": {
-    "LAB_EAST_PACK_UP_ROOM": "ADV_VHARD & EXPLOSIVES_ENEMY & SLIDE_ZIP",
+    "LAB_EAST_PACK_UP_ROOM": "EXPLOSIVES_ENEMY & 2TILE_ZIP",
 },
 }
 
@@ -1410,7 +1410,7 @@
     (SLIDING_POWDER & (
         CARROT_BOMB
         // hammer roll zip oob, then almost blind 2 tile zip
-        | (OBS_STUPID & SLIDE_ZIP & (HAMMER_ROLL_ZIP | BUNSTRIKE_ZIP))
+        | (2TILE_ZIP & ((OBS_EXT & HAMMER_ROLL_ZIP) | (OBS_STUPID & BUNSTRIKE_ZIP)))
     ))
     & (
         (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD)) // 6tile airjump
