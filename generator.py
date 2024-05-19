@@ -72,7 +72,7 @@ class Generator(object):
         time_taken = time.time() - start_time
         time_string = '%.2f seconds' % (time_taken)
 
-        print_ln('Seed generated after %d attempts in %s' % (attempts+1, time_string))
+        print_ln('Seed generated after %d attempts in %s (%.2f/sec)' % (attempts+1, time_string, (attempts + 1) / time_taken))
 
         # Generate Visualization and Print Output:
         if self.settings.debug_visualize:
