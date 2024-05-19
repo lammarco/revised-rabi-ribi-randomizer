@@ -288,7 +288,7 @@
     }
     {
     "edge": "PYRAMID_MAIN -> BEACH_MAIN",
-    "prereq": "(FIRE_ORB | SLIDING_POWDER) & current",
+    "prereq": "FIRE_ORB & current",
     }
 ]}
 
@@ -366,7 +366,7 @@
     }
     {
     "edge": "PYRAMID_MAIN -> BEACH_MAIN",
-    "prereq": "(PIKO_HAMMER | SLIDING_POWDER) & current",
+    "prereq": "(PIKO_HAMMER | EXPLOSIVES) & current",
     }
 ]}
 
