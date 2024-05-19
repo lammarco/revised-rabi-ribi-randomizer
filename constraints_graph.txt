@@ -1616,10 +1616,7 @@ DARKNESS & (
         AIR_DASH
         | AIR_JUMP
         | ((ADV_HARD | (ITM_HARD & BUNNY_AMULET)) & (
-            SLIDING_POWDER
-            | HAMMER_ROLL_ZIP
-            | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-            | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD & (BUNNY_AMULET | STUPID))
+            SLIDING_POWDER | HAMMER_ROLL_ZIP | 5TILE_WALL_CLIMB
         ))
 ",
 }
@@ -1656,14 +1653,7 @@ DARKNESS & (
 
 {
 "edge": "SKY_BRIDGE_MAIN -> PARK_TOWN_ENTRANCE",
-"prereq": "
-        AIR_DASH
-        | AIR_JUMP
-        | SLIDING_POWDER
-        | HAMMER_ROLL_ZIP
-        | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-        | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD & (BUNNY_AMULET | STUPID))
-",
+"prereq": "5TILE_WALL_CLIMB | SLIDING_POWDER | HAMMER_ROLL_ZIP",
 }
 
 {

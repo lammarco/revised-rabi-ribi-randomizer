@@ -1260,11 +1260,7 @@
 {
 "item": "PACK_UP_NORTH_EVERNIGHT",
 "from_location": "EVERNIGHT_NORTHWEST",
-"entry_prereq": "
-    AIR_DASH | AIR_JUMP | SLIDE_JUMP_BUNSTRIKE
-    | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
-    ",
+"entry_prereq": "SLIDE_JUMP_BUNSTRIKE | 5TILE_WALL_CLIMB",
 "exit_prereq": "NONE",
 }
 
@@ -1754,14 +1750,9 @@
 "item": "EGG_PARK_GREEN_KOTRI",
 "from_location": "PARK_KOTRI",
 "entry_prereq": "
-    WHIRL_BONK | AIR_JUMP | AIR_DASH
-    | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
-    | (ADV_VHARD & (
-        (RABI_SLIPPERS & AMULET_FOOD)
-        | SLIDING_POWDER // slide bonk off stone
-    ))
-    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD & (BUNNY_AMULET | STUPID))
-    | (ADV_STUPID & MANY_AMULET_FOOD)
+    WHIRL_BONK | 5TILE_WALL_CLIMB | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
+    | (ADV_VHARD & SLIDING_POWDER) // slide bonk off stone
+    | (ADV_STUPID & 3_AMULET_FOOD)
 ",
 "exit_prereq": "NONE",
 }
@@ -1890,9 +1881,8 @@
 "item": "EGG_RIVERBANK_WALL",
 "from_location": "RIVERBANK_LEVEL2",
 "entry_prereq": "
-    WHIRL_BONK | AIR_JUMP | AIR_DASH | SLIDE_JUMP_BUNSTRIKE | (ADV_HARD & SLIDING_POWDER)
-    | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD & (BUNNY_AMULET | STUPID))
+    WHIRL_BONK | SLIDE_JUMP_BUNSTRIKE | (ADV_HARD & SLIDING_POWDER)
+    | 5TILE_WALL_CLIMB
     // 0% method : walljump, damage boost off red uprprc bullets, wallkick, amulet
     | (ADV_STUPID & AMULET_FOOD)
     ",
@@ -1909,14 +1899,7 @@
 {
 "item": "EGG_LAB_ENTRANCE",
 "from_location": "LAB_ENTRANCE",
-"entry_prereq": "
-    SLIDING_POWDER & (
-        AIR_JUMP
-        | AIR_DASH
-        | SLIDE_JUMP_BUNSTRIKE
-        | (ADV_VHARD & RABI_SLIPPERS & BUNNY_AMULET)
-        | (ADV_EXT & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
-    )",
+"entry_prereq": "SLIDING_POWDER & (5TILE_WALL_CLIMB | SLIDE_JUMP_BUNSTRIKE)",
 "exit_prereq": "NONE",
 }
 

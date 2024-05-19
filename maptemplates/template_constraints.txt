@@ -322,13 +322,7 @@
 "changes": [
     {
     "edge": "PYRAMID_WARP_ROOM -> PYRAMID_LOWER",
-    "prereq": "FIRE_ORB & (
-        AIR_JUMP
-        | AIR_DASH
-        | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
-        | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD & (WALL_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL))
-    )",
+    "prereq": "FIRE_ORB & (5TILE_WALL_CLIMB | 5TILE_WALL_CLIMB_BUNSTRIKE)",
     }
 ]}
 
@@ -376,13 +370,7 @@
 "changes": [
     {
     "edge": "PYRAMID_WARP_ROOM -> PYRAMID_LOWER",
-    "prereq": "PIKO_HAMMER & (
-        AIR_JUMP
-        | AIR_DASH
-        | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
-        | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD & (WALL_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL))
-    )",
+    "prereq": "PIKO_HAMMER & (5TILE_WALL_CLIMB | 5TILE_WALL_CLIMB_BUNSTRIKE)",
     }
 ]}
 
@@ -792,11 +780,7 @@
 "changes": [
     {
     "edge": "LAB_EAST -> LAB_COMPUTER_ROOM",
-    "prereq": "
-        AIR_JUMP | AIR_DASH | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
-        | (ADV_VHARD & RABI_SLIPPERS) // need bunny amulet
-        | (ADV_EXT & 2_AMULET_FOOD & (WALL_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL))
-        ",
+    "prereq": "5TILE_WALL_CLIMB | 5TILE_WALL_CLIMB_BUNSTRIKE",
     }
 ]}
 
@@ -2023,10 +2007,6 @@
 "changes": [
     {
     "edge": "SNOWLAND_EVERNIGHT_ENTRANCE -> SNOWLAND_WEST",
-    "prereq": "
-        AIR_JUMP | AIR_DASH | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
-        | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD & (WALL_JUMP | SLIDE_JUMP_BUNSTRIKE_CANCEL))
-    ",
+    "prereq": "5TILE_WALL_CLIMB | 5TILE_WALL_CLIMB_BUNSTRIKE",
     }
 ]}

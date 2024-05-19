@@ -127,6 +127,7 @@ def define_pseudo_items():
         "2_AMULET_FOOD": lambda v : enough_amu_food(v, 2),
         "3_AMULET_FOOD": lambda v : enough_amu_food(v, 3),
         "4_AMULET_FOOD": lambda v : enough_amu_food(v, 4),
+        "6_AMULET_FOOD": lambda v : enough_amu_food(v, 6),
         "MANY_AMULET_FOOD": "ITEM_MENU & TOWN_SHOP & BUNNY_AMULET",
 
         "BOOST": "BEACH_MAIN | (RUMI_DONUT & ITEM_MENU)",
@@ -248,6 +249,17 @@ def define_default_expressions(variable_names_set):
         "3TILE_ZIP": "SLIDE_ZIP & HARD",
         "4TILE_ZIP": "SLIDE_ZIP & HARD",
         "5TILE_ZIP": "RABI_SLIPPERS & SLIDE_ZIP & ADV_VHARD",
+
+        "5TILE_WALL_CLIMB": "\
+            AIR_JUMP | AIR_DASH | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)\
+            | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD & (BUNNY_AMULET | STUPID))\
+            | (OBS_STUPID & BORING & 6_AMULET_FOOD)\
+        ",
+
+        "5TILE_WALL_CLIMB_BUNSTRIKE": "\
+            (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)\
+            | (ADV_EXT & SLIDE_JUMP_BUNSTRIKE_CANCEL & 2_AMULET_FOOD)\
+        ",
     })
     def1.update(def4)
 
