@@ -353,7 +353,11 @@ ITM & DARKNESS & (
 
 {
 "edge": "CAVE_ENTRANCE -> CAVE_COCOA",
-"prereq": "(KOTRI_1 & COCOA_1 & CHAPTER_1) | BUNSTRIKE_ZIP | (OBS_STUPID & 3TILE_ZIP)",
+"prereq": "
+    (KOTRI_1 & COCOA_1 & CHAPTER_1)
+    //| (POST_GAME & CHAPTER_6) // softlock potencial for current analyzer algorithm
+    | BUNSTRIKE_ZIP | (OBS_STUPID & 3TILE_ZIP)
+",
 }
 
 {
@@ -633,7 +637,7 @@ PROLOGUE_TRIGGER & (
 
 {
 "edge": "PYRAMID_HOURGLASS_ROOM -> PYRAMID_MAIN",
-"prereq": "8TILE_WALLJUMP",
+"prereq": "TM_PANDORA & 8TILE_WALLJUMP",
 }
 
 {

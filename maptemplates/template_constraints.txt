@@ -493,6 +493,11 @@
     "edge": "PARK_UPPER -> PARK_MAIN",
     "prereq": "FIRE_ORB",
     }
+    // dummy constraint changes for prevent fail in major node check
+    {
+    "edge": "PARK_UPPER -> SKY_BRIDGE_MAIN",
+    "prereq": "current",
+    }
 ]}
 
 {
@@ -562,6 +567,11 @@
     {
     "edge": "PARK_UPPER -> PARK_MAIN",
     "prereq": "BUNNY_WHIRL | EXPLOSIVES",
+    }
+    // dummy constraint changes for prevent fail in major node check
+    {
+    "edge": "PARK_UPPER -> SKY_BRIDGE_MAIN",
+    "prereq": "current",
     }
 ]}
 
@@ -882,14 +892,14 @@
     "edge": "FOREST_NIGHT_TOXIC_STRIKE -> FOREST_NIGHT_WEST",
     "prereq": "current & (
         AIR_JUMP | AIR_DASH_LV3 | BUNNY_STRIKE | CARROT_BOMB | (AIR_DASH & ITM_HARD) |
-        (CARROT_SHOOTER & (BOOST | CHARGE_RING | (AMULET_FOOD & ITM_HARD)))
+        (CARROT_SHOOTER & (BOOST | CHARGE_RING | ADV_EXT | (AMULET_FOOD & ITM_HARD)))
         )",
     }
     {
     "edge": "FOREST_NIGHT_NORTH_EAST -> FOREST_NIGHT_WEST",
     "prereq": "current & (
         AIR_JUMP | AIR_DASH_LV3 | BUNNY_STRIKE | CARROT_BOMB | (AIR_DASH & ITM_HARD) |
-        (CARROT_SHOOTER & (BOOST | CHARGE_RING | (AMULET_FOOD & ITM_HARD)))
+        (CARROT_SHOOTER & (BOOST | CHARGE_RING | ADV_EXT | (AMULET_FOOD & ITM_HARD)))
         )",
     }
     {
