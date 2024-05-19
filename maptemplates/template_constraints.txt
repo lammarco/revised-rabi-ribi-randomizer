@@ -1842,7 +1842,7 @@
 
 {
 "name": "palace_attack_up_oneway",
-"weight": 5,
+"weight": 8,
 "changes": [
     {
     "edge": "PALACE_WARP_LEVEL_1_2 -> PALACE_ATTACK_UP_TUNNEL",
@@ -1872,7 +1872,7 @@
 
 {
 "name": "graveyard_upper_wall",
-"weight": 20,
+"weight": 15,
 "changes": [
     {
     "edge": "GRAVEYARD_MAIN -> GRAVEYARD_UPPER",
