@@ -151,7 +151,7 @@ HAMMER_ROLL_ZIP | (
         | SLIDE_JUMP_BUNSTRIKE
         | AIR_DASH
         | WHIRL_BONK
-        | (2TILE_ZIP & (WALL_JUMP | AMULET_FOOD))
+        | (ADV_VHARD & AMULET_FOOD)
         // slide bonk
         | ADV_EXT
     )
