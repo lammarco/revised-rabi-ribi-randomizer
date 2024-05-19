@@ -486,7 +486,10 @@
 {
 "item": "HP_UP_PYRAMID_ENTRANCE",
 "from_location": "BEACH_MAIN",
-"entry_prereq": "CARROT_BOMB | (CARROT_SHOOTER & BOOST & ADV_HARD) | ((BUNSTRIKE_ZIP | 2TILE_DOWNDRILL_SEMISOLID_CLIP) & SLIDE_ZIP & ADV_VHARD)",
+"entry_prereq": "
+    CARROT_BOMB | (CARROT_SHOOTER & BOOST & ADV_HARD)
+    | ((BUNSTRIKE_ZIP | 2TILE_DOWNDRILL_SEMISOLID_CLIP) & SLIDE_ZIP & ADV_VHARD) // j6 n11
+",
 "exit_prereq": "EXPLOSIVES | HAMMER_ROLL_ZIP",
 }
 
@@ -702,7 +705,8 @@
 "item": "LUCKY_SEVEN",
 "from_location": "SKY_BRIDGE_MAIN",
 "entry_prereq": "NONE",
-"exit_prereq": "NONE",
+"exit_prereq": "NONE", // borderline of DARKNESS?
+//"exit_prereq": "DARKNESS | DOWNDRILL_SEMISOLID_CLIP",
 }
 
 {
@@ -822,8 +826,7 @@
 "item": "REGEN_UP_PALACE",
 "from_location": "PALACE_LEVEL_3",
 "entry_prereq": "
-    DARKNESS &
-    (
+    DARKNESS & (
         SLIDE_JUMP_BUNSTRIKE
         | WHIRL_BONK
         | AIR_DASH
@@ -1356,8 +1359,15 @@
 "item": "FIRE_ORB",
 "from_location": "VOLCANIC_MAIN",
 // 1.8 requirements
-"entry_prereq": "(ITM & FIRE_ORB) | CARROT_BOMB | (CARROT_SHOOTER & (BOOST | CHARGE_RING))",
-"exit_prereq": "FIRE_ORB | (RABI_SLIPPERS & AIR_JUMP & WALL_JUMP_LV2) | (ADV_STUPID & BUNSTRIKE_ZIP)",
+"entry_prereq": "
+    (ITM & FIRE_ORB)
+    | CARROT_BOMB | (CARROT_SHOOTER & (BOOST | CHARGE_RING))
+",
+"exit_prereq": "
+    FIRE_ORB
+    | ((RABI_SLIPPERS | (ADV_VHARD & SLIDE_JUMP_BUNSTRIKE_CANCEL)) & AIR_JUMP & WALL_JUMP_LV2)
+    | (ADV_EXT & BUNSTRIKE_ZIP) // j12 (n7 or n8)
+",
 // 1.75 requirements
 //"entry_prereq": "CARROT_BOMB | (CARROT_SHOOTER & (BOOST | CHARGE_RING))",
 //"exit_prereq": "EXPLOSIVES_ENEMY | (RABI_SLIPPERS & AIR_JUMP & WALL_JUMP_LV2)",

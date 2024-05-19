@@ -585,11 +585,12 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "PYRAMID_MAIN -> PYRAMID_HOURGLASS_ROOM",
 "prereq": "NONE",
+//"prereq": "TM_PANDORA",
 }
 
 {
 "edge": "PYRAMID_HOURGLASS_ROOM -> PYRAMID_MAIN",
-"prereq": "ITM_HARD | AIR_JUMP | WALL_JUMP | RABI_SLIPPERS",
+"prereq": "8TILE_WALLJUMP",
 }
 
 {
@@ -1109,10 +1110,11 @@ PROLOGUE_TRIGGER & (
 "prereq": "
     DARKNESS
     & (
-        (AIR_JUMP & WALL_JUMP_LV2)
-        | (AIR_JUMP & BUNNY_WHIRL & RABI_SLIPPERS)
-        | (AIR_JUMP & BUNNY_WHIRL & SLIDE_JUMP_BUNSTRIKE_CANCEL)
-        | (AIR_JUMP & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+        (AIR_JUMP & (
+            WALL_JUMP_LV2
+            | (BUNNY_WHIRL & (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
+            | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+        ))
         | (WHIRL_BONK_CANCEL & (WALL_JUMP_LV2 | ADV_VHARD))
     )
 ",
@@ -1267,14 +1269,14 @@ PROLOGUE_TRIGGER & (
 "prereq": "(SLIDING_POWDER | PROLOGUE_TRIGGER) & (
         // going up the long chasm
         WALL_JUMP_LV2 & (AIR_JUMP | (ADV_VHARD & WHIRL_BONK_CANCEL))
-        // bonk off the falling uprprc
+        // bonk off a falling uprprc
         | (OBS_STUPID & WHIRL_BONK & BUNNY_AMULET & (AIR_JUMP | RABI_SLIPPERS | WALL_JUMP))
     )", 
 }
 
 {
 "edge": "RAVINE_UPPER_WEST -> RAVINE_LOWER",
-"prereq": "NONE", // semisolid
+"prereq": "NONE",
 }
 
 {
@@ -1290,15 +1292,19 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "RAVINE_UPPER_EAST -> RAVINE_NORTH_ATTACK_UP_ROOM",
 "prereq": "
+ADV_VHARD & (
     // Jumping up the chasm
     // speed5: normal jump
     // speed2: quick drop jump
     // speed0: quick drop air jump from the right side wall, quick drop, jump
-    (ADV_VHARD & WALL_JUMP_LV2 & AIR_JUMP & (SLIDING_POWDER | SPEED5 | (SPEED2 & EXTREME) | (OBS_EXT)))
-    | (ADV_EXT & SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS & (WALL_JUMP_LV2 | (WALL_JUMP & AIR_JUMP)))
-    // double airjump
-    | (OBS_EXT & SLIDE_JUMP_BUNSTRIKE_CANCEL & AIR_JUMP)
-",
+    (WALL_JUMP_LV2 & AIR_JUMP & (SLIDING_POWDER | SPEED5 | (SPEED2 & EXTREME) | (OBS_EXT)))
+    | (SLIDE_JUMP_BUNSTRIKE_CANCEL & (
+        (RABI_SLIPPERS & (WALL_JUMP_LV2 | (AIR_JUMP & (WALL_JUMP | EXTREME))))
+        // double airjump
+        | (OBS_EXT & AIR_JUMP)
+    ))
+)",
+
 }
 
 {
@@ -1517,9 +1523,10 @@ PROLOGUE_TRIGGER & (
 "prereq": "
 DARKNESS & (
     EXPLOSIVES_ENEMY
-    | (ADV_HARD & HAMMER_ROLL & AIR_JUMP)
-    | (ADV_HARD & AIR_JUMP & SLIDE_JUMP_BUNSTRIKE_CANCEL)
-    | (OBS_VHARD & AIR_JUMP & WALL_JUMP_LV2)
+    | (AIR_JUMP & (
+        (ADV_HARD & (HAMMER_ROLL | SLIDE_JUMP_BUNSTRIKE_CANCEL))
+        | (OBS_VHARD & WALL_JUMP_LV2)
+    ))
     // slide bonk
     | (ADV_EXT & SLIDING_POWDER & ((OBSCURE & WALL_JUMP_LV2) | AIR_JUMP))
     // whirl bonk off falling card soldier
@@ -1847,7 +1854,9 @@ ITM & (
     | (WALL_JUMP_LV2 & (ITM_VHARD | RABI_SLIPPERS))
     | (ADV_HARD & WHIRL_BONK)
     | (ADV_VHARD & SLIDING_POWDER) // bonk cyan five floating swords
-    | (ADV_EXT & WALL_JUMP & RABI_SLIPPERS) // land on edge of the block for dodge the cat
+    // land on edge of the block for dodge the cat
+    // or knockback, recovery walljump
+    | (ADV_EXT & WALL_JUMP & RABI_SLIPPERS)
     | (AIR_DASH & (
         (RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL)
         | (ITM_VHARD & WALL_JUMP)
@@ -2322,6 +2331,7 @@ ITM & (
     | WHIRL_BONK
     | (SLIDING_POWDER & (ITM_HARD | RABI_SLIPPERS))
     | (ADV_VHARD & AMULET_FOOD)
+    // normal jump, obsolated but good for reference
     //| (ADV_STUPID & RABI_SLIPPERS & SPEED5)
 ",
 }
@@ -2358,7 +2368,8 @@ ITM & (
     | (WHIRL_BONK_CANCEL & (ADV_VHARD | WALL_JUMP_LV2))
     | (AIR_JUMP & (WALL_JUMP_LV2 | (WHIRL_BONK & ADV_HARD)))
     | (ITM_HARD & HAMMER_ROLL & (
-        AIR_JUMP | WALL_JUMP_LV2
+        AIR_JUMP
+        | WALL_JUMP_LV2
         | (ADV_VHARD & RABI_SLIPPERS)
         | ADV_STUPID // rollbonk blue bunny, whirlbonk fairy
     ))
@@ -2382,13 +2393,15 @@ ITM & (
 {
 "edge": "EVERNIGHT_EAST_OF_WARP -> EVERNIGHT_CORRIDOR_BELOW_SAYA",
 "prereq": "
+    // use the fireorb ledge
     (ITM & FIRE_ORB & (
         RABI_SLIPPERS
         | AIR_JUMP
         | (ITM_HARD & (SLIDING_POWDER | AIR_DASH | SPEED1))
         | (V_HARD & WHIRL_BONK)
-        | ADV_EXT
+        | ADV_EXT // dboost
     ))
+    
     | (AIR_JUMP & (
         RABI_SLIPPERS
         | SLIDE_JUMP_BUNSTRIKE_CANCEL
@@ -2626,31 +2639,6 @@ ITM & (
 // | Area 9 : System Interior
 // '---------------------.
 
-
-// .---------------------'
-// | Map Transition Constraints
-// '---------------------.
-
-{
-"edge": "FOREST_NIGHT_NORTH_EAST -> PLURKWOOD_MAIN",
-"prereq": "PLURKWOOD",
-}
-
-{
-"edge": "PLURKWOOD_MAIN -> FOREST_NIGHT_NORTH_EAST",
-"prereq": "NONE",
-}
-
-{
-"edge": "LAB_COMPUTER_ROOM -> SYSTEM_INTERIOR_MAIN",
-"prereq": "CHAPTER_3",
-}
-
-{
-"edge": "SYSTEM_INTERIOR_MAIN -> LAB_COMPUTER_ROOM",
-"prereq": "NONE",
-}
-
 // Assume players know how to disable items to shoot ribbon blocks
 {
 "edge": "SYSTEM_INTERIOR_MAIN -> SYSINT2_START",
@@ -2724,6 +2712,30 @@ EXPLOSIVES & (
         | (ADV_VHARD & AIR_JUMP & WALL_JUMP_LV2)
     )
 ",
+}
+
+// .---------------------'
+// | Map Transition Constraints
+// '---------------------.
+
+{
+"edge": "FOREST_NIGHT_NORTH_EAST -> PLURKWOOD_MAIN",
+"prereq": "PLURKWOOD",
+}
+
+{
+"edge": "PLURKWOOD_MAIN -> FOREST_NIGHT_NORTH_EAST",
+"prereq": "NONE",
+}
+
+{
+"edge": "LAB_COMPUTER_ROOM -> SYSTEM_INTERIOR_MAIN",
+"prereq": "CHAPTER_3",
+}
+
+{
+"edge": "SYSTEM_INTERIOR_MAIN -> LAB_COMPUTER_ROOM",
+"prereq": "NONE",
 }
 
 // .---------------------'
