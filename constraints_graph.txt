@@ -884,13 +884,13 @@ PROLOGUE_TRIGGER & (
         | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
     ))
     | (ADV_EXT & 4_AMULET_FOOD & RABI_SLIPPERS & WALL_JUMP & (BUNNY_AMULET_LV2 | (BUNNY_AMULET & RUMI_DONUT)))
-    | (ADV_VHARD & WALL_JUMP & AIR_DASH & (BUNNY_AMULET_LV2 | OBSCURE))
+    | (ADV_VHARD & WALL_JUMP & AIR_DASH & (2_AMULET_FOOD | OBSCURE))
     // 1st ledge: wimpy launch, airdash, bounce, amulet
     // 2nd ledge: wall jump, airdash, wall kick
     | (ADV_VHARD & AIR_DASH_LV3 & AMULET_FOOD)
     // 1st ledge: wall jump and pause after 1 frame, amulet, qd, bounce, (amulet), airdash
     // 2nd ledge: wimpy launch, bounce, airdash
-    | (OBS_EXT & AIR_DASH & (BUNNY_AMULET_LV2 | (BUNNY_AMULET & STUPID)))
+    | (OBS_EXT & AIR_DASH & BUNNY_AMULET & (BUNNY_AMULET_LV2 | (ITEM_MENU & RUMI_DONUT) | STUPID))
 ",
 }
 
@@ -2279,7 +2279,7 @@ ITM & (
     | (AIR_JUMP & (ITM_HARD | RABI_SLIPPERS))
     | (AIR_DASH & RABI_SLIPPERS)
     | WHIRL_BONK
-    | (ADV_VHARD & WALL_JUMP & AIR_DASH & (BUNNY_AMULET | OBSCURE))
+    | (ADV_VHARD & WALL_JUMP & AIR_DASH & (AMULET_FOOD | OBSCURE))
     | (ADV_VHARD & RABI_SLIPPERS) // damage boost off spider bullets
     // wall jump, damage boost, wall kick, amulet or air dash
     | (ADV_EXT & (AMULET_FOOD | AIR_DASH))

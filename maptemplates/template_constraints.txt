@@ -988,7 +988,7 @@
         ))
         | (ADV_EXT & (RABI_SLIPPERS | (OBS_STUPID & DOWNDRILL_SEMISOLID_CLIP)) & WALL_JUMP_LV2 & MANY_AMULET_FOOD) // 5 (6) velocity cancels
         // 7 velocity cancels, not enough shop items on BEX without item hover
-        // | (ADV_STUPID & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
+        // | (ADV_STUPID & WALL_JUMP & MANY_AMULET_FOOD)
         ",
     }
 ]}
