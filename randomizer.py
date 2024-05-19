@@ -463,6 +463,8 @@ def pre_modify_map_data(mod, settings, diff_patch_files, config):
             './maptemplates/event_warps/ew_cicini_to_ravine.txt',
             './maptemplates/event_warps/ew_forest_to_beach.txt',
             './maptemplates/event_warps/ew_town_to_riverbank.txt',
+            './maptemplates/event_warps/ew_rumi_no_give_items.txt',
+            './maptemplates/event_warps/ew_sandbag_no_boost.txt',
         ]
         print_ln('Map fixes applied')
 
@@ -525,7 +527,7 @@ def apply_map_transition_shuffle(mod, data, settings, allocation):
 
 def apply_start_location_shuffle(mod, settings, allocation):
     if not settings.shuffle_start_location: return
-    # Add start warp room and remove warp stone from FC2
+    # Add start warp room and remove FC2 warp stone
     apply_diff_patch_fixes(mod, [
         './maptemplates/event_warps/ew_start_room.txt',
         './maptemplates/event_warps/ew_fc2_to_start.txt',
