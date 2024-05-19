@@ -924,10 +924,12 @@
 "item": "MP_UP_ICY_SUMMIT",
 "from_location": "ICY_SUMMIT_MAIN",
 "entry_prereq": "
-    ADV_EXT | RABI_SLIPPERS | AIR_JUMP | WHIRL_BONK
-    | (ITM_VHARD & SPEED1)
-    | (ITM_HARD & (AIR_DASH | WALL_JUMP | SPEED3))
-    | (ADV_HARD & SLIDING_POWDER)
+    ITM & (
+        ADV_EXT | RABI_SLIPPERS | AIR_JUMP | WHIRL_BONK
+        | (ITM_VHARD & SPEED1)
+        | (ITM_HARD & (WALL_JUMP | SPEED3)) 
+        | (ADV_HARD & (AIR_DASH | SLIDING_POWDER))
+    )
     ",
 "exit_prereq": "NONE",
 
@@ -1649,9 +1651,6 @@
         )
     ",
     },
-"alternate_exits": {
-    "BEACH_MAIN": "NONE",
-    },
 }
 
 {
@@ -1871,7 +1870,11 @@
 "entry_prereq": "
     AIR_JUMP | WATER_ORB | WHIRL_BONK | WALL_JUMP_LV2
     | (WALL_JUMP & (RABI_SLIPPERS | (AIR_DASH & ITM_HARD)))
+    | (ADV_VHARD & AIR_DASH_LV3)
+    | (ADV_EXT & AIR_DASH & 2_AMULET_FOOD)
     | (ADV_EXT & MANY_AMULET_FOOD) // wimpy, 6 velocity cancels, bounce
+    | (ADV_VHARD & BORING & RABI_SLIPPERS) // dboost
+    | (ADV_EXT & BORING & CONSUMABLE_USE) // 3 dboosts
 ",
 "exit_prereq": "NONE",
 }

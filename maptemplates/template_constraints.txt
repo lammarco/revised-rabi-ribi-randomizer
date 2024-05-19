@@ -1239,7 +1239,11 @@
 "changes": [
     {
     "edge": "SNOWLAND_MID -> ICY_SUMMIT_MAIN",
-    "prereq": "AIR_JUMP",
+    "prereq": "
+        AIR_JUMP
+        // roll bonk off the ice rock, upforce slide bunstrike, amulet
+        | (OBS_STUPID & HAMMER_ROLL & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+    ",
     }
 ]}
 

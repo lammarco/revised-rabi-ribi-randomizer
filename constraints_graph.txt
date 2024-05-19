@@ -1207,6 +1207,11 @@ PROLOGUE_TRIGGER & (
 "prereq": "NONE",
 }
 
+{
+"edge": "HALLOWEEN_PAST_PILLARS -> BEACH_MAIN",
+"prereq": "BUNNY_WHIRL",
+}
+
 // .---------------------'
 // | Area 2 : Island Core
 // '---------------------.
