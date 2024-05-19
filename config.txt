@@ -1,7 +1,7 @@
 // Knowledge is BASIC, INTERMEDIATE, ADVANCED or OBSCURE
 "knowledge": "BASIC",
 
-// Trick Difficulty is NORMAL, HARD, V_HARD or STUPID
+// Trick Difficulty is NORMAL, HARD, V_HARD, EXTREME or STUPID
 "trick_difficulty": "NORMAL",
 
 // Configure generation flags here
@@ -10,6 +10,7 @@
     "UNDERWATER_WITHOUT_WATER_ORB": false,
     "ZIP_REQUIRED": false,
     "BUNSTRIKE_ZIP_REQUIRED": false,
+    "BORING_TRICKS_REQUIRED": false,
     "SEMISOLID_CLIPS_REQUIRED": false,
     "BLOCK_CLIPS_REQUIRED": false,
     "PLURKWOOD_REACHABLE": true,
@@ -78,6 +79,7 @@
     "MANA_SURGE",
     "MANA_WAGER",
     "NATURE_ORB",
+    "PBPB_BOX",
     "PIKO_HAMMER",
     "PLUS_NECKLACE",
     "PURE_LOVE",
