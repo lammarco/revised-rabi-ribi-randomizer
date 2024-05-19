@@ -144,7 +144,7 @@ def define_alternate_conditions(settings, variable_names_set, default_expression
         "BUNNY_AMULET": "CHAPTER_2",
         "RUMI_DONUT": "TOWN_SHOP",
         "RUMI_CAKE": "TOWN_SHOP",
-        #"COCOA_BOMB": "TM_COCOA & TOWN_MAIN & 3TM", # Discounting this because you can't buy cocoa bombs from cocoa in IMP
+        "COCOA_BOMB": "TM_COCOA & TOWN_MAIN & 3TM",
     }
     if not settings.shuffle_gift_items:
         d.update({
