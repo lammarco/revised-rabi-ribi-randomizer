@@ -274,7 +274,7 @@
 "changes": [
     {
     "edge": "BEACH_MAIN -> BEACH_UNDERWATER_ENTRANCE",
-    "prereq": "(ITM & DOWNDRILL_SEMISOLID_CLIP) | FIRE_ORB",
+    "prereq": "(ADV & DOWNDRILL_SEMISOLID_CLIP) | FIRE_ORB",
     }
 ]}
 
