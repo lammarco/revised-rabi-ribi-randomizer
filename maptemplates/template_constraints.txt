@@ -687,8 +687,7 @@
             // stupid hover launch tricks
             | (ADV_EXT & BUNNY_AMULET & (
                 (RABI_SLIPPERS & SPEED1)
-                | (RABI_SLIPPERS & 2_AMULET_FOOD)
-                | (SPEED2 & 2_AMULET_FOOD)
+                | (2_AMULET_FOOD & (RABI_SLIPPERS | SPEED1))
                 | 3_AMULET_FOOD
             ))
         )
@@ -1463,8 +1462,7 @@
         // stupid hover launch tricks
         | (ADV_EXT & BUNNY_AMULET & (
             (RABI_SLIPPERS & SPEED1)
-            | (RABI_SLIPPERS & 2_AMULET_FOOD)
-            | (SPEED2 & 2_AMULET_FOOD)
+            | (2_AMULET_FOOD & (RABI_SLIPPERS | SPEED1))
             | 3_AMULET_FOOD
         ))
     ",
