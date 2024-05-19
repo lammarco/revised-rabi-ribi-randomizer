@@ -753,19 +753,28 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "SKY_ISLAND_MAIN -> SKY_ISLAND_UPPER",
 "prereq": "
-    (BUNNY_STRIKE & ITM_HARD)
-    | (AIR_JUMP & ((RABI_SLIPPERS & SPEED1) | AIR_DASH | WALL_JUMP | ITM_HARD))
+    (SLIDE_JUMP_BUNSTRIKE & ITM_HARD)
+    | (AIR_JUMP & ((RABI_SLIPPERS & SPEED1) | AIR_DASH | WALL_JUMP | SLIDING_POWDER | ITM_HARD))
     | (AIR_DASH_LV3 & (WALL_JUMP | ADV_HARD))
-    // slide jump, wall jump, airdash, wall jump2, amulet
-    // slide jump, double wall jump, airdash (obscure method)
-    | (ADV_VHARD & SLIDING_POWDER & RABI_SLIPPERS & WALL_JUMP & AIR_DASH & (AMULET_FOOD | OBSCURE))
-    // quick drop jump, quick drop, airdash, wimpy wall jump, amulet, wall jump2
-    | (ADV_STUPID & AIR_DASH & WALL_JUMP & AMULET_FOOD)
-    // slide jump, wimpy amuclimbs
-    | (ADV_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & MANY_AMULET_FOOD & (SLIDING_POWDER | SPEED5))
-    | (ADV_STUPID & SLIDING_POWDER & WALL_JUMP_LV2 & BUNNY_AMULET_LV3)
+    // quick drop jump, ad, wj, qd, amulet, wj2
+    // (stupid method): quick drop jump, qd, ad, wimpy wj, amulet, wj2
+    | (ADV_EXT & AIR_DASH & WALL_JUMP & BUNNY_AMULET & (SPEED2 | STUPID))
+    // qd, amulet, wimpy walljumps
+    | (ADV_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & SPEED5 & MANY_AMULET_FOOD)
     // theoretically possible by amulet and item hover only but it takes forever
-    // (OBS_STUPID & MANY_AMULET_FOOD)
+    // (OBS_STUPID & MANY_AMULET_FOOD & BORING)
+    
+    | (SLIDING_POWDER & RABI_SLIPPERS & (
+        // slide jump, wj, ad, wj2, amulet
+        // (obscure method): slide jump, double wall jump, ad
+        (ADV_VHARD & WALL_JUMP & AIR_DASH & (AMULET_FOOD | OBSCURE))
+        // slide jump, wj, qd, amulet, amuclimbs
+        | (ADV_EXT & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
+        // hi-speed slide jump, wj, qd, spam amulets, wj2
+        | (ADV_STUPID & WALL_JUMP & BUNNY_AMULET & 3_AMULET_FOOD)
+    ))
+    // maybe not possible
+    //| (ADV_STUPID & SLIDING_POWDER & WALL_JUMP_LV2 & BUNNY_AMULET_LV3)
 ",
 }
 
