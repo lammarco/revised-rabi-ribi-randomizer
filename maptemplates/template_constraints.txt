@@ -787,7 +787,7 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "FOREST_COCOA_ROOM -> FOREST_START",
+    "edge": "FOREST_COCOA_ROOM -> FOREST_WARP",
     "prereq": "
         FIRE_ORB | (
             SLIDING_POWDER | AIR_JUMP | AIR_DASH | WHIRL_BONK
@@ -804,7 +804,7 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "FOREST_COCOA_ROOM -> FOREST_START",
+    "edge": "FOREST_COCOA_ROOM -> FOREST_WARP",
     "prereq": "
         PIKO_HAMMER | (
             SLIDING_POWDER | AIR_JUMP
@@ -947,7 +947,7 @@
 "weight": 30,
 "changes": [
     {
-    "edge": "FOREST_START -> FOREST_EAST_ABOVE_SPRING",
+    "edge": "FOREST_WARP -> FOREST_EAST_ABOVE_SPRING",
     "prereq":
         "AIR_JUMP | BUNNY_STRIKE | AIR_DASH_LV3
         | (ADV_VHARD & BORING & WHIRL_BONK) // bufferd wall launch, whirl bonk off falling bunny
@@ -1668,7 +1668,7 @@
 "weight": 30,
 "changes": [
     {
-    "edge": "FOREST_START -> FOREST_NORTH_HP_UP_ROOM",
+    "edge": "FOREST_WARP -> FOREST_NORTH_HP_UP_ROOM",
     "prereq": "IMPOSSIBLE",
     }
 ]}

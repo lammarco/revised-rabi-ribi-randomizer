@@ -36,14 +36,14 @@
 
 {
 "item": "MP_UP_CAVE",
-"from_location": "CAVE_ENTRANCE",
+"from_location": "CAVE_WEST",
 "entry_prereq": "SLIDING_POWDER",
 "exit_prereq": "SLIDING_POWDER",
 }
 
 {
 "item": "HP_UP_CAVE",
-"from_location": "CAVE_ENTRANCE",
+"from_location": "CAVE_WEST",
 "entry_prereq": "NONE",
 "exit_prereq": "NONE",
 }
@@ -115,7 +115,7 @@
 
 {
 "item": "REGEN_UP_MID_FOREST",
-"from_location": "FOREST_START",
+"from_location": "FOREST_WARP",
 "entry_prereq": "
     AIR_JUMP
     | ((RABI_SLIPPERS | ITM_HARD) & WALL_JUMP_LV2)
@@ -149,7 +149,7 @@
 
 {
 "item": "DEF_TRADE",
-"from_location": "FOREST_START",
+"from_location": "FOREST_WARP",
 "entry_prereq": "EXPLOSIVES_ENEMY",
 "exit_prereq": "NONE",
 }
@@ -163,9 +163,9 @@
 
 {
 "item": "HP_UP_FOREST_POST_COCOA",
-"from_location": "FOREST_START",
 "entry_prereq": "PIKO_HAMMER | EXPLOSIVES | (CARROT_SHOOTER & ADV_VHARD)",
 "exit_prereq": "PIKO_HAMMER | EXPLOSIVES | (CHARGE_CARROT_SHOOTER_ENTRY & ADV_HARD) | (CARROT_SHOOTER_ENTRY & ADV_VHARD)",
+"from_location": "FOREST_WARP",
 
 "alternate_entries": {
     "FOREST_COCOA_ROOM": "EXPLOSIVES_ENEMY",
@@ -258,7 +258,7 @@
 
 {
 "item": "PACK_UP_EAST_FOREST",
-"from_location": "FOREST_START",
+"from_location": "FOREST_WARP",
 "entry_prereq": "(PIKO_HAMMER | EXPLOSIVES_ENEMY) & SLIDING_POWDER",
 "exit_prereq": "SLIDING_POWDER",
 }

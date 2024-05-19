@@ -5,22 +5,32 @@
 
 // Starting Forest
 {
-"edge": "FOREST_START -> FOREST_EAST_ABOVE_SPRING",
+"edge": "FOREST_START -> FOREST_WARP",
 "prereq": "NONE",
 }
 
 {
-"edge": "FOREST_EAST_ABOVE_SPRING -> FOREST_START",
+"edge": "FOREST_WARP -> FOREST_START",
 "prereq": "NONE",
 }
 
 {
-"edge": "FOREST_START -> FOREST_COCOA_ROOM",
+"edge": "FOREST_WARP -> FOREST_EAST_ABOVE_SPRING",
 "prereq": "NONE",
 }
 
 {
-"edge": "FOREST_COCOA_ROOM -> FOREST_START",
+"edge": "FOREST_EAST_ABOVE_SPRING -> FOREST_WARP",
+"prereq": "NONE",
+}
+
+{
+"edge": "FOREST_WARP -> FOREST_COCOA_ROOM",
+"prereq": "NONE",
+}
+
+{
+"edge": "FOREST_COCOA_ROOM -> FOREST_WARP",
 "prereq": "NONE",
 }
 
@@ -127,12 +137,12 @@ EXPLOSIVES_ENEMY & SLIDING_POWDER & PROLOGUE_TRIGGER & (
 }
 
 {
-"edge": "FOREST_NORTH_HP_UP_ROOM -> FOREST_START",
+"edge": "FOREST_NORTH_HP_UP_ROOM -> FOREST_WARP",
 "prereq": "NONE",
 }
 
 {
-"edge": "FOREST_START -> FOREST_NORTH_HP_UP_ROOM",
+"edge": "FOREST_WARP -> FOREST_NORTH_HP_UP_ROOM",
 "prereq": "
 HAMMER_ROLL_ZIP | (
     SLIDING_POWDER & (
@@ -160,8 +170,8 @@ HAMMER_ROLL_ZIP | (
 }
 
 {
-"edge": "FOREST_START -> FOREST_LOWER_RIVERBANK_EXIT",
 "prereq": "ADV_HARD & SLIDE_ZIP",
+"edge": "FOREST_WARP -> FOREST_LOWER_RIVERBANK_EXIT",
 }
 
 {
@@ -312,6 +322,36 @@ ITM & DARKNESS & (
 }
 
 {
+"edge": "FOREST_WARP -> CAVE_ENTRANCE",
+"prereq": "(EXPLOSIVES | (EXPLOSIVES_ENEMY & ITM_HARD)) & SLIDING_POWDER",
+}
+
+{
+"edge": "CAVE_ENTRANCE -> FOREST_WARP",
+"prereq": "(CARROT_BOMB_ENTRY | CARROT_SHOOTER_ENTRY) & SLIDING_POWDER & BACKTRACK_1",
+}
+
+{
+"edge": "FOREST_START -> CAVE_WEST",
+"prereq": "DOWNDRILL_SEMISOLID_CLIP",
+}
+
+{
+"edge": "CAVE_WEST -> FOREST_START",
+"prereq": "NONE",
+}
+
+{
+"edge": "CAVE_ENTRANCE -> CAVE_WEST",
+"prereq": "NONE",
+}
+
+{
+"edge": "CAVE_WEST -> CAVE_ENTRANCE",
+"prereq": "2TILE_DOWNDRILL_SEMISOLID_CLIP | ((PIKO_HAMMER | EXPLOSIVES_ENEMY) & 2TILE_ZIP)",
+}
+
+{
 "edge": "CAVE_ENTRANCE -> CAVE_COCOA",
 "prereq": "(KOTRI_1 & COCOA_1 & CHAPTER_1) | BUNSTRIKE_ZIP | (OBS_STUPID & SLIDE_ZIP)",
 }
@@ -335,13 +375,22 @@ ITM & DARKNESS & (
 
 {
 "edge": "SPECTRAL_UPPER -> CAVE_ENTRANCE",
+"prereq": "SLIDING_POWDER | HAMMER_ROLL_ZIP",
+}
+
+{
+"edge": "CAVE_WEST -> SPECTRAL_UPPER",
+"prereq": "NONE",
+}
+
+{
+"edge": "SPECTRAL_UPPER -> CAVE_WEST",
 "prereq": "
-    SLIDING_POWDER
-    | HAMMER_ROLL_ZIP
-    | WHIRL_BONK_CANCEL
+    WHIRL_BONK_CANCEL
     | (ITM_HARD & HAMMER_ROLL)
-    | (RABI_SLIPPERS & (WALL_JUMP_LV2 | AIR_JUMP))
-    | (AIR_JUMP & WALL_JUMP)
+    | (WALL_JUMP_LV2 & (RABI_SLIPPERS | ADV_VHARD))
+    | (AIR_JUMP & (WALL_JUMP | RABI_SLIPPERS | ADV_VHARD))
+    | (OBS_VHARD & BUNSTRIKE_ZIP)
 ",
 }
 
@@ -370,7 +419,7 @@ ITM & DARKNESS & (
     | (COCOA_1 & KOTRI_1 & CHAPTER_1)
     | ADV_VHARD
 )
-"
+",
 }
 
 {
