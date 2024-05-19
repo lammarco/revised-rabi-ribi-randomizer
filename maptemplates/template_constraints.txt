@@ -1249,12 +1249,15 @@
 "changes": [
     {
     "edge": "PALACE_WARP_LEVEL_1_2 -> PALACE_LEVEL_3",
-    "prereq": "IMPOSSIBLE",
+    "prereq": "
+        // roll bonk, double air jump, wall jumps, whirl bonk
+        OBS_STUPID & HAMMER_ROLL & RABI_SLIPPERS & AIR_JUMP & SLIDE_JUMP_BUNSTRIKE_CANCEL & WALL_JUMP_LV2 & FIRE_ORB
+    ",
     }
 
     {
     "edge": "PALACE_LEVEL_3 -> PALACE_WARP_LEVEL_1_2",
-    "prereq": "IMPOSSIBLE",
+    "prereq": "FIRE_ORB",
     }
 ]}
 
@@ -1264,7 +1267,13 @@
 "changes": [
     {
     "edge": "PALACE_WARP_LEVEL_1_2 -> PALACE_LEVEL_3",
-    "prereq": "WALL_JUMP_LV2 & (AIR_JUMP | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS))",
+    "prereq": "
+        (WALL_JUMP_LV2 & (AIR_JUMP | (SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS)))
+        | ((AIR_JUMP & SLIDE_JUMP_BUNSTRIKE_CANCEL) & (
+            (ADV_HARD & RABI_SLIPPERS)
+            | OBS_VHARD
+        ))
+    ",
     }
 ]}
 
@@ -1293,7 +1302,7 @@
     }
     {
     "edge": "PALACE_LEVEL_3 -> PALACE_WARP_LEVEL_1_2",
-    "prereq": "PIKO_HAMMER | EXPLOSIVES",
+    "prereq": "PIKO_HAMMER | EXPLOSIVES_ENEMY | FIRE_ORB",
     }
 ]}
 
@@ -1303,7 +1312,15 @@
 "changes": [
     {
     "edge": "PALACE_LEVEL_3 -> PALACE_LEVEL_4",
-    "prereq": "DOWNDRILL_SEMISOLID_CLIP | AIR_JUMP | WALL_JUMP_LV2",
+    "prereq": "
+        DOWNDRILL_SEMISOLID_CLIP | AIR_JUMP | WALL_JUMP_LV2
+        // glitchless climbs
+        | (ADV_HARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & RABI_SLIPPERS)
+        | (ADV_VHARD & (
+            WHIRL_BONK_CANCEL
+            | (HAMMER_ROLL & RABI_SLIPPERS)
+        ))
+    ",
     }
 ]}
 
