@@ -786,7 +786,7 @@
 
 {
 "name": "volcanic_west_nostupid",
-"weight": 50,
+"weight": 30,
 "changes": [
     {
     "edge": "VOLCANIC_MAIN -> VOLCANIC_BEACH_ENTRANCE",
@@ -1432,7 +1432,7 @@
 
 {
 "name": "spike_barrier_nostupid",
-"weight": 50,
+"weight": 20,
 "changes": [
     {
     "edge": "EVERNIGHT_NORTHWEST -> EVERNIGHT_SPIKE_BARRIER_ROOM",
@@ -1552,7 +1552,7 @@
 
 {
 "name": "shop_entrance_slide",
-"weight": 6,
+"weight": 7,
 "changes": [
     {
     "edge": "TOWN_MAIN -> TOWN_SHOP",
@@ -1562,7 +1562,7 @@
 
 {
 "name": "shop_entrance_fireorb",
-"weight": 12,
+"weight": 14,
 "changes": [
     {
     "edge": "TOWN_MAIN -> TOWN_SHOP",
@@ -1572,7 +1572,7 @@
 
 {
 "name": "shop_entrance_hammer_nobomb",
-"weight": 12,
+"weight": 14,
 "changes": [
     {
     "edge": "TOWN_MAIN -> TOWN_SHOP",
@@ -1837,7 +1837,7 @@
 
 {
 "name": "snowland_warp_nostupid",
-"weight": 30,
+"weight": 50,
 "changes": [
     {
     "edge": "SNOWLAND_RITA -> SNOWLAND_WEST",
