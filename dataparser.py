@@ -407,8 +407,8 @@ def parse_locations_and_items():
 def parse_edge_constraints(locations_set, variable_names_set, default_expressions):
     lines = read_file_and_strip_comments('constraints_graph.txt')
     jsondata = ' '.join(lines)
-    jsondata = re.sub(',\s*}', '}', jsondata)
-    jsondata = '},{'.join(re.split('}\s*{', jsondata))
+    jsondata = re.sub(',\\s*}', '}', jsondata)
+    jsondata = '},{'.join(re.split('}\\s*{', jsondata))
     jsondata = '[' + jsondata + ']'
     cdicts = parse_json(jsondata)
 
@@ -433,8 +433,8 @@ def parse_edge_constraints(locations_set, variable_names_set, default_expression
 def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locations_set, variable_names_set, default_expressions):
     lines = read_file_and_strip_comments('constraints.txt')
     jsondata = ' '.join(lines)
-    jsondata = re.sub(',\s*}', '}', jsondata)
-    jsondata = '},{'.join(re.split('}\s*{', jsondata))
+    jsondata = re.sub(',\\s*}', '}', jsondata)
+    jsondata = '},{'.join(re.split('}\\s*{', jsondata))
     jsondata = '[' + jsondata + ']'
     cdicts = parse_json(jsondata)
 
@@ -478,8 +478,8 @@ def parse_template_constraints(settings, locations_set, variable_names_set, defa
     if settings.shuffle_start_location:
         lines += read_file_and_strip_comments('maptemplates/start_rando_template_constraints.txt')
     jsondata = ' '.join(lines)
-    jsondata = re.sub(',\s*}', '}', jsondata)
-    jsondata = '},{'.join(re.split('}\s*{', jsondata))
+    jsondata = re.sub(',\\s*}', '}', jsondata)
+    jsondata = '},{'.join(re.split('}\\s*{', jsondata))
     jsondata = '[' + jsondata + ']'
 
     cdicts = parse_json(jsondata)
@@ -523,8 +523,8 @@ def parse_template_constraints(settings, locations_set, variable_names_set, defa
 def read_config(default_setting_flags, item_locations_set, shufflable_gift_items_set, config_flags_set, predefined_additional_items_set, settings):
     lines = read_file_and_strip_comments(settings.config_file)
     jsondata = ' '.join(lines)
-    jsondata = re.sub(',\s*]', ']', jsondata)
-    jsondata = re.sub(',\s*}', '}', jsondata)
+    jsondata = re.sub(',\\s*]', ']', jsondata)
+    jsondata = re.sub(',\\s*}', '}', jsondata)
     config_dict = parse_json('{' + jsondata + '}')
 
     to_shuffle = config_dict['to_shuffle']
