@@ -1624,16 +1624,20 @@
 "from_location": "HALLOWEEN_PAST_PILLARS",
 "entry_prereq": "
     BUNNY_WHIRL & (
-        (AIR_DASH_LV3 & (ADV_VHARD | AIR_JUMP))
-        | (ITM_HARD & BUNNY_STRIKE & AIR_JUMP)
-        | (AIR_JUMP & WALL_JUMP_LV2 & ADV_VHARD)
+        ((ADV_VHARD | AIR_JUMP) & (
+            AIR_DASH_LV3 | (ITM_HARD & BUNNY_STRIKE)
+        ))
+        | (ADV_VHARD & AIR_JUMP & (WALL_JUMP_LV2 | STUPID))
+        | (ADV_STUPID & BUNNY_AMULET & AIR_DASH)
     )
 ",
 "exit_prereq": "
     (BUNNY_WHIRL | EXPLOSIVES) & (
-        (AIR_DASH_LV3 & (ADV_VHARD | AIR_JUMP))
-        | (ITM_HARD & BUNNY_STRIKE & AIR_JUMP)
-        | (AIR_JUMP & WALL_JUMP_LV2 & ADV_VHARD)
+        ((ADV_VHARD | AIR_JUMP) & (
+            AIR_DASH_LV3 | (ITM_HARD & BUNNY_STRIKE)
+        ))
+        | (ADV_VHARD & AIR_JUMP & (WALL_JUMP_LV2 | STUPID))
+        | (ADV_STUPID & BUNNY_AMULET & AIR_DASH)
     )
 ",
 "alternate_entries": {
@@ -1861,11 +1865,15 @@
 "entry_prereq": "
     AIR_JUMP | WATER_ORB | WHIRL_BONK | WALL_JUMP_LV2
     | (WALL_JUMP & (RABI_SLIPPERS | (AIR_DASH & ITM_HARD)))
-    | (ADV_VHARD & AIR_DASH_LV3)
-    | (ADV_EXT & AIR_DASH & 2_AMULET_FOOD)
-    | (ADV_EXT & MANY_AMULET_FOOD) // wimpy, 6 velocity cancels, bounce
-    | (ADV_VHARD & BORING & RABI_SLIPPERS) // dboost
-    | (ADV_EXT & BORING & CONSUMABLE_USE) // 3 dboosts
+    | (ADV_VHARD & (
+        AIR_DASH_LV3
+        | (BORING & RABI_SLIPPERS) // dboost
+    ))
+    | (ADV_EXT & (
+        MANY_AMULET_FOOD // wimpy, 6 velocity cancels, bounce
+        | (2_AMULET_FOOD & (AIR_DASH | WALL_JUMP))
+        | (BORING & CONSUMABLE_USE) // 3 dboosts
+    ))
 ",
 "exit_prereq": "NONE",
 }
@@ -2074,7 +2082,7 @@
 "from_location": "SYSINT2_END",
 "entry_prereq": "
     // you can launch over the 5 tile wall
-    (AIR_DASH | AIR_JUMP | BUNNY_STRIKE | ADV_HARD)
+    (AIR_DASH | AIR_JUMP | BUNNY_STRIKE | RABI_SLIPPERS | (ITM_HARD & WALL_JUMP & SPEED2) | ADV_VHARD)
     & EXPLOSIVES
     & (SLIDING_POWDER | HAMMER_ROLL_ZIP)
 ",
