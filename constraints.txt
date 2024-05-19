@@ -902,7 +902,7 @@
 {
 "item": "PACK_UP_ICY_SUMMIT",
 "from_location": "ICY_SUMMIT_UPPER",
-"entry_prereq": "AIR_JUMP | AIR_DASH | (WHIRL_BONK & ADV_VHARD) | (ADV_EXT & MANY_AMULET_FOOD)", // 3 amulets, wall kick, amulet
+"entry_prereq": "AIR_JUMP | AIR_DASH | (WHIRL_BONK & ADV_VHARD) | (ADV_EXT & 4_AMULET_FOOD)", // 3 amulets, wall kick, amulet
 "exit_prereq": "NONE",
 }
 
