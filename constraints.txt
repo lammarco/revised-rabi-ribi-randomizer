@@ -1037,6 +1037,35 @@
 }
 
 {
+"item": "PBPB_BOX",
+"from_location": "LAB_WEST",
+"entry_prereq": "
+    (CARROT_BOMB | (CARROT_SHOOTER & BOOST_MANY)) & FIRE_ORB & SLIDING_POWDER & (
+        AIR_JUMP
+        | (RABI_SLIPPERS & (
+            SLIDE_JUMP_BUNSTRIKE
+            | WALL_JUMP
+            | (ADV_HARD & AIR_DASH)
+        ))
+        // dboost
+        | (ADV_EXT & (AMULET_FOOD | AIR_DASH))
+    )
+",
+"exit_prereq": "
+    (SLIDING_POWDER & (
+        AIR_JUMP
+        | (RABI_SLIPPERS & (
+            SLIDE_JUMP_BUNSTRIKE
+            | WALL_JUMP
+            | (ADV_HARD & AIR_DASH)
+        ))
+        // dboost
+        | (ADV_EXT & (AMULET_FOOD | AIR_DASH))
+    ))
+",
+}
+
+{
 "item": "ATK_UP_RIVERBANK_PIT",
 "from_location": "RIVERBANK_MAIN_LEVEL1",
 "entry_prereq": "NONE",
