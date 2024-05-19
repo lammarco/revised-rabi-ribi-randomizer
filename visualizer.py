@@ -1,4 +1,4 @@
-import ast
+import ast, os
 # Visualisation primarily used for debugging
 
 
@@ -67,7 +67,10 @@ class Visualization(object):
 
             draw.line((x1, y1-size_from, x2, y2+size_to), width=thickness, fill=color)
 
-        im.save('%s/spoiler/%s' % (self.settings.output_dir, file_name))
+        spoiler_dir = '%s/spoiler' % self.settings.output_dir
+        if not os.path.isdir(spoiler_dir):
+            os.makedirs(spoiler_dir)
+        im.save('%s/%s' % (spoiler_dir, file_name))
 
 
 NODE_COORDS = {
