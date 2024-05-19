@@ -1370,12 +1370,15 @@
         CARROT_SHOOTER & (
             SLIDING_POWDER | AIR_JUMP | AIR_DASH | RABI_SLIPPERS | WHIRL_BONK
             | (ITM & (WATER_ORB | SPEED2))
+            | (ADV_EXT & AMULET_FOOD)
             )
         ) | (
         CARROT_BOMB & (
             SLIDING_POWDER | AIR_JUMP | AIR_DASH | WHIRL_BONK
             | (ITM & RABI_SLIPPERS & (WATER_ORB | SPEED1))
             | (ITM_HARD & SPEED5)
+            | (ADV_EXT & AMULET_FOOD & RABI_SLIPPERS)
+            | (ADV_STUPID & BUNNY_AMULET & 2_AMULET_FOOD)
             )
         )
         ",
@@ -1490,6 +1493,7 @@
         FIRE_ORB & (
             SLIDING_POWDER | AIR_JUMP | AIR_DASH | RABI_SLIPPERS | WHIRL_BONK
             | (ITM & (WATER_ORB | SPEED2))
+            | (ADV_EXT & AMULET_FOOD)
             )
         ",
     }
@@ -1545,6 +1549,7 @@
         (PIKO_HAMMER | EXPLOSIVES | (ADV_HARD & CARROT_SHOOTER & CHARGE_RING)) & (
             SLIDING_POWDER | AIR_JUMP | AIR_DASH | RABI_SLIPPERS | WHIRL_BONK
             | (ITM & (WATER_ORB | SPEED2))
+            | (ADV_EXT & AMULET_FOOD)
             )
         ",
     }

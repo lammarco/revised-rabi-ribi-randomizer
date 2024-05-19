@@ -2429,9 +2429,15 @@ ITM & (
 "edge": "EVERNIGHT_LOWER -> EVERNIGHT_EAST_OF_WARP",
 "prereq": "ITM & (
         (AIR_JUMP & (ADV_VHARD | AIR_DASH | SLIDING_POWDER | (ITM_HARD & SPEED3)))
-        | (AIR_DASH_LV3 & AMULET_FOOD & ADV_HARD)
-        | (AIR_DASH & AMULET_FOOD & ADV_EXT) // buffered wimpy, bounce, amulet
-        | (WALL_JUMP_LV2 & MANY_AMULET_FOOD & ADV_STUPID) // buffered wimpy, wall kick, amulet, wall kick2, amulet
+        | (ADV_HARD & (
+            (AIR_DASH_LV3 & AMULET_FOOD)
+            | (RABI_SLIPPERS & AIR_DASH & (
+                WALL_JUMP
+                | (ADV_VHARD & AMULET_FOOD)
+            ))
+        ))
+        | (ADV_EXT & AIR_DASH & AMULET_FOOD) // buffered wimpy, bounce, amulet
+        | (ADV_STUPID & WALL_JUMP_LV2 & MANY_AMULET_FOOD) // buffered wimpy, wall kick, amulet, wall kick2, amulet
     )
 ",
 }
@@ -2648,8 +2654,10 @@ ITM & (
 POST_GAME & (
     // climb left wall
     (ITM_HARD & WALL_JUMP & AIR_JUMP & AIR_DASH)
-    | (ADV_VHARD & WALL_JUMP & AIR_JUMP & RABI_SLIPPERS & AMULET_FOOD)
-    | (ADV_VHARD & RABI_SLIPPERS & WALL_JUMP_LV2 & AIR_DASH & AMULET_FOOD)
+    | ((ADV_VHARD & RABI_SLIPPERS & BUNNY_AMULET) & (
+        (WALL_JUMP & AIR_JUMP)
+        | (WALL_JUMP_LV2 & AIR_DASH)
+    ))
     | (ADV_EXT & AIR_JUMP & WALL_JUMP_LV2 & BUNNY_AMULET_LV2)
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & AIR_JUMP & (RABI_SLIPPERS | OBS_VHARD))
     // column thing

@@ -1102,7 +1102,10 @@
 {
 "item": "MP_UP_MID_RIVERBANK",
 "from_location": "RIVERBANK_MAIN_LEVEL1",
-"entry_prereq": "EXPLOSIVES_ENEMY | (BUNSTRIKE_ZIP & ADV_VHARD)",
+"entry_prereq": "
+    EXPLOSIVES_ENEMY
+    | (BUNSTRIKE_ZIP & ((ADV_VHARD & SPEED2) | OBS_STUPID))
+",
 // only relevant if boost is not obtained
 "exit_prereq": "
     EXPLOSIVES
@@ -1112,6 +1115,7 @@
     | WALL_JUMP_LV2
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & (RABI_SLIPPERS | SPEED1 | AIR_DASH | V_HARD))
     | (RABI_SLIPPERS & ADV_HARD & (AIR_DASH | SPEED2 | (SPEED1 & WALL_JUMP)))
+    | (ADV_STUPID & SLIDING_POWDER) // hi-speed walljump
 ",
 }
 
@@ -1176,8 +1180,9 @@
     DARKNESS & SLIDING_POWDER & (
         (AIR_JUMP & (RABI_SLIPPERS | AIR_DASH | ITM_HARD))
         | WHIRL_BONK
-        // vhard method: slide bonk, wall jump, air dash
-        | ((RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL | ADV_VHARD) & AIR_DASH)
+        | ((RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL) & AIR_DASH)
+        // wimpy, bounce, airdash or wall jump
+        | (ADV_VHARD & (AIR_DASH | WALL_JUMP_LV2))
         // wimpy, bounce, spam amulet (same as spike barrier jump)
         | (ADV_EXT & 3_AMULET_FOOD)
         // slide bonk, buffered wimpy, bounce
@@ -1299,9 +1304,13 @@
 "entry_prereq": "EXPLOSIVES_ENEMY & (
     AIR_JUMP
     | AIR_DASH
-    | (RABI_SLIPPERS & ADV_VHARD)
-    | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE)
-    | (ADV_EXT & 2_AMULET_FOOD & (SLIDE_JUMP_BUNSTRIKE_CANCEL | 3_AMULET_FOOD))
+    | (RABI_SLIPPERS & (SLIDE_JUMP_BUNSTRIKE | ADV_VHARD))
+    | (ADV_VHARD & WALL_JUMP_LV2)
+    | (ADV_EXT & (
+        SLIDE_JUMP_BUNSTRIKE_CANCEL
+        | 3_AMULET_FOOD
+        | (WALL_JUMP & 2_AMULET_FOOD)
+    ))
 )",
 "exit_prereq": "NONE",
 
@@ -1383,7 +1392,16 @@
 {
 "item": "REGEN_UP_CYBERSPACE",
 "from_location": "SYSTEM_INTERIOR_MAIN",
-"entry_prereq": "(CARROT_BOMB | (CARROT_SHOOTER & BOOST & ADV_HARD)) & (AIR_JUMP | AIR_DASH | SLIDE_JUMP_BUNSTRIKE | ADV_EXT)",
+"entry_prereq": "
+    (CARROT_BOMB | (CARROT_SHOOTER & BOOST & ADV_HARD)) & (
+        AIR_DASH_LV3
+        | (AIR_DASH & (RABI_SLIPPERS | ITM))
+        | (AIR_JUMP & (RABI_SLIPPERS | AIR_DASH | HARD))
+        | SLIDE_JUMP_BUNSTRIKE
+        // (needs amulet) wimpy, bounce, amulet
+        | ADV_EXT
+    )
+    ",
 "exit_prereq": "NONE",
 }
 
@@ -1429,6 +1447,7 @@
         | (AIR_DASH_LV3 & ITM_HARD) // 4tile walljump, some other strange jumps
         | (AIR_DASH & ADV_VHARD) // (needs slide) 4tile walljump + weird jump at end
         | (WALL_JUMP & RABI_SLIPPERS & ADV_VHARD) // buffered wall launch
+        | (ADV_VHARD & WALL_JUMP_LV2) // (need slide) hi-speed walljump, amulet climb
         | ADV_STUPID // (needs slide) two slide bonks, one buffered wall launch
         | (WHIRL_BONK & ITM_VHARD) // 3 buffered whirlbonks. last one is tight
     )",
@@ -2070,13 +2089,12 @@
     & EXPLOSIVES
     & (SLIDING_POWDER | HAMMER_ROLL_ZIP)
 ",
-"exit_prereq": "
-    SLIDING_POWDER | AIR_DASH | AIR_JUMP | WHIRL_BONK
-    | (RABI_SLIPPERS & AMULET_FOOD & ADV_VHARD)
-    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
-",
+"exit_prereq": "NONE",
 }
+
+
 // Shufflable Gift Items
+
 {
 "item": "SPEED_BOOST",
 "from_location": "TOWN_SHOP",
