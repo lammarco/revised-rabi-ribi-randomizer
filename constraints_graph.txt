@@ -819,8 +819,10 @@ PROLOGUE_TRIGGER & (
     | (ADV_EXT & AIR_DASH & WALL_JUMP & BUNNY_AMULET & (SPEED2 | STUPID))
     // qd, amulet, wimpy walljumps
     | (ADV_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & SPEED5 & MANY_AMULET_FOOD)
+    // wimpy launch from the right edge, 3 amulets, wj2, 3 amulets wj3
+    | (ADV_STUPID & BORING & WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & 6_AMULET_FOOD)
     // theoretically possible by amulet and item hover only but it takes forever
-    // (OBS_STUPID & MANY_AMULET_FOOD & BORING)
+    // (OBS_STUPID & BUNNY_AMULET & CONSUMABLE_USE & BORING)
     
     | (SLIDING_POWDER & RABI_SLIPPERS & (
         // slide jump, wj, ad, wj2, amulet
@@ -2696,11 +2698,14 @@ ITM & (
 POST_GAME & (
     // climb left wall
     (ITM_HARD & WALL_JUMP & AIR_JUMP & AIR_DASH)
-    | ((ADV_VHARD & RABI_SLIPPERS & BUNNY_AMULET) & (
+    | (ADV_VHARD & RABI_SLIPPERS & BUNNY_AMULET & (
         (WALL_JUMP & AIR_JUMP)
         | (WALL_JUMP_LV2 & AIR_DASH)
     ))
-    | (ADV_EXT & AIR_JUMP & WALL_JUMP_LV2 & BUNNY_AMULET_LV2)
+    | (AIR_JUMP & BUNNY_AMULET_LV2 & (
+        (ADV_EXT & WALL_JUMP_LV2)
+        | (ADV_STUPID & WALL_JUMP & 3_AMULET_FOOD) // wj, 2 amulets, wj2, amulet
+    ))
     | (SLIDE_JUMP_BUNSTRIKE_CANCEL & AIR_JUMP & (RABI_SLIPPERS | OBS_VHARD))
     // column thing
     | (CHAPTER_7 & SLIDING_POWDER & AIR_JUMP & (
@@ -2759,9 +2764,10 @@ EXPLOSIVES & (
 "prereq": "
     (EXPLOSIVES | SLIDING_POWDER) & (
         (ADV_HARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & (AIR_JUMP | ADV_VHARD))
-        | (ADV_VHARD & AIR_JUMP & AIR_DASH & BUNNY_AMULET)
-        // damage boost
-        | (ADV_VHARD & AIR_JUMP & WALL_JUMP_LV2)
+        | (ADV_VHARD & AIR_JUMP & (
+            (AIR_DASH & BUNNY_AMULET)
+            | WALL_JUMP_LV2 // damage boost
+        ))
     )
 ",
 }
