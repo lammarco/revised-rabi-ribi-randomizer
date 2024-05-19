@@ -128,9 +128,9 @@ def apply_fixes_for_randomizer(areaid, data):
             for x in range(96,101):
                 data.tiledata_event[xy_to_index(x,y)] = 0
 
-    if areaid == 8:
-        # Remove autosaves from warp destination
-        data.tiledata_event = [0 if x==42 else x for x in data.tiledata_event]
+#    if areaid == 8:
+#        # Remove autosaves from warp destination
+#        data.tiledata_event = [0 if x==42 else x for x in data.tiledata_event]
 
 
 def apply_open_mode_fixes(areaid, data):
