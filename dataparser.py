@@ -110,7 +110,7 @@ def define_pseudo_items():
         "SPEEDY": "ITM & TM_CICINI & TOWN_MAIN & 3TM",
 
         "3_MAGIC_TYPES": lambda v : count_magic_types(v) >= 3,
-        "ITEM_MENU": "TOWN_MAIN | (ITM & 3_MAGIC_TYPES)",
+        "ITEM_MENU": "TOWN_MAIN | (ADV & 3_MAGIC_TYPES)",
 
         "CHAPTER_1": "TOWN_MAIN",
         "CHAPTER_2": "TOWN_MAIN & 2TM",

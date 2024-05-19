@@ -455,12 +455,10 @@
     },
 }
 
-// entry_prereq was changed to NONE as the bunny can blow it up for you.
 {
 "item": "ARMORED",
 "from_location": "PYRAMID_MAIN",
-"entry_prereq": "NONE",
-//"entry_prereq": "BLOCK_CLIP | EXPLOSIVES | ITM",
+"entry_prereq": "BLOCK_CLIP | EXPLOSIVES | ITM",
 "exit_prereq": "NONE",
 }
 
@@ -1088,7 +1086,7 @@
 "entry_prereq": "
     PIKO_HAMMER | (CARROT_SHOOTER & BOOST & ADV_HARD)
     // slide zip from bomb block slide tunnel in room to the left
-    | SLIDE_ZIP
+    | (ADV_HARD & SLIDE_ZIP)
 ",
 "exit_prereq": "
     BUNNY_WHIRL
