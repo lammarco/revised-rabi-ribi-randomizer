@@ -69,8 +69,9 @@ def define_pseudo_items():
         "HAMMER_ROLL_LV3": "rHAMMER_ROLL & TOWN_SHOP & CHAPTER_3",
         "AIR_DASH_LV3": "rAIR_DASH & TOWN_SHOP",
         "SPEED_BOOST_LV3": "SPEED_BOOST & TOWN_SHOP",
-        "BUNNY_AMULET_LV2": "(BUNNY_AMULET & TOWN_SHOP) | CHAPTER_3",
-        "BUNNY_AMULET_LV3": "(BUNNY_AMULET & TOWN_SHOP) | CHAPTER_4",
+        "BUNNY_AMULET_LV2": "(BUNNY_AMULET & (TOWN_SHOP | (POST_GAME & TM_RUMI))) | CHAPTER_3",
+        "BUNNY_AMULET_LV3": "(BUNNY_AMULET & (TOWN_SHOP | (POST_GAME & TM_RUMI))) | CHAPTER_4",
+        "BUNNY_AMULET_LV4": "BUNNY_AMULET & POST_GAME & TM_RUMI",
         "PIKO_HAMMER_LEVELED": "PIKO_HAMMER",
         "CARROT_BOMB_ENTRY": "CARROT_BOMB",
         "CARROT_SHOOTER_ENTRY": "CARROT_SHOOTER",
@@ -276,16 +277,20 @@ def count_magic_types(variables):
 CONSUMABLE_ITEMS = ('RUMI_DONUT','RUMI_CAKE','COCOA_BOMB','GOLD_CARROT')
 NORMAL_CONSUMABLE_ITEMS = ('RUMI_CAKE','COCOA_BOMB','GOLD_CARROT')
 def enough_amu_food(variables, amount):
-    count = 0
-    if variables['BUNNY_AMULET']: count += 1
-    if variables['BUNNY_AMULET_LV2']: count += 1
-    if variables['BUNNY_AMULET_LV3']: count += 1
+    amulet = 0
+    food = 0
+    if variables['BUNNY_AMULET_LV4']: amulet = 4
+    elif variables['BUNNY_AMULET_LV3']: amulet = 3
+    elif variables['BUNNY_AMULET_LV2']: amulet = 2
+    elif variables['BUNNY_AMULET']: amulet = 1
     if variables['ITEM_MENU']:
         if variables['RUMI_DONUT']:
-            count += 1
-            if variables['BUNNY_AMULET']: count += 1
-        count += sum(1 for tm in NORMAL_CONSUMABLE_ITEMS if variables[tm])
-    return count >= amount
+            food = 1
+            if variables['BUNNY_AMULET']: amulet += 1
+        food += sum(1 for tm in NORMAL_CONSUMABLE_ITEMS if variables[tm])
+    if amulet >= 4 and variables['TM_KOTRI'] and variables['3TM']:
+        amulet += 1
+    return (amulet + food) >= amount
 
 
 def evaluate_pseudo_item_constraints(pseudo_items, variable_names_set, default_expressions):
