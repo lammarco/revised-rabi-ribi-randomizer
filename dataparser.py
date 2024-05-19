@@ -273,14 +273,17 @@ def count_magic_types(variables):
     return sum(1 for tm in MAGIC_TYPES if variables[tm]) + 1
 
 CONSUMABLE_ITEMS = ('RUMI_DONUT','RUMI_CAKE','COCOA_BOMB','GOLD_CARROT')
+NORMAL_CONSUMABLE_ITEMS = ('RUMI_CAKE','COCOA_BOMB','GOLD_CARROT')
 def enough_amu_food(variables, amount):
-    if variables['TOWN_SHOP']: return True
     count = 0
-    if variables['BUNNY_AMULET']: count = 1
-    if variables['BUNNY_AMULET_LV2']: count = 2
-    if variables['BUNNY_AMULET_LV3']: count = 3
+    if variables['BUNNY_AMULET']: count += 1
+    if variables['BUNNY_AMULET_LV2']: count += 1
+    if variables['BUNNY_AMULET_LV3']: count += 1
     if variables['ITEM_MENU']:
-        count += sum(1 for tm in CONSUMABLE_ITEMS if variables[tm])
+        if variables['RUMI_DONUT']:
+            count += 1
+            if variables['BUNNY_AMULET']: count += 1
+        count += sum(1 for tm in NORMAL_CONSUMABLE_ITEMS if variables[tm])
     return count >= amount
 
 
