@@ -626,6 +626,17 @@
 "weight": 10,
 "changes": [
     {
+    "edge": "LAB_MID -> LAB_WEST",
+    "prereq": "
+        SLIDING_POWDER & (
+            AIR_DASH_LV3
+            | BUNNY_STRIKE
+            | (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
+            | (ITM & SPEED3)
+            | ADV_VHARD
+        )",
+    }
+    {
     "edge": "LAB_WEST -> LAB_MID",
     "prereq": "IMPOSSIBLE",
     }
@@ -684,8 +695,20 @@
 "weight": 10,
 "changes": [
     {
+    "edge": "LAB_MID -> LAB_WEST",
+    "prereq": "
+        SLIDING_POWDER & (
+            FIRE_ORB
+            | AIR_DASH_LV3
+            | BUNNY_STRIKE
+            | (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
+            | (ITM & SPEED3)
+            | ADV_VHARD
+        )",
+    }
+    {
     "edge": "LAB_WEST -> LAB_MID",
-    "prereq": "FIRE_ORB",
+    "prereq": "SLIDING_POWDER & FIRE_ORB",
     }
 ]}
 
@@ -728,8 +751,18 @@
 "weight": 10,
 "changes": [
     {
+    "edge": "LAB_MID -> LAB_WEST",
+    "prereq": "
+        SLIDING_POWDER & (
+            PIKO_HAMMER | EXPLOSIVES
+            | (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
+            | (ITM & SPEED3)
+            | ADV_VHARD
+        )",
+    }
+    {
     "edge": "LAB_WEST -> LAB_MID",
-    "prereq": "PIKO_HAMMER | EXPLOSIVES",
+    "prereq": "SLIDING_POWDER & (PIKO_HAMMER | EXPLOSIVES)",
     }
 ]}
 
