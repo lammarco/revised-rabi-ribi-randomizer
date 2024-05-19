@@ -879,16 +879,16 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "LIBRARY_MID_LOWER -> LIBRARY_BOTTOM",
 "prereq": "
-    NONE
-//    (EXPLOSIVES_ENEMY & (SLIDING_POWDER | HAMMER_ROLL_ZIP))
-//    | (
-//        RABI_SLIPPERS
-//        | AIR_JUMP
-//        | AIR_DASH
-//        | SLIDE_JUMP_BUNSTRIKE
-//        | WHIRL_BONK
-//        | (ADV_STUPID & AMULET_FOOD)
-//    )
+    (EXPLOSIVES_ENEMY & (SLIDING_POWDER | HAMMER_ROLL_ZIP))
+    | (
+        RABI_SLIPPERS
+        | AIR_JUMP
+        | AIR_DASH
+        | SLIDE_JUMP_BUNSTRIKE
+        | WHIRL_BONK
+        | (ADV_VHARD & (AMULET_FOOD | SLIDING_POWDER))
+        | ADV_EXT
+    )
 ",
 }
 
@@ -905,13 +905,12 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "LIBRARY_MID_UPPER -> LIBRARY_MID_LOWER",
 "prereq": "
-    NONE
-//    RABI_SLIPPERS
-//    | AIR_JUMP
-//    | AIR_DASH
-//    | SLIDE_JUMP_BUNSTRIKE
-//    | WALL_JUMP
-//    | ITM_HARD
+    RABI_SLIPPERS
+    | AIR_JUMP
+    | AIR_DASH
+    | SLIDE_JUMP_BUNSTRIKE
+    | WALL_JUMP
+    | ITM_HARD
 ",
 }
 
