@@ -628,7 +628,7 @@ PROLOGUE_TRIGGER & (
     SLIDING_POWDER & (
         AIR_JUMP
         | (AIR_DASH & (RABI_SLIPPERS | ITM_HARD))
-        | ADV_VHARD
+        | ITM_VHARD
     )
 ",
 }
@@ -1562,7 +1562,7 @@ DARKNESS & (
             SLIDING_POWDER
             | HAMMER_ROLL_ZIP
             | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-            | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
+            | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD & (BUNNY_AMULET | STUPID))
         ))
 ",
 }
@@ -1605,7 +1605,7 @@ DARKNESS & (
         | SLIDING_POWDER
         | HAMMER_ROLL_ZIP
         | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-        | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
+        | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD & (BUNNY_AMULET | STUPID))
 ",
 }
 
@@ -1782,8 +1782,8 @@ ITM & (
     ) & ( // Part 2: Actual reverse nixie
     
     (AIR_JUMP & (
-        ((RABI_SLIPPERS | (SLIDE_JUMP_BUNSTRIKE_CANCEL & ADV_VHARD)) & AIR_DASH)
-        | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & ADV_VHARD)
+        ((RABI_SLIPPERS | (SLIDE_JUMP_BUNSTRIKE_CANCEL & ADV_HARD)) & AIR_DASH)
+        | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & ADV_HARD)
         | WALL_JUMP_LV2
         | (ADV_HARD & HAMMER_ROLL)
         | (ADV_EXT & (RABI_SLIPPERS | SLIDING_POWDER)) // damage boost / slide bonk
@@ -2394,7 +2394,7 @@ ITM & (
         | SLIDE_JUMP_BUNSTRIKE_CANCEL
         | (ITM_HARD & HAMMER_ROLL)
         | (ADV_VHARD & AIR_DASH_LV3)  // airdash from step
-        | (ADV_VHARD & BORING & SLIDING_POWDER) // slide bonk off bunny
+        | (ADV_EXT & SLIDING_POWDER) // slide bonk off bunny
     ))
     | WHIRL_BONK_CANCEL
     | (ADV_STUPID & HAMMER_ROLL)
@@ -2500,7 +2500,7 @@ ITM & (
 "prereq": "
     (WALL_JUMP_LV2 & (
         AIR_JUMP
-        | (ADV_VHARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & (AIR_DASH | RABI_SLIPPERS | SPEED5 | (STUPID & SPEED3)))
+        | (ADV_VHARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & (AIR_DASH | RABI_SLIPPERS | SPEED5 | (EXTREME & SPEED3) | (STUPID & SPEED2)))
         | (ADV_HARD & SLIDE_JUMP_BUNSTRIKE_CANCEL & AIR_DASH & RABI_SLIPPERS)
     ))
     | (ITM_HARD & AIR_JUMP & (

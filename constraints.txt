@@ -1141,7 +1141,7 @@
 "exit_prereq": "(CARROT_SHOOTER_ENTRY | EXPLOSIVES) & SLIDING_POWDER",
 
 "alternate_exits" : {
-    "RIVERBANK_LOWER_HEALTH_UP_ROOM" : "BUNSTRIKE_ZIP & ADV_VHARD",
+    "RIVERBANK_LOWER_HEALTH_UP_ROOM" : "BUNSTRIKE_ZIP & ADV_EXT", // j12 (n3 or n8) strike (n5 ~ n7) right
 },
 }
 
@@ -1162,7 +1162,7 @@
 {
 "item": "HP_UP_RIVERBANK",
 "from_location": "RIVERBANK_LOWER_HEALTH_UP_ROOM",
-"entry_prereq": "EXPLOSIVES_ENEMY | BUNNY_WHIRL | AIR_DASH | BLOCK_CLIP | PIKO_HAMMER_LEVELED",
+"entry_prereq": "EXPLOSIVES_ENEMY | BUNNY_WHIRL | AIR_DASH | BLOCK_CLIP | (ITM & PIKO_HAMMER_LEVELED)",
 "exit_prereq": "NONE",
 }
 
@@ -1253,7 +1253,7 @@
 "entry_prereq": "
     AIR_DASH | AIR_JUMP | SLIDE_JUMP_BUNSTRIKE
     | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-    | (ADV_EXT & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
+    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
     ",
 "exit_prereq": "NONE",
 }
@@ -1283,7 +1283,7 @@
 "exit_prereq": "AIR_JUMP | WALL_JUMP_LV2",
 
 "alternate_entries": {
-    "EVERNIGHT_EAST_OF_WARP": "OBS_VHARD & WHIRL_BONK",
+    "EVERNIGHT_EAST_OF_WARP": "ADV_EXT & WHIRL_BONK",
 },
 "alternate_exits": {
     "EVERNIGHT_EAST_OF_WARP": "NONE",
@@ -1401,7 +1401,7 @@
     | SLIDE_JUMP_BUNSTRIKE
     | DOWNDRILL_SEMISOLID_CLIP
     | (ADV_VHARD & RABI_SLIPPERS) // need bunny amulet
-    | (ADV_EXT & WALL_JUMP_LV2) // need bunny amulet lv2
+    | (ADV_EXT & WALL_JUMP) // need bunny amulet lv2
     ",
 }
 
@@ -1703,7 +1703,7 @@
     // abusing pause for recognize x-position makes wimpy launch easier
     | (ADV_EXT & AMULET_FOOD)
     // whirl bonk off the jumping roly-poly
-    | (OBS_EXT & WHIRL_BONK)
+    | (ADV_EXT & WHIRL_BONK)
 ",
 "exit_prereq": "NONE",
 }
@@ -1732,7 +1732,7 @@
         (RABI_SLIPPERS & AMULET_FOOD)
         | SLIDING_POWDER // slide bonk off stone
     ))
-    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
+    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD & (BUNNY_AMULET | STUPID))
     | (ADV_STUPID & MANY_AMULET_FOOD)
 ",
 "exit_prereq": "NONE",
@@ -1860,7 +1860,7 @@
 "entry_prereq": "
     WHIRL_BONK | AIR_JUMP | AIR_DASH | SLIDE_JUMP_BUNSTRIKE | (ADV_HARD & SLIDING_POWDER)
     | (ADV_VHARD & RABI_SLIPPERS & AMULET_FOOD)
-    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD)
+    | (ADV_EXT & WALL_JUMP & 2_AMULET_FOOD & (BUNNY_AMULET | STUPID))
     // 0% method : walljump, damage boost off red uprprc bullets, wallkick, amulet
     | (ADV_STUPID & AMULET_FOOD)
     ",
