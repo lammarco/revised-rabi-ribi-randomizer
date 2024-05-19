@@ -1052,11 +1052,11 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_MID",
-    "prereq": "(EXPLOSIVES_ENEMY & ((WATER_ORB & HAMMER_ROLL_ZIP) | SLIDING_POWDER)) | (ADV_EXT & WATER_ORB & SLIDE_ZIP)",
+    "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_MID_EAST",
+    "prereq": "(EXPLOSIVES_ENEMY & ((WATER_ORB & HAMMER_ROLL_ZIP) | SLIDING_POWDER)) | (ADV_EXT & WATER_ORB & 3TILE_ZIP)",
     }
     {
-    "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_WEST",
+    "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_MID_WEST",
     "prereq": "IMPOSSIBLE",
     }
 ]}
@@ -1066,7 +1066,7 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "AQUARIUM_MID -> AQUARIUM_EAST",
+    "edge": "AQUARIUM_MID_EAST -> AQUARIUM_EAST",
     "prereq": "
         EXPLOSIVES_ENEMY & (
             (WATER_ORB & HAMMER_ROLL_ZIP)
@@ -1074,7 +1074,7 @@
        )",
     }
     {
-    "edge": "AQUARIUM_EAST -> AQUARIUM_MID",
+    "edge": "AQUARIUM_EAST -> AQUARIUM_MID_EAST",
     "prereq": "EXPLOSIVES_ENEMY & FIRE_ORB & SLIDING_POWDER",
     }
 ]}
@@ -1152,12 +1152,12 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "AQUARIUM_MID -> AQUARIUM_EAST",
+    "edge": "AQUARIUM_MID_EAST -> AQUARIUM_EAST",
     "prereq": "PIKO_HAMMER | EXPLOSIVES | (EXPLOSIVES_ENEMY & FIRE_ORB & SLIDING_POWDER)",
     }
 
     {
-    "edge": "AQUARIUM_EAST -> AQUARIUM_MID",
+    "edge": "AQUARIUM_EAST -> AQUARIUM_MID_EAST",
     "prereq": "PIKO_HAMMER | EXPLOSIVES_ENEMY",
     }
 ]}
@@ -1167,7 +1167,7 @@
 "weight": 10,
 "changes": [
     {
-    "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_MID",
+    "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_MID_EAST",
     "prereq": "
         DOWNDRILL_SEMISOLID_CLIP
         | (
@@ -1176,8 +1176,8 @@
         )",
     }
     {
-    "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_WEST",
-    "prereq": "DOWNDRILL_SEMISOLID_CLIP",
+    "edge": "AQUARIUM_TOP_ENTRANCE -> AQUARIUM_MID_WEST",
+    "prereq": "current & DOWNDRILL_SEMISOLID_CLIP",
     }
 ]}
 

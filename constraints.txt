@@ -798,15 +798,15 @@
 
 {
 "item": "HP_UP_WEST_AQUARIUM",
-"from_location": "AQUARIUM_WEST",
-"entry_prereq": "DARKNESS & EXPLOSIVES",
+"from_location": "AQUARIUM_WEST_DARKNESS",
+"entry_prereq": "EXPLOSIVES",
 "exit_prereq": "NONE",
 }
 
 {
 "item": "MANA_PLUS",
-"from_location": "AQUARIUM_WEST",
-"entry_prereq": "DARKNESS",
+"from_location": "AQUARIUM_WEST_DARKNESS",
+"entry_prereq": "NONE",
 "exit_prereq": "NONE",
 }
 
@@ -918,7 +918,7 @@
 
 {
 "item": "ATK_UP_MID_AQUARIUM",
-"from_location": "AQUARIUM_MID",
+"from_location": "AQUARIUM_MID_EAST",
 "entry_prereq": "NONE",
 "exit_prereq": "NONE",
 }
@@ -1802,7 +1802,7 @@
 
 {
 "item": "EGG_AQUARIUM",
-"from_location": "AQUARIUM_EAST",
+"from_location": "AQUARIUM_WEST_LOWER",
 "entry_prereq": "NONE",
 "exit_prereq": "NONE",
 }
