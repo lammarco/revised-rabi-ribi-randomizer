@@ -817,13 +817,12 @@ PROLOGUE_TRIGGER & (
     // quick drop jump, ad, wj, qd, amulet, wj2
     // (stupid method): quick drop jump, qd, ad, wimpy wj, amulet, wj2
     | (ADV_EXT & AIR_DASH & WALL_JUMP & BUNNY_AMULET & (SPEED2 | STUPID))
+    // wimpy launch from the left edge, 3 amulets, bounce, ad
+    | (ADV_EXT & AIR_DASH & BUNNY_AMULET & (3_AMULET_FOOD | (2_AMULET_FOOD & STUPID)))
     // qd, amulet, wimpy walljumps
-    | (ADV_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & SPEED5 & MANY_AMULET_FOOD)
-    // wimpy launch from the right edge, 3 amulets, wj2, 3 amulets wj3
+    | (ADV_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & SPEED5 & BUNNY_AMULET_LV3)
+    // wimpy launch from the left edge, 3 amulets, wj2, 3 amulets wj3
     | (ADV_STUPID & BORING & WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & 6_AMULET_FOOD)
-    // theoretically possible by amulet and item hover only but it takes forever
-    // (OBS_STUPID & BUNNY_AMULET & CONSUMABLE_USE & BORING)
-    
     | (SLIDING_POWDER & RABI_SLIPPERS & (
         // slide jump, wj, ad, wj2, amulet
         // (obscure method): slide jump, double wall jump, ad
@@ -835,6 +834,8 @@ PROLOGUE_TRIGGER & (
     ))
     // maybe not possible
     //| (ADV_STUPID & SLIDING_POWDER & WALL_JUMP_LV2 & BUNNY_AMULET_LV3)
+    // theoretically possible by amulet and item hover only but it takes forever
+    // (OBS_STUPID & BUNNY_AMULET & CONSUMABLE_USE & BORING)
 ",
 }
 
