@@ -877,6 +877,7 @@
 "from_location": "ICY_SUMMIT_UPPER",
 "entry_prereq": "
     AIR_JUMP
+    | (OBS_VHARD & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL) // need turn-off hammer roll v1.08
     | (WALL_JUMP_LV2 & (
         WHIRL_BONK
         | (AIR_DASH & HARD)
