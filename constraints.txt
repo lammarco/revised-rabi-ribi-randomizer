@@ -479,7 +479,7 @@
 {
 "item": "TOP_FORM",
 "from_location": "SKY_ISLAND_UPPER",
-"entry_prereq": "NONE",
+"entry_prereq": "5TILE_WALL_CLIMB | SLIDE_JUMP_BUNSTRIKE",
 "exit_prereq": "NONE",
 }
 
@@ -1834,7 +1834,7 @@
 {
 "item": "EGG_SNOWLAND_WARP",
 "from_location": "SNOWLAND_CHRISTMAS_TREE",
-"entry_prereq": "RABI_SLIPPERS | AIR_JUMP | AIR_DASH | ADV_HARD",
+"entry_prereq": "RABI_SLIPPERS | AIR_JUMP | AIR_DASH | SLIDE_JUMP_BUNSTRIKE | ADV_HARD",
 "exit_prereq": "NONE",
 }
 
@@ -1870,7 +1870,7 @@
         | (BORING & RABI_SLIPPERS) // dboost
     ))
     | (ADV_EXT & (
-        MANY_AMULET_FOOD // wimpy, 6 velocity cancels, bounce
+        6_AMULET_FOOD // wimpy, 6 velocity cancels, bounce
         | (2_AMULET_FOOD & (AIR_DASH | WALL_JUMP))
         | (BORING & CONSUMABLE_USE) // 3 dboosts
     ))
