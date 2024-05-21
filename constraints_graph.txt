@@ -828,7 +828,9 @@ PROLOGUE_TRIGGER & (
         // (obscure method): slide jump, double wall jump, ad
         (ADV_VHARD & WALL_JUMP & AIR_DASH & (AMULET_FOOD | OBSCURE))
         // slide jump, wj, qd, amulet, amuclimbs
-        | (ADV_EXT & WALL_JUMP_LV2 & MANY_AMULET_FOOD)
+        | (ADV_EXT & WALL_JUMP_LV2 & BUNNY_AMULET_LV2)
+        // hi-speed slide jump, amulet, rwj, ad
+        | (ADV_EXT & AIR_DASH & (BUNNY_AMULET | STUPID))
         // hi-speed slide jump, wj, qd, spam amulets, wj2
         | (ADV_STUPID & WALL_JUMP & BUNNY_AMULET & 3_AMULET_FOOD)
     ))
