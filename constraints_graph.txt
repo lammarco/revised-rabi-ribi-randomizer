@@ -1022,7 +1022,7 @@ PROLOGUE_TRIGGER & (
         (OBS_STUPID & BUNSTRIKE_ZIP)
         // need turn-off hammer roll v1.08
         // slide jump from 2-tile height ledge, 3-tile zip, amulet
-        | (OBS_EXT & 3TILE_ZIP & BUNNY_AMULET & (SPEED2 | STUPID))
+        | (OBS_EXT & 3TILE_ZIP & AMULET_FOOD & (BUNNY_AMULET | STUPID) & (SPEED2 | STUPID))
     )
 ",
 }
@@ -1718,7 +1718,7 @@ DARKNESS & (
 
 {
 "edge": "SNOWLAND_QUICK_BARRETTE_ROOM -> SNOWLAND_EAST",
-"prereq": "(OBS_STUPID & 2TILE_ZIP & BUNNY_AMULET)",
+"prereq": "OBS_STUPID & ((2TILE_ZIP & AMULET_FOOD) | BUNSTRIKE_ZIP)",
 }
 
 {
