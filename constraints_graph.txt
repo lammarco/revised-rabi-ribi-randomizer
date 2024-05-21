@@ -1536,8 +1536,8 @@ ADV_VHARD & (
 
 {
 "edge": "PARK_MAIN -> SKY_BRIDGE_SLIDE_AREA",
-// consumables do not work due to screen transition
-"prereq": "OBS_STUPID & ((4TILE_ZIP & BUNNY_AMULET) | BUNSTRIKE_ZIP)",
+// consumables method needs frame perfect hovering
+"prereq": "OBS_STUPID & ((4TILE_ZIP & AMULET_FOOD) | BUNSTRIKE_ZIP)",
 }
 
 {

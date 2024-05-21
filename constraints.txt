@@ -768,8 +768,11 @@
 {
 "item": "REGEN_UP_RAVINE",
 "from_location": "RAVINE_LOWER",
-// cramped 2 tile zip in and out
-"entry_prereq": "EXPLOSIVES | (OBS_EXT & (BUNSTRIKE_ZIP | (2TILE_ZIP & BUNNY_AMULET)))",
+"entry_prereq": "
+    EXPLOSIVES
+    | (OBS_EXT & 2TILE_ZIP & (BUNNY_AMULET | (STUPID & AMULET_FOOD))) // cramped 2 tile zip in and out
+    | (OBS_STUPID & BUNSTRIKE_ZIP)
+",
 "exit_prereq": "EXPLOSIVES | (ADV_EXT & 2TILE_ZIP)",
 }
 
