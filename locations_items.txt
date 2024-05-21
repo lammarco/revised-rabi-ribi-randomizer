@@ -174,6 +174,15 @@ RUMI_DONUT : 37
 RUMI_CAKE : 38
 COCOA_BOMB : 40
 
+// Halloween
+LILITHS_GIFT : 95
+
+// is the order a DLC
+BUNNY_CLOVER : 60
+WIND_BLESSING : 61
+FAIRIES_FLUTE : 62
+//BUNNY_MEMORIES : 63 // need EV_ALLJOINED2 for keeping inventory
+
 ===MapTransitions===
 // area : (x, y, w, h) : node : direction : map_event : trigger_id : entrance_id
 // Area 0: SOUTHERN_WOODLAND
