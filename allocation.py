@@ -101,6 +101,7 @@ class Allocation(object):
         outgoing_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_outgoing_edges.items())
         incoming_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_incoming_edges.items())
 
+        edges_append = edges.append
         # Edge Constraints
         edge_replacements = self.edge_replacements
         for original_constraint in data.edge_constraints:
@@ -110,7 +111,7 @@ class Allocation(object):
             else:
                 constraint = original_constraint
 
-            edges.append(GraphEdge(
+            edges_append(GraphEdge(
                 edge_id=len(edges),
                 from_location=constraint.from_location,
                 to_location=constraint.to_location,
@@ -137,8 +138,8 @@ class Allocation(object):
                 constraint=NO_CONDITIONS,
                 backtrack_cost=INFTY,
             )
-            edges.append(edge1)
-            edges.append(edge2)
+            edges_append(edge1)
+            edges_append(edge2)
 
         for edge in edges[originalNEdges:]:
             outgoing_edges[edge.from_location].append(edge.edge_id)
