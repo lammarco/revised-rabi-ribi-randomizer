@@ -85,27 +85,42 @@ class Allocation(object):
         update_table = True
         template_weights = [0 for j in range(len(templates))]
         template_names = ["" for j in range(len(templates))]
+        template_index = {}
         while len(templates) > 0 and len(picked_templates) < target_template_count:
             if update_table:
+                update_table = False
                 i = 0
                 total_weight = 0
+                removed_wiehgt = 0
+                template_index.clear()
                 for t in templates:
                     total_weight += templates[t].weight
                     template_names[i] = templates[t].name
                     template_weights[i] = total_weight
+                    template_index[templates[t].name] = i
                     i += 1
                 template_weights = template_weights[:i]
 
-            index = random.randrange(total_weight)
-            picked = bisect.bisect(template_weights, index)
-            current_template = template_names[picked]
+            while True:
+                index = random.randrange(total_weight)
+                picked = bisect.bisect(template_weights, index)
+                current_template = template_names[picked]
+                if current_template[0] != '!':
+                    break
 
             picked_templates.append(templates[current_template])
             
             # remove all conflicting templates
             for conflict in templates[current_template].conflicts_names:
                 if conflict in templates:
+                    removed_wiehgt += templates[conflict].weight
+                    remove_index = template_index[templates[conflict].name]
+                    template_names[remove_index] = "!"
                     del templates[conflict]
+
+            if (removed_wiehgt / total_weight) > 0.35:
+                update_table = True
+
 
         self.picked_templates = picked_templates
         for template in picked_templates:
