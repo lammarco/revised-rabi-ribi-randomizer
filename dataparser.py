@@ -773,7 +773,7 @@ class RandomizerData(object):
         while has_changes:
             has_changes = False
             to_remove.clear()
-            for condition, target in unreached_pseudo_items.items():
+            for target, condition in unreached_pseudo_items.items():
                 if condition(variables):
                     variables[target] = True
                     to_remove.append(target)
