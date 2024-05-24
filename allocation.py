@@ -1,4 +1,4 @@
-import random
+import random, bisect
 from utility import GraphEdge, is_egg, print_ln
 
 NO_CONDITIONS = lambda v : True
@@ -63,7 +63,6 @@ class Allocation(object):
     def choose_constraint_templates(self, data, settings):
         self.edge_replacements = {}
 
-        templates = list(data.template_constraints)
         def get_template_count(settings):
             low = int(0.5 * settings.constraint_changes)
             high = int(1.5 * settings.constraint_changes + 2)
@@ -76,18 +75,37 @@ class Allocation(object):
             if low == high:return low
             return random.randrange(low, high)
 
+        templates = dict()
+        orig_templates = list(data.template_constraints)
+        for t in orig_templates:
+            templates[t.name] = t
         target_template_count = get_template_count(settings)
 
         picked_templates = []
+        update_table = True
+        template_weights = [0 for j in range(len(templates))]
+        template_names = ["" for j in range(len(templates))]
         while len(templates) > 0 and len(picked_templates) < target_template_count:
-            index = random.randrange(sum(t.weight for t in templates))
-            for current_template in templates:
-                if index < current_template.weight: break
-                index -= current_template.weight
-            picked_templates.append(current_template)
+            if update_table:
+                i = 0
+                total_weight = 0
+                for t in templates:
+                    total_weight += templates[t].weight
+                    template_names[i] = templates[t].name
+                    template_weights[i] = total_weight
+                    i += 1
+                template_weights = template_weights[:i]
 
+            index = random.randrange(total_weight)
+            picked = bisect.bisect(template_weights, index)
+            current_template = template_names[picked]
+
+            picked_templates.append(templates[current_template])
+            
             # remove all conflicting templates
-            templates = [t for t in templates if not t.conflicts_with(current_template)]
+            for conflict in templates[current_template].conflicts_names:
+                if conflict in templates:
+                    del templates[conflict]
 
         self.picked_templates = picked_templates
         for template in picked_templates:

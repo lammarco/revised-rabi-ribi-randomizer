@@ -532,8 +532,12 @@ def parse_template_constraints(settings, locations_set, variable_names_set, defa
             template_file=DIR_TEMPLATE_PATCH_FILES + name_to_patch_file[name],
             changes=changes,
         ))
-
     template_constraints.sort(key=lambda tc:tc.name)
+
+    for src_t in template_constraints:
+        for cmp_t in template_constraints:
+            if src_t.conflicts_with(cmp_t):
+                src_t.conflicts_names.append(cmp_t.name)
     return template_constraints
 
 

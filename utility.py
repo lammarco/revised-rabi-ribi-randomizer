@@ -100,6 +100,7 @@ class TemplateConstraintData(object):
         self.weight = weight
         self.template_file = template_file
         self.changes = changes
+        self.conflicts_names = []
         self.change_edge_set = set([(c.from_location, c.to_location) for c in changes]
                                 + [(c.to_location, c.from_location) for c in changes])
 
