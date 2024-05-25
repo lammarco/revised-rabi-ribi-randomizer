@@ -362,17 +362,17 @@ def parse_locations_and_items():
             item_name, item_id = (x.strip() for x in line.split(':'))
             item_id = int(item_id)
             if item_name in additional_items:
-                fail('Additional Item %s already defined!' % item)
+                fail('Additional Item %s already defined!' % item_name)
             additional_items[item_name] = item_id
         elif currently_reading == READING_SHUFFLABLE_GIFT_ITEMS:
             if len(line) <= 0: continue
             if item_name in shufflable_gift_items:
-                fail('Shufflable Gift Item %s already defined!' % item)
+                fail('Shufflable Gift Item %s already defined!' % item_name)
             shufflable_gift_items.append(parse_item_from_string(line))
         elif currently_reading == READING_ITEMS:
             if len(line) <= 0: continue
             if item_name in items:
-                fail('Item %s already defined!' % item)
+                fail('Item %s already defined!' % item_name)
             items.append(parse_item_from_string(line))
         elif currently_reading == READING_MAP_TRANSITIONS:
             if len(line) <= 0: continue
@@ -395,7 +395,7 @@ def parse_locations_and_items():
                 entry_target = entry_target,
                 walking_right = walking_right,
                 rect = rect,
-             ))
+            ))
         elif currently_reading == READING_START_LOCATIONS:
             if len(line) <= 0: continue
             # Line format:
