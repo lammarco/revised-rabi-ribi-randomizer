@@ -841,6 +841,31 @@ class RandomizerData(object):
                         backtrack_cost=1,
                     ))
 
+        # check all replacement potencial nodes
+        replacement_edges = []
+        for t in self.template_constraints:
+            for change in t.changes:
+                edge_change = (change.from_location, change.to_location)
+                if edge_change not in replacement_edges:
+                    replacement_edges.append(edge_change)
+
+        # marge non-replancement potencfial nodes into initial_edges
+        edge_constraints = self.edge_constraints
+        sifted_edge_constraints = []
+        for i in range(len(edge_constraints)):
+            graph_edge = edge_constraints[i]
+            if (graph_edge.from_location, graph_edge.to_location) not in replacement_edges:
+                edges.append(GraphEdge(
+                    edge_id=len(edges),
+                    from_location=graph_edge.from_location,
+                    to_location=graph_edge.to_location,
+                    constraint=graph_edge.prereq_lambda,
+                    backtrack_cost=1,
+                ))
+            else:
+                sifted_edge_constraints.append(graph_edge)
+        self.edge_constraints = sifted_edge_constraints
+
         initial_outgoing_edges = dict((node, []) for node in graph_vertices)
         initial_incoming_edges = dict((node, []) for node in graph_vertices)
 
