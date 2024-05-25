@@ -852,8 +852,7 @@ class RandomizerData(object):
         # marge non-replancement potencfial nodes into initial_edges
         edge_constraints = self.edge_constraints
         sifted_edge_constraints = []
-        for i in range(len(edge_constraints)):
-            graph_edge = edge_constraints[i]
+        for graph_edge in edge_constraints:
             if (graph_edge.from_location, graph_edge.to_location) not in replacement_edges:
                 edges.append(GraphEdge(
                     edge_id=len(edges),
