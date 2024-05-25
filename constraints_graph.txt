@@ -1396,7 +1396,7 @@ ADV_VHARD & (
             | (SLIDE_JUMP_BUNSTRIKE & (RABI_SLIPPERS | AMULET_FOOD))
         ))
         // quick drop jump, wall jump, amulet
-        | (ADV_EXT & AMULET_FOOD & SPEED3)
+        | (ADV_EXT & AMULET_FOOD & (SPEED5 | (STUPID & SPEED3)))
         // same as above but use roll3 for getting velocity
         | (OBS_STUPID & AMULET_FOOD & HAMMER_ROLL_LV3)
         
