@@ -842,14 +842,13 @@ class RandomizerData(object):
                     ))
 
         # check all replacement potencial nodes
-        replacement_edges = []
-        for t in self.template_constraints:
-            for change in t.changes:
-                edge_change = (change.from_location, change.to_location)
-                if edge_change not in replacement_edges:
-                    replacement_edges.append(edge_change)
+        replacement_edges = set(
+            (change.from_location, change.to_location)
+            for t in self.template_constraints
+            for change in t.changes
+        )
 
-        # marge non-replancement potencfial nodes into initial_edges
+        # marge non-replancement potencial nodes into initial_edges
         edge_constraints = self.edge_constraints
         sifted_edge_constraints = []
         for graph_edge in edge_constraints:
