@@ -75,7 +75,8 @@ class EdgeConstraintData(object):
         self.from_location = from_location
         self.to_location = to_location
         self.prereq_expression = prereq_expression
-        self.prereq_lambda = lambda v : prereq_expression.evaluate(v)
+        self.prereq_compile = compile(prereq_expression.compile(), "<node>", mode= "eval")
+        self.prereq_lambda = lambda v : eval(self.prereq_compile, None, {"variables": v})
 
     def __str__(self):
         return '\n'.join([
@@ -123,7 +124,12 @@ class GraphEdge(object):
             'ID: %s' % self.edge_id,
             'Cost: %s' % self.backtrack_cost,
         ])
-
+    
+class ExpressionLambda(object):
+    def __init__(self, expression):
+        self.expression = expression
+        self.expression_compile = compile(expression.compile(), "<node>", mode= "eval")
+        self.expression_lambda = lambda v : eval(self.expression_compile, None, {"variables": v})
 
 class ConfigData(object):
     def __init__(self, knowledge, difficulty, settings):
@@ -177,7 +183,8 @@ def to_tile_index(x, y):
 
 def parse_expression_lambda(line, variable_names_set, default_expressions, current_expression=None):
     expression = parse_expression(line, variable_names_set, default_expressions, current_expression)
-    return lambda v : expression.evaluate(v)
+    evaluate = ExpressionLambda(expression)
+    return evaluate.expression_lambda
 
 # & - and
 # | - or
@@ -196,7 +203,7 @@ def parse_expression(line, variable_names_set, default_expressions={}, current_e
 # Used in string parsing. We only have either strings or expressions
 isExpr = lambda s : not type(s) is str
 def parse_expression_logic(line, variable_names_set, default_expressions, current_expression):
-    pat = re.compile('[()&|~!]')
+    #pat = re.compile('[()&|~!]')
     line = line.replace('&&', '&').replace('||', '|')
     tokens = (s.strip() for s in re.split('([()&|!~])', line))
     tokens = [s for s in tokens if s]
@@ -255,6 +262,8 @@ def parse_expression_logic(line, variable_names_set, default_expressions, curren
 class OpLit(object):
     def __init__(self, name):
         self.name = name
+    def compile(self):
+        return "variables['%s']" % self.name
     def evaluate(self, variables):
         return variables[self.name]
     def __str__(self):
@@ -264,6 +273,8 @@ class OpLit(object):
 class OpNot(object):
     def __init__(self, expr):
         self.expr = expr
+    def compile(self):
+        return "(not %s)" % self.expr.compile()
     def evaluate(self, variables):
         return not self.expr.evaluate(variables)
     def __str__(self):
@@ -274,6 +285,8 @@ class OpOr(object):
     def __init__(self, exprL, exprR):
         self.exprL = exprL
         self.exprR = exprR
+    def compile(self):
+        return "(%s or %s)" % (self.exprL.compile(), self.exprR.compile())
     def evaluate(self, variables):
         return self.exprL.evaluate(variables) or self.exprR.evaluate(variables)
     def __str__(self):
@@ -284,13 +297,39 @@ class OpAnd(object):
     def __init__(self, exprL, exprR):
         self.exprL = exprL
         self.exprR = exprR
+    def compile(self):
+        return "(%s and %s)" % (self.exprL.compile(), self.exprR.compile())
     def evaluate(self, variables):
         return self.exprL.evaluate(variables) and self.exprR.evaluate(variables)
     def __str__(self):
         return '(%s AND %s)' % (self.exprL, self.exprR)
     __repr__ = __str__
 
+def backtrackEvaluate(variables, nSteps):
+    # Yes, we're copy and pasting whole of the function lol.
+    # Yes, we're cheating by putting backtrack data in variables lol.
+    if not variables['IS_BACKTRACKING']: return False
+    untraversable_edges, outgoing_edges, edges = variables['BACKTRACK_DATA']
+    current_node, target_node = variables['BACKTRACK_GOALS']
+    reachable = set((current_node,))
+    frontier = set(((current_node,0),))
+    frontier_next = set()
 
+    while len(frontier) > 0:
+        for node, distance in frontier:
+            for edge_id in outgoing_edges[node]:
+                if edge_id in untraversable_edges: continue
+                target_location = edges[edge_id].to_location
+                new_cost = distance + edges[edge_id].backtrack_cost
+                if new_cost > nSteps: continue
+                if target_location == target_node: return True
+                if target_location in reachable: continue
+                frontier_next.add((target_location, new_cost))
+                reachable.add(target_location)
+        frontier.clear()
+        frontier, frontier_next = frontier_next, frontier
+    return False
+    
 class OpBacktrack(object):
     def __init__(self, nSteps):
         self.nSteps = nSteps
@@ -320,6 +359,8 @@ class OpBacktrack(object):
 
     def __str__(self):
         return 'BACKTRACK_%d' % self.nSteps
+    def compile(self):
+        return "backtrackEvaluate(variables, %d)" % self.nSteps
     __repr__ = __str__
 
 
