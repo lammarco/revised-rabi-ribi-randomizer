@@ -120,7 +120,7 @@ def define_pseudo_items():
         "CHAPTER_5": "TOWN_MAIN & 10TM",
         "CHAPTER_6": "CHAPTER_5",
         "CHAPTER_7": "TM_RUMI",
-        "15TM": lambda v: count_town_members_irisu(v) == 15,
+        "15TM": lambda v: enough_town_members_irisu(v),
 
         "CONSUMABLE_USE": "ITEM_MENU & (RUMI_DONUT | RUMI_CAKE | COCOA_BOMB | GOLD_CARROT)",
         "AMULET_FOOD": lambda v : enough_amu_food(v, 1),
@@ -274,13 +274,23 @@ def shufflable_gift_item_map_modifications():
 def get_default_areaids():
     return list(range(10))
 
-TOWN_MEMBERS = ('TM_COCOA','TM_ASHURI','TM_RITA','TM_CICINI','TM_SAYA','TM_SYARO','TM_PANDORA','TM_NIEVE','TM_NIXIE','TM_ARURAUNE','TM_SEANA','TM_LILITH','TM_VANILLA','TM_CHOCOLATE','TM_KOTRI','TM_KEKE_BUNNY',)
+TOWN_MEMBERS = (
+    'TM_COCOA', 'TM_ASHURI', 'TM_RITA', 'TM_CICINI',
+    'TM_SAYA', 'TM_SYARO', 'TM_PANDORA', 'TM_NIEVE',
+    'TM_NIXIE', 'TM_ARURAUNE', 'TM_SEANA', 'TM_LILITH',
+    'TM_VANILLA', 'TM_CHOCOLATE', 'TM_KOTRI', 'TM_KEKE_BUNNY',
+    )
 def count_town_members(variables):
     return sum(1 for tm in TOWN_MEMBERS if variables[tm])
 
-TOWN_MEMBERS_IRISU = ('TM_COCOA','TM_ASHURI','TM_RITA','TM_CICINI','TM_SAYA','TM_SYARO','TM_PANDORA','TM_NIEVE','TM_NIXIE','TM_ARURAUNE','TM_SEANA','TM_LILITH','TM_VANILLA','TM_CHOCOLATE','TM_KOTRI',)
-def count_town_members_irisu(variables):
-    return sum(1 for tm in TOWN_MEMBERS_IRISU if variables[tm])
+# removed TM_VANILLA, TM_CHOCOLATE, TM_CICINI, TM_SYARO, TM_NIEVE, and TM_NIXIE from requirements since TM_SEANA is encompasses them
+TOWN_MEMBERS_IRISU = (
+    'TM_COCOA', 'TM_ASHURI', 'TM_RITA', 'TM_SAYA',
+    'TM_PANDORA', 'TM_ARURAUNE', 'TM_SEANA', 'TM_LILITH',
+    'TM_KOTRI',
+    )
+def enough_town_members_irisu(variables):
+    return sum(1 for tm in TOWN_MEMBERS_IRISU if variables[tm]) >= 9
 
 MAGIC_TYPES = ('SUNNY_BEAM','CHAOS_ROD','HEALING_STAFF','EXPLODE_SHOT','CARROT_SHOOTER')
 def count_magic_types(variables):
