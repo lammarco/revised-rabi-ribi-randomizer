@@ -306,7 +306,6 @@ class OpAnd(object):
     __repr__ = __str__
 
 def backtrackEvaluate(variables, nSteps):
-    # Yes, we're copy and pasting whole of the function lol.
     # Yes, we're cheating by putting backtrack data in variables lol.
     if not variables['IS_BACKTRACKING']: return False
     untraversable_edges, outgoing_edges, edges = variables['BACKTRACK_DATA']
@@ -334,29 +333,7 @@ class OpBacktrack(object):
     def __init__(self, nSteps):
         self.nSteps = nSteps
     def evaluate(self, variables):
-        # Yes, we're cheating by putting backtrack data in variables lol.
-        if not variables['IS_BACKTRACKING']: return False
-        untraversable_edges, outgoing_edges, edges = variables['BACKTRACK_DATA']
-        current_node, target_node = variables['BACKTRACK_GOALS']
-        reachable = set((current_node,))
-        frontier = set(((current_node,0),))
-        frontier_next = set()
-
-        while len(frontier) > 0:
-            for node, distance in frontier:
-                for edge_id in outgoing_edges[node]:
-                    if edge_id in untraversable_edges: continue
-                    target_location = edges[edge_id].to_location
-                    new_cost = distance + edges[edge_id].backtrack_cost
-                    if new_cost > self.nSteps: continue
-                    if target_location == target_node: return True
-                    if target_location in reachable: continue
-                    frontier_next.add((target_location, new_cost))
-                    reachable.add(target_location)
-            frontier.clear()
-            frontier, frontier_next = frontier_next, frontier
-        return False
-
+        return backtrackEvaluate(variables, self.nSteps)
     def __str__(self):
         return 'BACKTRACK_%d' % self.nSteps
     def compile(self):
