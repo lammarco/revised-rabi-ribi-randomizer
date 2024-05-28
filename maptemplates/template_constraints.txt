@@ -664,7 +664,29 @@
 "changes": [
     {
     "edge": "RIVERBANK_LOWER_FOREST_ENTRANCE -> RIVERBANK_UNDERGROUND",
-    "prereq": "FIRE_ORB & EXPLOSIVES",
+    "prereq": "
+        FIRE_ORB & (
+            EXPLOSIVES
+            | (ADV_HARD & CARROT_SHOOTER & (
+                (AIR_JUMP & (
+                    RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL | (EXTREME & WALL_JUMP)
+                ))
+                | OBS_VHARD
+            ))
+        )
+    ",
+    "edge": "RIVERBANK_UNDERGROUND -> RIVERBANK_LOWER_LEFT",
+    "prereq": "
+        FIRE_ORB & (
+            EXPLOSIVES
+            | (ADV_HARD & CARROT_SHOOTER & (
+                (AIR_JUMP & (
+                    RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL | (EXTREME & WALL_JUMP)
+                ))
+                | OBS_VHARD
+            ))
+        )
+    ",
     }
 ]}
 
