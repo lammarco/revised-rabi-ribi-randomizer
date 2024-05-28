@@ -202,10 +202,10 @@ def parse_expression(line, variable_names_set, default_expressions={}, current_e
 
 # Used in string parsing. We only have either strings or expressions
 isExpr = lambda s : not type(s) is str
+_logic_re = re.compile('([()&|!~])')
 def parse_expression_logic(line, variable_names_set, default_expressions, current_expression):
-    #pat = re.compile('[()&|~!]')
     line = line.replace('&&', '&').replace('||', '|')
-    tokens = (s.strip() for s in re.split('([()&|!~])', line))
+    tokens = (s.strip() for s in _logic_re.split(line))
     tokens = [s for s in tokens if s]
     # Stack-based parsing. pop from [tokens], push into [stack]
     # We push an expression into [tokens] if we want to process it next iteration.
