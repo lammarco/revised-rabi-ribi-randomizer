@@ -141,6 +141,7 @@ class Allocation(object):
             else:
                 constraint = original_constraint
             edges[edge_id].satisfied = constraint.prereq_lambda
+            edges[edge_id].satisfied_O2 = constraint.prereq_lambda_O2
             edge_id += 1
 
         # Map Transitions

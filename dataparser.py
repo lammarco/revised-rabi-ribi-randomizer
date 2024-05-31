@@ -267,6 +267,9 @@ def define_default_expressions(variable_names_set):
     })
     def1.update(def4)
 
+    for key in def1.keys():
+        if def1[key] != str:
+            def1[key] = OpBrackets(def1[key])
     return def1
 
 def shufflable_gift_item_map_modifications():
@@ -473,7 +476,7 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
 
     def parse_alternates(alts):
         if alts == None: return {}
-        return dict((name, parse_expression_lambda(constraint, variable_names_set, default_expressions))
+        return dict((name, ExpressionLambda(parse_expression(constraint, variable_names_set, default_expressions)))
             for name, constraint in alts.items())
 
     item_constraints = []
@@ -489,8 +492,8 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
         item_constraints.append(ItemConstraintData(
             item = item,
             from_location = from_location,
-            entry_prereq = parse_expression_lambda(cdict['entry_prereq'], variable_names_set, default_expressions),
-            exit_prereq = parse_expression_lambda(cdict['exit_prereq'], variable_names_set, default_expressions),
+            entry_prereq = parse_expression(cdict['entry_prereq'], variable_names_set, default_expressions),
+            exit_prereq = parse_expression(cdict['exit_prereq'], variable_names_set, default_expressions),
             alternate_entries = parse_alternates(cdict.get('alternate_entries')),
             alternate_exits = parse_alternates(cdict.get('alternate_exits')),
         ))
@@ -774,9 +777,36 @@ class RandomizerData(object):
         self.item_constraints = parse_item_constraints(settings, items_set, shufflable_gift_items_set, self.locations_set, variable_names_set, default_expressions)
         self.template_constraints = parse_template_constraints(settings, self.locations_set, variable_names_set, default_expressions, self.edge_constraints)
 
+        self.preprocess_optimize_constraint()
         self.preprocess_data(settings)
         self.preprocess_variables(settings)
         self.preprocess_graph(settings)
+
+    def preprocess_optimize_constraint(self):
+        const_variables = {
+            "TRUE": True,
+            "FALSE": False,
+        }
+        variables_true = dict((name, True) for name in self.variable_names_list)
+        variables_true.update(const_variables)
+        variables_true.update(self.configured_setting_flags)
+
+        variables_false = dict((name, False) for name in self.variable_names_list)
+        variables_false.update(const_variables)
+        variables_false.update(self.configured_setting_flags)
+
+        for t in self.template_constraints:
+            for change in t.changes:
+                change.compile_O2(variables_false, variables_true)
+        for edge in self.edge_constraints:
+            edge.compile_O2(variables_false, variables_true)
+        for edge in self.item_constraints:
+            edge.compile_O2(variables_false, variables_true)
+            for entry in edge.alternate_entries.values():
+                entry.compile_O2(variables_false, variables_true)
+            for exit in edge.alternate_exits.values():
+                exit.compile_O2(variables_false, variables_true)
+
 
     def preprocess_variables_with_settings(self, setting_flags, settings):
         # Mark all unconstrained pseudo-items
@@ -829,6 +859,7 @@ class RandomizerData(object):
                     from_location=item_constraint.from_location,
                     to_location=item_node_name,
                     constraint=item_constraint.entry_prereq,
+                    constraint_O2=item_constraint.entry_prereq_O2,
                     backtrack_cost=0,
                 ))
 
@@ -837,6 +868,7 @@ class RandomizerData(object):
                     from_location=item_node_name,
                     to_location=item_constraint.from_location,
                     constraint=item_constraint.exit_prereq,
+                    constraint_O2=item_constraint.exit_prereq_O2,
                     backtrack_cost=0,
                 ))
 
@@ -845,7 +877,8 @@ class RandomizerData(object):
                         edge_id=len(edges),
                         from_location=entry_node,
                         to_location=item_node_name,
-                        constraint=prereq,
+                        constraint=prereq.expr_lambda,
+                        constraint_O2=prereq.expr_lambda_O2,
                         backtrack_cost=1,
                     ))
 
@@ -854,7 +887,8 @@ class RandomizerData(object):
                         edge_id=len(edges),
                         from_location=item_node_name,
                         to_location=exit_node,
-                        constraint=prereq,
+                        constraint=prereq.expr_lambda,
+                        constraint_O2=prereq.expr_lambda_O2,
                         backtrack_cost=1,
                     ))
 
@@ -875,6 +909,7 @@ class RandomizerData(object):
                     from_location=graph_edge.from_location,
                     to_location=graph_edge.to_location,
                     constraint=graph_edge.prereq_lambda,
+                    constraint_O2=graph_edge.prereq_lambda_O2,
                     backtrack_cost=1,
                 ))
             else:
@@ -896,6 +931,7 @@ class RandomizerData(object):
                 from_location=graph_edge.from_location,
                 to_location=graph_edge.to_location,
                 constraint=graph_edge.prereq_lambda,
+                constraint_O2=graph_edge.prereq_lambda_O2,
                 backtrack_cost=1,
             ))
 
@@ -907,6 +943,7 @@ class RandomizerData(object):
                 from_location=rtr.origin_location,
                 to_location=ltr.origin_location,
                 constraint=NO_CONDITIONS,
+                constraint_O2=NO_CONDITIONS,
                 backtrack_cost=INFTY,
             )
             edge2 = GraphEdge(
@@ -914,6 +951,7 @@ class RandomizerData(object):
                 from_location=ltr.origin_location,
                 to_location=rtr.origin_location,
                 constraint=NO_CONDITIONS,
+                constraint_O2=NO_CONDITIONS,
                 backtrack_cost=INFTY,
             )
             edges.append(edge1)

@@ -77,7 +77,13 @@ class EdgeConstraintData(object):
         self.prereq_expression = prereq_expression
         self.prereq_compile = compile(prereq_expression.compile(), "<node>", mode= "eval")
         self.prereq_lambda = lambda v : eval(self.prereq_compile, None, {"variables": v})
+        self.prereq_compile_O2 = None
+        self.prereq_lambda_O2 = self.prereq_lambda
 
+    def compile_O2(self, false_set, true_set):
+        self.prereq_expression.pre_evaluate(false_set, true_set)
+        self.prereq_compile_O2 = compile(self.prereq_expression.compile_O2(), "<node_O2>", mode= "eval")
+        self.prereq_lambda_O2 = lambda v : eval(self.prereq_compile_O2, None, {"variables": v})
     def __str__(self):
         return '\n'.join([
             'From: %s' % self.from_location,
@@ -89,11 +95,28 @@ class ItemConstraintData(object):
     def __init__(self, item, from_location, entry_prereq, exit_prereq, alternate_entries, alternate_exits):
         self.item = item
         self.from_location = from_location
-        self.entry_prereq = entry_prereq
-        self.exit_prereq = exit_prereq
+        self.entry_expression = entry_prereq
+        self.exit_expression = exit_prereq
+        self.entry_compile = compile(entry_prereq.compile(), "<node>", mode= "eval")
+        self.exit_compile = compile(exit_prereq.compile(), "<node>", mode= "eval")
+        self.entry_prereq = lambda v : eval(self.entry_compile, None, {"variables": v})
+        self.exit_prereq = lambda v : eval(self.exit_compile, None, {"variables": v})
         self.alternate_entries = alternate_entries
         self.alternate_exits = alternate_exits
         self.no_alternate_paths = (len(self.alternate_entries) + len(self.alternate_exits) == 0)
+
+        self.entry_compile_O2 = None
+        self.exit_compile_O2 = None
+        self.entry_prereq_O2 = self.entry_prereq
+        self.exit_prereq_O2 = self.exit_prereq
+
+    def compile_O2(self, false_set, true_set):
+        self.entry_expression.pre_evaluate(false_set, true_set)
+        self.exit_expression.pre_evaluate(false_set, true_set)
+        self.entry_compile_O2 = compile(self.entry_expression.compile_O2(), "<node_O2>", mode= "eval")
+        self.exit_compile_O2 = compile(self.exit_expression.compile_O2(), "<node_O2>", mode= "eval")
+        self.entry_prereq_O2 = lambda v : eval(self.entry_compile_O2, None, {"variables": v})
+        self.exit_prereq_O2 = lambda v : eval(self.exit_compile_O2, None, {"variables": v})
 
 class TemplateConstraintData(object):
     def __init__(self, name, weight, template_file, changes):
@@ -110,11 +133,12 @@ class TemplateConstraintData(object):
         return bool(self.change_edge_set.intersection(other.change_edge_set))
 
 class GraphEdge(object):
-    def __init__(self, edge_id, from_location, to_location, constraint, backtrack_cost):
+    def __init__(self, edge_id, from_location, to_location, constraint, constraint_O2, backtrack_cost):
         self.edge_id = edge_id
         self.from_location = from_location
         self.to_location = to_location
         self.satisfied = constraint
+        self.satisfied_O2 = constraint_O2
         self.backtrack_cost = backtrack_cost
 
     def __str__(self):
@@ -128,8 +152,15 @@ class GraphEdge(object):
 class ExpressionLambda(object):
     def __init__(self, expression):
         self.expression = expression
-        self.expression_compile = compile(expression.compile(), "<node>", mode= "eval")
-        self.expression_lambda = lambda v : eval(self.expression_compile, None, {"variables": v})
+        self.expr_compile = compile(expression.compile(), "<node>", mode= "eval")
+        self.expr_lambda = lambda v : eval(self.expr_compile, None, {"variables": v})
+        self.expr_compile_O2 = None
+        self.expr_lambda_O2 = self.expr_lambda
+
+    def compile_O2(self, false_set, true_set):
+        self.expression.pre_evaluate(false_set, true_set)
+        self.expr_compile_O2 = compile(self.expression.compile_O2(), "<node_O2>", mode= "eval")
+        self.expr_lambda_O2 = lambda v : eval(self.expr_compile_O2, None, {"variables": v})
 
 class ConfigData(object):
     def __init__(self, knowledge, difficulty, settings):
@@ -184,7 +215,7 @@ def to_tile_index(x, y):
 def parse_expression_lambda(line, variable_names_set, default_expressions, current_expression=None):
     expression = parse_expression(line, variable_names_set, default_expressions, current_expression)
     evaluate = ExpressionLambda(expression)
-    return evaluate.expression_lambda
+    return evaluate.expr_lambda
 
 # & - and
 # | - or
@@ -239,7 +270,7 @@ def parse_expression_logic(line, variable_names_set, default_expressions, curren
             exp = stack.pop()
             assert isExpr(exp)
             assert stack.pop() == '('
-            tokens.append(exp)
+            tokens.append(OpBrackets(exp))
         else: # string literal
             # Literal parsing
             if next.startswith('BACKTRACK_'):
@@ -258,12 +289,31 @@ def parse_expression_logic(line, variable_names_set, default_expressions, curren
     assert len(stack) == 1
     return stack[0]
 
+OP_RESULT_FALSE = -1
+OP_RESULT_NEUTRAL = 0
+OP_RESULT_TRUE = 1
 
 class OpLit(object):
     def __init__(self, name):
         self.name = name
+        self.pre_result = OP_RESULT_NEUTRAL
+        self.tokens = 1
     def compile(self):
         return "variables['%s']" % self.name
+    def compile_O2(self):
+        if self.pre_result == OP_RESULT_TRUE:
+            return "True"
+        elif self.pre_result == OP_RESULT_FALSE:
+            return "False"
+        return self.compile()
+    def pre_evaluate(self, false_set, true_set):
+        if false_set[self.name]:
+            self.pre_result = OP_RESULT_TRUE
+            self.tokens = 0
+        elif not true_set[self.name]:
+            self.pre_result = OP_RESULT_FALSE
+            self.tokens = 0
+        return self.pre_result, self.tokens
     def evaluate(self, variables):
         return variables[self.name]
     def __str__(self):
@@ -273,20 +323,86 @@ class OpLit(object):
 class OpNot(object):
     def __init__(self, expr):
         self.expr = expr
+        self.pre_result = OP_RESULT_NEUTRAL
+        self.tokens = 0
     def compile(self):
         return "(not %s)" % self.expr.compile()
+    def compile_O2(self):
+        if self.pre_result == OP_RESULT_TRUE:
+            return "True"
+        elif self.pre_result == OP_RESULT_FALSE:
+            return "False"
+        return "not %s" % self.expr.compile_O2()
+    def pre_evaluate(self, false_set, true_set):
+        result, self.tokens = self.expr.pre_evaluate(false_set, true_set)
+        if result == OP_RESULT_TRUE:
+            self.pre_result = OP_RESULT_FALSE
+        elif result == OP_RESULT_FALSE:
+            self.pre_result = OP_RESULT_TRUE
+        return self.pre_result, self.tokens
     def evaluate(self, variables):
         return not self.expr.evaluate(variables)
     def __str__(self):
         return '(NOT %s)' % self.expr
     __repr__ = __str__
 
+class OpBrackets(object):
+    def __init__(self, expr):
+        self.expr = expr
+        self.pre_result = OP_RESULT_NEUTRAL
+        self.tokens = 0
+    def compile(self):
+        return self.expr.compile()
+    def compile_O2(self):
+        if self.pre_result == OP_RESULT_TRUE:
+            return "True"
+        elif self.pre_result == OP_RESULT_FALSE:
+            return "False"
+        elif self.tokens == 1:
+            return self.expr.compile_O2()
+        assert self.tokens > 1
+        return "(%s)" % self.expr.compile_O2()
+    def pre_evaluate(self, false_set, true_set):
+        self.pre_result, self.tokens = self.expr.pre_evaluate(false_set, true_set)
+        return self.pre_result, self.tokens
+    def evaluate(self, variables):
+        return self.expr.evaluate(variables)
+    def __str__(self):
+        return '[%s]' % self.expr
+    __repr__ = __str__
+
 class OpOr(object):
     def __init__(self, exprL, exprR):
         self.exprL = exprL
         self.exprR = exprR
+        self.pre_result = OP_RESULT_NEUTRAL
+        self.tokens = 0
     def compile(self):
         return "(%s or %s)" % (self.exprL.compile(), self.exprR.compile())
+    def compile_O2(self):
+        if self.pre_result == OP_RESULT_TRUE:
+            return "True"
+        elif self.pre_result == OP_RESULT_FALSE:
+            return "False"
+        elif self.exprL.pre_result == OP_RESULT_FALSE:
+            return self.exprR.compile_O2()
+        elif self.exprR.pre_result == OP_RESULT_FALSE:
+            return self.exprL.compile_O2()
+        return "%s or %s" % (self.exprL.compile_O2(), self.exprR.compile_O2())
+    def pre_evaluate(self, false_set, true_set):
+        resultL, tokensL = self.exprL.pre_evaluate(false_set, true_set)
+        resultR, tokensR = self.exprR.pre_evaluate(false_set, true_set)
+        self.tokens = 0
+        if resultL == OP_RESULT_TRUE or resultR == OP_RESULT_TRUE:
+            self.pre_result = OP_RESULT_TRUE
+        elif resultL == OP_RESULT_FALSE and resultR == OP_RESULT_FALSE:
+            self.pre_result = OP_RESULT_FALSE
+        else:
+            if resultL == OP_RESULT_NEUTRAL:
+                self.tokens += tokensL
+            if resultR == OP_RESULT_NEUTRAL:
+                self.tokens += tokensR
+        return self.pre_result, self.tokens
     def evaluate(self, variables):
         return self.exprL.evaluate(variables) or self.exprR.evaluate(variables)
     def __str__(self):
@@ -297,8 +413,34 @@ class OpAnd(object):
     def __init__(self, exprL, exprR):
         self.exprL = exprL
         self.exprR = exprR
+        self.pre_result = OP_RESULT_NEUTRAL
+        self.tokens = 0
     def compile(self):
         return "(%s and %s)" % (self.exprL.compile(), self.exprR.compile())
+    def compile_O2(self):
+        if self.pre_result == OP_RESULT_TRUE:
+            return "True"
+        elif self.pre_result == OP_RESULT_FALSE:
+            return "False"
+        elif self.exprL.pre_result == OP_RESULT_TRUE:
+            return self.exprR.compile_O2()
+        elif self.exprR.pre_result == OP_RESULT_TRUE:
+            return self.exprL.compile_O2()
+        return "%s and %s" % (self.exprL.compile_O2(), self.exprR.compile_O2())
+    def pre_evaluate(self, false_set, true_set):
+        resultL, tokensL = self.exprL.pre_evaluate(false_set, true_set)
+        resultR, tokensR = self.exprR.pre_evaluate(false_set, true_set)
+        self.tokens = 0
+        if resultL == OP_RESULT_TRUE and resultR == OP_RESULT_TRUE:
+            self.pre_result = OP_RESULT_TRUE
+        elif resultL == OP_RESULT_FALSE or resultR == OP_RESULT_FALSE:
+            self.pre_result = OP_RESULT_FALSE
+        else:
+            if resultL == OP_RESULT_NEUTRAL:
+                self.tokens += tokensL
+            if resultR == OP_RESULT_NEUTRAL:
+                self.tokens += tokensR
+        return self.pre_result, self.tokens
     def evaluate(self, variables):
         return self.exprL.evaluate(variables) and self.exprR.evaluate(variables)
     def __str__(self):
@@ -332,12 +474,18 @@ def backtrackEvaluate(variables, nSteps):
 class OpBacktrack(object):
     def __init__(self, nSteps):
         self.nSteps = nSteps
+        self.pre_result = OP_RESULT_NEUTRAL
+        self.tokens = 1
+    def pre_evaluate(self, false_set, true_set):
+        return OP_RESULT_NEUTRAL, self.tokens
     def evaluate(self, variables):
         return backtrackEvaluate(variables, self.nSteps)
     def __str__(self):
         return 'BACKTRACK_%d' % self.nSteps
     def compile(self):
         return "backtrackEvaluate(variables, %d)" % self.nSteps
+    def compile_O2(self):
+        return self.compile()
     __repr__ = __str__
 
 
