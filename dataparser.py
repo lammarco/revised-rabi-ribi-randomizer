@@ -25,6 +25,8 @@ DIFFICULTY_EXTREME = 'DIFFICULTY_EXTREME'
 DIFFICULTY_STUPID = 'DIFFICULTY_STUPID'
 OPEN_MODE = 'OPEN_MODE'
 
+NO_CONDITIONS = lambda v : True
+INFTY = 99999
 
 def define_config_flags():
     d = {
@@ -804,6 +806,7 @@ class RandomizerData(object):
         # Partial Graph Construction
         graph_vertices = list(self.location_list)
         item_locations_in_node = dict((node, []) for node in graph_vertices)
+
         edges = []
         for item_constraint in self.item_constraints:
             if item_constraint.no_alternate_paths and \
@@ -858,7 +861,7 @@ class RandomizerData(object):
             for change in t.changes
         )
 
-        # marge non-replancement potencial nodes into initial_edges
+        # marge non-replacement potencial nodes into initial_edges
         edge_constraints = self.edge_constraints
         sifted_edge_constraints = []
         for graph_edge in edge_constraints:
@@ -880,6 +883,37 @@ class RandomizerData(object):
         for edge in edges:
             initial_outgoing_edges[edge.from_location].append(edge.edge_id)
             initial_incoming_edges[edge.to_location].append(edge.edge_id)
+
+        # replacement potencial nodes
+        self.replacement_edges_id = len(edges)
+        for graph_edge in sifted_edge_constraints:
+            edges.append(GraphEdge(
+                edge_id=len(edges),
+                from_location=graph_edge.from_location,
+                to_location=graph_edge.to_location,
+                constraint=graph_edge.prereq_lambda,
+                backtrack_cost=1,
+            ))
+
+        # map transition nodes
+        self.transition_edges_id = len(edges)
+        for rtr, ltr in zip(self.walking_right_transitions, self.walking_left_transitions):
+            edge1 = GraphEdge(
+                edge_id=len(edges),
+                from_location=rtr.origin_location,
+                to_location=ltr.origin_location,
+                constraint=NO_CONDITIONS,
+                backtrack_cost=INFTY,
+            )
+            edge2 = GraphEdge(
+                edge_id=len(edges)+1,
+                from_location=ltr.origin_location,
+                to_location=rtr.origin_location,
+                constraint=NO_CONDITIONS,
+                backtrack_cost=INFTY,
+            )
+            edges.append(edge1)
+            edges.append(edge2)
 
         self.graph_vertices = graph_vertices
         self.item_locations_in_node = item_locations_in_node

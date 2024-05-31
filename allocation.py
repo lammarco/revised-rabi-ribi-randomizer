@@ -1,8 +1,5 @@
 import random, bisect
-from utility import GraphEdge, is_egg, print_ln
-
-NO_CONDITIONS = lambda v : True
-INFTY = 99999
+from utility import is_egg, print_ln
 
 class Allocation(object):
     # Attributes:
@@ -130,11 +127,11 @@ class Allocation(object):
 
     def construct_graph(self, data, settings):
         edges = list(data.initial_edges)
-        originalNEdges = len(edges)
+        edge_id = data.replacement_edges_id
+        originalNEdges = edge_id
         outgoing_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_outgoing_edges.items())
         incoming_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_incoming_edges.items())
 
-        edges_append = edges.append
         # Edge Constraints
         edge_replacements = self.edge_replacements
         for original_constraint in data.edge_constraints:
@@ -143,41 +140,22 @@ class Allocation(object):
                 constraint = edge_replacements[key]
             else:
                 constraint = original_constraint
-
-            edges_append(GraphEdge(
-                edge_id=len(edges),
-                from_location=constraint.from_location,
-                to_location=constraint.to_location,
-                constraint=constraint.prereq_lambda,
-                backtrack_cost=1,
-            ))
+            edges[edge_id].satisfied = constraint.prereq_lambda
+            edge_id += 1
 
         # Map Transitions
         if settings.shuffle_map_transitions:
             random.shuffle(self.walking_left_transitions)
 
-        for rtr, ltr in zip(data.walking_right_transitions, self.walking_left_transitions):
-            edge1 = GraphEdge(
-                edge_id=len(edges),
-                from_location=rtr.origin_location,
-                to_location=ltr.origin_location,
-                constraint=NO_CONDITIONS,
-                backtrack_cost=INFTY,
-            )
-            edge2 = GraphEdge(
-                edge_id=len(edges)+1,
-                from_location=ltr.origin_location,
-                to_location=rtr.origin_location,
-                constraint=NO_CONDITIONS,
-                backtrack_cost=INFTY,
-            )
-            edges_append(edge1)
-            edges_append(edge2)
+            edge_id = data.transition_edges_id
+            for ltr in self.walking_left_transitions:
+                edges[edge_id].to_location = ltr.origin_location
+                edges[edge_id+1].from_location = ltr.origin_location
+                edge_id += 2
 
         for edge in edges[originalNEdges:]:
             outgoing_edges[edge.from_location].append(edge.edge_id)
             incoming_edges[edge.to_location].append(edge.edge_id)
-
 
         self.edges = edges
         self.outgoing_edges = outgoing_edges
