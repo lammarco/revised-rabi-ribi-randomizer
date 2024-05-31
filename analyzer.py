@@ -159,7 +159,6 @@ class Analyzer(object):
         new_reachable_locations = set()
         newly_traversable_edges = set()
         temp_variable_storage = {}
-        test_mode = 0
 
         variables['IS_BACKTRACKING'] = False
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
@@ -232,9 +231,6 @@ class Analyzer(object):
                                 forward_enterable.add(target_location)
                                 if target_location in backward_exitable:
                                     new_reachable_locations.add(target_location)
-                                    if self.visualize and test_mode == 1:
-                                        if edges[edge_id].to_location not in reachable_levels:
-                                            reachable_levels[edges[edge_id].to_location] = current_level
                                 else:
                                     pending_exit_locations.add(target_location)
                 forward_frontier.clear()
@@ -255,19 +251,15 @@ class Analyzer(object):
                                 if target_location in forward_enterable:
                                     new_reachable_locations.add(target_location)
                                     pending_exit_locations.remove(target_location)
-                                    if self.visualize and test_mode == 2:
-                                        if edges[edge_id].from_location not in reachable_levels:
-                                            reachable_levels[edges[edge_id].from_location] = current_level
                 backward_frontier.clear()
                 backward_frontier, new_backward_exitable = new_backward_exitable, backward_frontier
 
 
             # STEP 4: Mark New Reachable Locations
             for location in new_reachable_locations:
-                if self.visualize and test_mode == 0:
+                if self.visualize:
                     if location not in reachable_levels:
                         reachable_levels[location] = current_level
-                    #reachable_levels[location] = current_level
                 if location in locations_set:
                     if not variables[location]:
                         current_level_part2.append(location)
