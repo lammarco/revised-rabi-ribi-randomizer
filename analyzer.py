@@ -163,6 +163,8 @@ class Analyzer(object):
         variables['IS_BACKTRACKING'] = False
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
         variables['BACKTRACK_GOALS'] = None, None
+        variables['_N_TM'] = 0
+        variables['_N_AMU_FOOD'] = 0
 
         first_loop = True
         current_level = 0

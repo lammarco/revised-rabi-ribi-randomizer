@@ -105,11 +105,12 @@ def define_pseudo_items():
         "TM_RUMI": "FORGOTTEN_CAVE_2",
         "TM_IRISU": "WARP_DESTINATION_HOSPITAL & CHAPTER_5 & 15TM & TM_MIRIAM & TM_RUMI & LIBRARY_IRISU",
 
-        "2TM": lambda v: count_town_members(v) >= 2,
-        "3TM": lambda v: count_town_members(v) >= 3,
-        "4TM": lambda v: count_town_members(v) >= 4,
-        "7TM": lambda v: count_town_members(v) >= 7,
-        "10TM": lambda v: count_town_members(v) >= 10,
+        "COUNT_TOWN_MEMBERS": lambda v : count_town_members(v),
+        "2TM": lambda v: v['_N_TM'] >= 2,
+        "3TM": lambda v: v['_N_TM'] >= 3,
+        "4TM": lambda v: v['_N_TM'] >= 4,
+        "7TM": lambda v: v['_N_TM'] >= 7,
+        "10TM": lambda v: v['_N_TM'] >= 10,
         "SPEEDY": "ITM & TM_CICINI & TOWN_MAIN & 3TM",
 
         "3_MAGIC_TYPES": lambda v : count_magic_types(v) >= 3,
@@ -125,11 +126,12 @@ def define_pseudo_items():
         "15TM": lambda v: enough_town_members_irisu(v),
 
         "CONSUMABLE_USE": "ITEM_MENU & (RUMI_DONUT | RUMI_CAKE | COCOA_BOMB | GOLD_CARROT)",
-        "AMULET_FOOD": lambda v : enough_amu_food(v, 1),
-        "2_AMULET_FOOD": lambda v : enough_amu_food(v, 2),
-        "3_AMULET_FOOD": lambda v : enough_amu_food(v, 3),
-        "4_AMULET_FOOD": lambda v : enough_amu_food(v, 4),
-        "6_AMULET_FOOD": lambda v : enough_amu_food(v, 6),
+        "COUNT_AMULET_FOOD": lambda v : count_amu_food(v),
+        "AMULET_FOOD": lambda v : v['_N_AMU_FOOD'] >=1,
+        "2_AMULET_FOOD": lambda v : v['_N_AMU_FOOD'] >=2,
+        "3_AMULET_FOOD": lambda v : v['_N_AMU_FOOD'] >=3,
+        "4_AMULET_FOOD": lambda v : v['_N_AMU_FOOD'] >=4,
+        "6_AMULET_FOOD": lambda v : v['_N_AMU_FOOD'] >=6,
         "MANY_AMULET_FOOD": "ITEM_MENU & TOWN_SHOP & BUNNY_AMULET",
 
         "BOOST": "BEACH_MAIN | (RUMI_DONUT & ITEM_MENU)",
@@ -283,7 +285,8 @@ TOWN_MEMBERS = (
     'TM_VANILLA', 'TM_CHOCOLATE', 'TM_KOTRI', 'TM_KEKE_BUNNY',
     )
 def count_town_members(variables):
-    return sum(1 for tm in TOWN_MEMBERS if variables[tm])
+    variables["_N_TM"] = sum(1 for tm in TOWN_MEMBERS if variables[tm])
+    return variables["_N_TM"] >= 10
 
 # removed TM_VANILLA, TM_CHOCOLATE, TM_CICINI, TM_SYARO, TM_NIEVE, and TM_NIXIE from requirements since TM_SEANA is encompasses them
 TOWN_MEMBERS_IRISU = (
@@ -300,7 +303,7 @@ def count_magic_types(variables):
 
 CONSUMABLE_ITEMS = ('RUMI_DONUT','RUMI_CAKE','COCOA_BOMB','GOLD_CARROT')
 NORMAL_CONSUMABLE_ITEMS = ('RUMI_CAKE','COCOA_BOMB','GOLD_CARROT')
-def enough_amu_food(variables, amount):
+def count_amu_food(variables):
     amulet = 0
     food = 0
     if variables['BUNNY_AMULET_LV4']: amulet = 4
@@ -314,7 +317,8 @@ def enough_amu_food(variables, amount):
         food += sum(1 for tm in NORMAL_CONSUMABLE_ITEMS if variables[tm])
     if amulet >= 4 and variables['TM_KOTRI'] and variables['3TM']:
         amulet += 1
-    return (amulet + food) >= amount
+    variables["_N_AMU_FOOD"] = amulet + food
+    return (amulet + food) >= 6
 
 
 def evaluate_pseudo_item_constraints(pseudo_items, variable_names_set, default_expressions):
