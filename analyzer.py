@@ -84,7 +84,27 @@ class Analyzer(object):
         if len(hard_to_reach_all) < nHardToReach:
             return 'Not enough reachable items (%d) for hard to reach (%d)...?' % (len(hard_to_reach_all), nHardToReach)
 
-        self.hard_to_reach_items = random.sample(hard_to_reach_all, nHardToReach)
+        if self.settings.egg_goals:
+            hard_to_reach_egg = [item for item in hard_to_reach_all if is_egg(item)]
+
+            # hard-to-reach priority
+            # egg > potion > other
+            nHardToReachEgg = len(hard_to_reach_egg)
+            if nHardToReachEgg >= nHardToReach:
+                self.hard_to_reach_items = random.sample(hard_to_reach_egg, nHardToReach)
+            else:
+                self.hard_to_reach_items = random.sample(hard_to_reach_egg, nHardToReachEgg)
+                hard_to_reach_potion = [item for item in hard_to_reach_all if is_potion(item)]
+                nHardToReachPotion = len(hard_to_reach_potion)
+                if (nHardToReachEgg + nHardToReachPotion >= nHardToReach):
+                    self.hard_to_reach_items += random.sample(hard_to_reach_potion, nHardToReach - nHardToReachEgg)
+                else:
+                    self.hard_to_reach_items += random.sample(hard_to_reach_potion, nHardToReachPotion)
+                    hard_to_reach_other = [item for item in hard_to_reach_all if not is_potion(item) and not is_egg(item)]
+                    self.hard_to_reach_items += random.sample(hard_to_reach_other, nHardToReach - nHardToReachEgg - nHardToReachPotion)
+
+        else:
+            self.hard_to_reach_items = random.sample(hard_to_reach_all, nHardToReach)
         self.reachable = reachable
         self.unreachable = unreachable
         self.levels = levels
