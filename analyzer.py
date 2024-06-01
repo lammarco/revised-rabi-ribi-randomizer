@@ -43,20 +43,14 @@ class Analyzer(object):
             self.error_message = 'Not all goals are reachable.'
             return False
 
-        if self.settings.egg_goals:
-            if not self.verify_chain_length_requirement(levels):
-                self.error_message = 'Below minimum chain length.'
-                return False
-
         error = self.process_verification_results(reachable, unreachable, levels)
         if error:
             self.error_message = error
             return False
 
-        if not self.settings.egg_goals:
-            if not self.verify_chain_length_requirement(levels):
-                self.error_message = 'Below minimum chain length.'
-                return False
+        if not self.verify_chain_length_requirement(levels):
+            self.error_message = 'Below minimum chain length.'
+            return False
 
         return True
 
