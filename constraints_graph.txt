@@ -204,6 +204,7 @@ ITM & (
         | (ADV_VHARD & AIR_DASH)
         //| OBS_STUPID // rollbonk, whirlbonk bee
     ))
+    | (ADV_VHARD & 4TILE_ZIP & AIR_JUMP)
     // get bee into hole, slide bonk off bee, airjump
     | (ADV_EXT & SLIDING_POWDER & (AIR_JUMP | WALL_JUMP_LV2))
     // same as above, but required very precise positioning
@@ -212,11 +213,10 @@ ITM & (
     | (OBS_STUPID & (
         // 5 tile wall jump from slope, amulet probably not needed
         (RABI_SLIPPERS & WALL_JUMP_LV2 & AIR_DASH & SPEED5 & BUNNY_AMULET)
+        // same as above
+        | (AIR_JUMP & SPEED5)
         // bunstrike zip, amulet, wall jump, wall kick
         | (BUNSTRIKE_ZIP & BUNNY_AMULET)
-        
-        // 4 tile zip. amulet cancel needed for wall jump. consumables don't work.
-        //| (4TILE_ZIP & (AIR_JUMP | (BUNNY_AMULET & WALL_JUMP_LV2)))
     ))
 )
 ",
