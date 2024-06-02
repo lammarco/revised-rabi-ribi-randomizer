@@ -1843,6 +1843,7 @@ ITM & (
         | WALL_JUMP_LV2
         | (ADV_HARD & HAMMER_ROLL)
         | (ADV_EXT & (RABI_SLIPPERS | SLIDING_POWDER)) // damage boost / slide bonk
+        | (ADV_STUPID & WALL_JUMP) // 11-tile climb + damage boost
     ))
     | (WALL_JUMP_LV2 & (
         (ADV_HARD & RABI_SLIPPERS)
