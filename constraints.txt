@@ -1313,6 +1313,7 @@
         | 3_AMULET_FOOD
         | (WALL_JUMP & 2_AMULET_FOOD)
     ))
+    | (OBS_STUPID & 2TILE_ZIP) // burnout zip
 )",
 "exit_prereq": "NONE",
 
