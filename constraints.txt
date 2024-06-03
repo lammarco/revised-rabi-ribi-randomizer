@@ -1302,27 +1302,9 @@
 
 {
 "item": "ATK_UP_EAST_LAB",
-"from_location": "LAB_EAST",
-"entry_prereq": "EXPLOSIVES_ENEMY & (
-    AIR_JUMP
-    | AIR_DASH
-    | (RABI_SLIPPERS & (SLIDE_JUMP_BUNSTRIKE | ADV_VHARD))
-    | (ADV_VHARD & WALL_JUMP_LV2)
-    | (ADV_EXT & (
-        SLIDE_JUMP_BUNSTRIKE_CANCEL
-        | 3_AMULET_FOOD
-        | (WALL_JUMP & 2_AMULET_FOOD)
-    ))
-    | (OBS_STUPID & 2TILE_ZIP) // burnout zip
-)",
+"from_location": "LAB_EAST_ATK_UP_ROOM",
+"entry_prereq": "EXPLOSIVES_ENEMY",
 "exit_prereq": "NONE",
-
-"alternate_entries": {
-    "LAB_ENTRANCE": "EXPLOSIVES_ENEMY & HAMMER_ROLL_ZIP",
-},
-"alternate_exits": {
-    "LAB_EAST_PACK_UP_ROOM": "EXPLOSIVES_ENEMY & 2TILE_ZIP",
-},
 }
 
 {

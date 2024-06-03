@@ -2653,6 +2653,37 @@ ITM & (
 "prereq": "NONE",
 }
 
+{
+"edge": "LAB_EAST -> LAB_EAST_ATK_UP_ROOM",
+"prereq": "
+    AIR_JUMP
+    | AIR_DASH
+    | (RABI_SLIPPERS & (SLIDE_JUMP_BUNSTRIKE | ADV_VHARD))
+    | (ADV_VHARD & WALL_JUMP_LV2)
+    | (ADV_EXT & (
+        SLIDE_JUMP_BUNSTRIKE_CANCEL
+        | 3_AMULET_FOOD
+        | (WALL_JUMP & 2_AMULET_FOOD)
+    ))
+    | (OBS_STUPID & 2TILE_ZIP) // burnout zip
+",
+}
+
+{
+"edge": "LAB_EAST_ATK_UP_ROOM -> LAB_EAST",
+"prereq": "NONE",
+}
+
+{
+"edge": "LAB_ENTRANCE -> LAB_EAST_ATK_UP_ROOM",
+"prereq": "HAMMER_ROLL_ZIP & BUNNY_AMULET",
+}
+
+{
+"edge": "LAB_EAST_ATK_UP_ROOM -> LAB_EAST_PACK_UP_ROOM",
+"prereq": "(OBS_VHARD & 3TILE_ZIP) | (EXPLOSIVES_ENEMY & 2TILE_ZIP)",
+}
+
 // .---------------------'
 // | Area 5 : Rabi Rabi Town
 // '---------------------.
