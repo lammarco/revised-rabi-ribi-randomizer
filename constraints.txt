@@ -367,7 +367,7 @@
     "GRAVEYARD_MAIN": "ADV_VHARD & WHIRL_BONK & (
         AIR_JUMP
         | (OBS_EXT & HAMMER_ROLL)
-        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD)
+        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD & (RABI_SLIPPERS | STUPID))
     )",
     },
 "alternate_exits": {
