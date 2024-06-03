@@ -25,6 +25,8 @@ DIFFICULTY_EXTREME = 'DIFFICULTY_EXTREME'
 DIFFICULTY_STUPID = 'DIFFICULTY_STUPID'
 OPEN_MODE = 'OPEN_MODE'
 
+NO_CONDITIONS = lambda v : True
+INFTY = 99999
 
 def define_config_flags():
     d = {
@@ -120,7 +122,7 @@ def define_pseudo_items():
         "CHAPTER_5": "TOWN_MAIN & 10TM",
         "CHAPTER_6": "CHAPTER_5",
         "CHAPTER_7": "TM_RUMI",
-        "15TM": lambda v: count_town_members_irisu(v) == 15,
+        "15TM": lambda v: enough_town_members_irisu(v),
 
         "CONSUMABLE_USE": "ITEM_MENU & (RUMI_DONUT | RUMI_CAKE | COCOA_BOMB | GOLD_CARROT)",
         "AMULET_FOOD": lambda v : enough_amu_food(v, 1),
@@ -274,13 +276,23 @@ def shufflable_gift_item_map_modifications():
 def get_default_areaids():
     return list(range(10))
 
-TOWN_MEMBERS = ('TM_COCOA','TM_ASHURI','TM_RITA','TM_CICINI','TM_SAYA','TM_SYARO','TM_PANDORA','TM_NIEVE','TM_NIXIE','TM_ARURAUNE','TM_SEANA','TM_LILITH','TM_VANILLA','TM_CHOCOLATE','TM_KOTRI','TM_KEKE_BUNNY',)
+TOWN_MEMBERS = (
+    'TM_COCOA', 'TM_ASHURI', 'TM_RITA', 'TM_CICINI',
+    'TM_SAYA', 'TM_SYARO', 'TM_PANDORA', 'TM_NIEVE',
+    'TM_NIXIE', 'TM_ARURAUNE', 'TM_SEANA', 'TM_LILITH',
+    'TM_VANILLA', 'TM_CHOCOLATE', 'TM_KOTRI', 'TM_KEKE_BUNNY',
+    )
 def count_town_members(variables):
     return sum(1 for tm in TOWN_MEMBERS if variables[tm])
 
-TOWN_MEMBERS_IRISU = ('TM_COCOA','TM_ASHURI','TM_RITA','TM_CICINI','TM_SAYA','TM_SYARO','TM_PANDORA','TM_NIEVE','TM_NIXIE','TM_ARURAUNE','TM_SEANA','TM_LILITH','TM_VANILLA','TM_CHOCOLATE','TM_KOTRI',)
-def count_town_members_irisu(variables):
-    return sum(1 for tm in TOWN_MEMBERS_IRISU if variables[tm])
+# removed TM_VANILLA, TM_CHOCOLATE, TM_CICINI, TM_SYARO, TM_NIEVE, and TM_NIXIE from requirements since TM_SEANA is encompasses them
+TOWN_MEMBERS_IRISU = (
+    'TM_COCOA', 'TM_ASHURI', 'TM_RITA', 'TM_SAYA',
+    'TM_PANDORA', 'TM_ARURAUNE', 'TM_SEANA', 'TM_LILITH',
+    'TM_KOTRI',
+    )
+def enough_town_members_irisu(variables):
+    return sum(1 for tm in TOWN_MEMBERS_IRISU if variables[tm]) >= 9
 
 MAGIC_TYPES = ('SUNNY_BEAM','CHAOS_ROD','HEALING_STAFF','EXPLODE_SHOT','CARROT_SHOOTER')
 def count_magic_types(variables):
@@ -362,17 +374,17 @@ def parse_locations_and_items():
             item_name, item_id = (x.strip() for x in line.split(':'))
             item_id = int(item_id)
             if item_name in additional_items:
-                fail('Additional Item %s already defined!' % item)
+                fail('Additional Item %s already defined!' % item_name)
             additional_items[item_name] = item_id
         elif currently_reading == READING_SHUFFLABLE_GIFT_ITEMS:
             if len(line) <= 0: continue
             if item_name in shufflable_gift_items:
-                fail('Shufflable Gift Item %s already defined!' % item)
+                fail('Shufflable Gift Item %s already defined!' % item_name)
             shufflable_gift_items.append(parse_item_from_string(line))
         elif currently_reading == READING_ITEMS:
             if len(line) <= 0: continue
             if item_name in items:
-                fail('Item %s already defined!' % item)
+                fail('Item %s already defined!' % item_name)
             items.append(parse_item_from_string(line))
         elif currently_reading == READING_MAP_TRANSITIONS:
             if len(line) <= 0: continue
@@ -395,7 +407,7 @@ def parse_locations_and_items():
                 entry_target = entry_target,
                 walking_right = walking_right,
                 rect = rect,
-             ))
+            ))
         elif currently_reading == READING_START_LOCATIONS:
             if len(line) <= 0: continue
             # Line format:
@@ -532,8 +544,12 @@ def parse_template_constraints(settings, locations_set, variable_names_set, defa
             template_file=DIR_TEMPLATE_PATCH_FILES + name_to_patch_file[name],
             changes=changes,
         ))
-
     template_constraints.sort(key=lambda tc:tc.name)
+
+    for src_t in template_constraints:
+        for cmp_t in template_constraints:
+            if src_t.conflicts_with(cmp_t):
+                src_t.conflicts_names.append(cmp_t.name)
     return template_constraints
 
 
@@ -769,7 +785,7 @@ class RandomizerData(object):
         while has_changes:
             has_changes = False
             to_remove.clear()
-            for condition, target in unreached_pseudo_items.items():
+            for target, condition in unreached_pseudo_items.items():
                 if condition(variables):
                     variables[target] = True
                     to_remove.append(target)
@@ -790,6 +806,7 @@ class RandomizerData(object):
         # Partial Graph Construction
         graph_vertices = list(self.location_list)
         item_locations_in_node = dict((node, []) for node in graph_vertices)
+
         edges = []
         for item_constraint in self.item_constraints:
             if item_constraint.no_alternate_paths and \
@@ -837,12 +854,66 @@ class RandomizerData(object):
                         backtrack_cost=1,
                     ))
 
+        # check all replacement potencial nodes
+        replacement_edges = set(
+            (change.from_location, change.to_location)
+            for t in self.template_constraints
+            for change in t.changes
+        )
+
+        # marge non-replacement potencial nodes into initial_edges
+        edge_constraints = self.edge_constraints
+        sifted_edge_constraints = []
+        for graph_edge in edge_constraints:
+            if (graph_edge.from_location, graph_edge.to_location) not in replacement_edges:
+                edges.append(GraphEdge(
+                    edge_id=len(edges),
+                    from_location=graph_edge.from_location,
+                    to_location=graph_edge.to_location,
+                    constraint=graph_edge.prereq_lambda,
+                    backtrack_cost=1,
+                ))
+            else:
+                sifted_edge_constraints.append(graph_edge)
+        self.edge_constraints = sifted_edge_constraints
+
         initial_outgoing_edges = dict((node, []) for node in graph_vertices)
         initial_incoming_edges = dict((node, []) for node in graph_vertices)
 
         for edge in edges:
             initial_outgoing_edges[edge.from_location].append(edge.edge_id)
             initial_incoming_edges[edge.to_location].append(edge.edge_id)
+
+        # replacement potencial nodes
+        self.replacement_edges_id = len(edges)
+        for graph_edge in sifted_edge_constraints:
+            edges.append(GraphEdge(
+                edge_id=len(edges),
+                from_location=graph_edge.from_location,
+                to_location=graph_edge.to_location,
+                constraint=graph_edge.prereq_lambda,
+                backtrack_cost=1,
+            ))
+
+        # map transition nodes
+        self.transition_edges_id = len(edges)
+        for rtr, ltr in zip(self.walking_right_transitions, self.walking_left_transitions):
+            edge1 = GraphEdge(
+                edge_id=len(edges),
+                from_location=rtr.origin_location,
+                to_location=ltr.origin_location,
+                constraint=NO_CONDITIONS,
+                backtrack_cost=INFTY,
+            )
+            edge2 = GraphEdge(
+                edge_id=len(edges)+1,
+                from_location=ltr.origin_location,
+                to_location=rtr.origin_location,
+                constraint=NO_CONDITIONS,
+                backtrack_cost=INFTY,
+            )
+            edges.append(edge1)
+            edges.append(edge2)
 
         self.graph_vertices = graph_vertices
         self.item_locations_in_node = item_locations_in_node

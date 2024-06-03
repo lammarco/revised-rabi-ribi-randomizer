@@ -43,20 +43,14 @@ class Analyzer(object):
             self.error_message = 'Not all goals are reachable.'
             return False
 
-        if self.settings.egg_goals:
-            if not self.verify_chain_length_requirement(levels):
-                self.error_message = 'Below minimum chain length.'
-                return False
-
         error = self.process_verification_results(reachable, unreachable, levels)
         if error:
             self.error_message = error
             return False
 
-        if not self.settings.egg_goals:
-            if not self.verify_chain_length_requirement(levels):
-                self.error_message = 'Below minimum chain length.'
-                return False
+        if not self.verify_chain_length_requirement(levels):
+            self.error_message = 'Below minimum chain length.'
+            return False
 
         return True
 
@@ -90,7 +84,27 @@ class Analyzer(object):
         if len(hard_to_reach_all) < nHardToReach:
             return 'Not enough reachable items (%d) for hard to reach (%d)...?' % (len(hard_to_reach_all), nHardToReach)
 
-        self.hard_to_reach_items = random.sample(hard_to_reach_all, nHardToReach)
+        if self.settings.egg_goals:
+            hard_to_reach_egg = [item for item in hard_to_reach_all if is_egg(item)]
+
+            # hard-to-reach priority
+            # egg > potion > other
+            nHardToReachEgg = len(hard_to_reach_egg)
+            if nHardToReachEgg >= nHardToReach:
+                self.hard_to_reach_items = random.sample(hard_to_reach_egg, nHardToReach)
+            else:
+                self.hard_to_reach_items = random.sample(hard_to_reach_egg, nHardToReachEgg)
+                hard_to_reach_potion = [item for item in hard_to_reach_all if is_potion(item)]
+                nHardToReachPotion = len(hard_to_reach_potion)
+                if (nHardToReachEgg + nHardToReachPotion >= nHardToReach):
+                    self.hard_to_reach_items += random.sample(hard_to_reach_potion, nHardToReach - nHardToReachEgg)
+                else:
+                    self.hard_to_reach_items += random.sample(hard_to_reach_potion, nHardToReachPotion)
+                    hard_to_reach_other = [item for item in hard_to_reach_all if not is_potion(item) and not is_egg(item)]
+                    self.hard_to_reach_items += random.sample(hard_to_reach_other, nHardToReach - nHardToReachEgg - nHardToReachPotion)
+
+        else:
+            self.hard_to_reach_items = random.sample(hard_to_reach_all, nHardToReach)
         self.reachable = reachable
         self.unreachable = unreachable
         self.levels = levels
@@ -159,7 +173,6 @@ class Analyzer(object):
         new_reachable_locations = set()
         newly_traversable_edges = set()
         temp_variable_storage = {}
-        test_mode = 0
 
         variables['IS_BACKTRACKING'] = False
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
@@ -232,9 +245,6 @@ class Analyzer(object):
                                 forward_enterable.add(target_location)
                                 if target_location in backward_exitable:
                                     new_reachable_locations.add(target_location)
-                                    if self.visualize and test_mode == 1:
-                                        if edges[edge_id].to_location not in reachable_levels:
-                                            reachable_levels[edges[edge_id].to_location] = current_level
                                 else:
                                     pending_exit_locations.add(target_location)
                 forward_frontier.clear()
@@ -255,19 +265,15 @@ class Analyzer(object):
                                 if target_location in forward_enterable:
                                     new_reachable_locations.add(target_location)
                                     pending_exit_locations.remove(target_location)
-                                    if self.visualize and test_mode == 2:
-                                        if edges[edge_id].from_location not in reachable_levels:
-                                            reachable_levels[edges[edge_id].from_location] = current_level
                 backward_frontier.clear()
                 backward_frontier, new_backward_exitable = new_backward_exitable, backward_frontier
 
 
             # STEP 4: Mark New Reachable Locations
             for location in new_reachable_locations:
-                if self.visualize and test_mode == 0:
+                if self.visualize:
                     if location not in reachable_levels:
                         reachable_levels[location] = current_level
-                    #reachable_levels[location] = current_level
                 if location in locations_set:
                     if not variables[location]:
                         current_level_part2.append(location)

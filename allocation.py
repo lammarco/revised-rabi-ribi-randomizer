@@ -1,8 +1,5 @@
-import random
-from utility import GraphEdge, is_egg, print_ln
-
-NO_CONDITIONS = lambda v : True
-INFTY = 99999
+import random, bisect
+from utility import is_egg, print_ln
 
 class Allocation(object):
     # Attributes:
@@ -63,7 +60,6 @@ class Allocation(object):
     def choose_constraint_templates(self, data, settings):
         self.edge_replacements = {}
 
-        templates = list(data.template_constraints)
         def get_template_count(settings):
             low = int(0.5 * settings.constraint_changes)
             high = int(1.5 * settings.constraint_changes + 2)
@@ -76,18 +72,52 @@ class Allocation(object):
             if low == high:return low
             return random.randrange(low, high)
 
+        templates = dict()
+        orig_templates = list(data.template_constraints)
+        for t in orig_templates:
+            templates[t.name] = t
         target_template_count = get_template_count(settings)
 
         picked_templates = []
+        update_table = True
+        template_weights = [0 for j in range(len(templates))]
+        template_names = ["" for j in range(len(templates))]
+        template_index = {}
         while len(templates) > 0 and len(picked_templates) < target_template_count:
-            index = random.randrange(sum(t.weight for t in templates))
-            for current_template in templates:
-                if index < current_template.weight: break
-                index -= current_template.weight
-            picked_templates.append(current_template)
+            if update_table:
+                update_table = False
+                i = 0
+                total_weight = 0
+                removed_wiehgt = 0
+                template_index.clear()
+                for t in templates:
+                    total_weight += templates[t].weight
+                    template_names[i] = templates[t].name
+                    template_weights[i] = total_weight
+                    template_index[templates[t].name] = i
+                    i += 1
+                template_weights = template_weights[:i]
 
+            while True:
+                index = random.randrange(total_weight)
+                picked = bisect.bisect(template_weights, index)
+                current_template = template_names[picked]
+                if current_template[0] != '!':
+                    break
+
+            picked_templates.append(templates[current_template])
+            
             # remove all conflicting templates
-            templates = [t for t in templates if not t.conflicts_with(current_template)]
+            for conflict in templates[current_template].conflicts_names:
+                if conflict in templates:
+                    removed_wiehgt += templates[conflict].weight
+                    remove_index = template_index[templates[conflict].name]
+                    template_names[remove_index] = "!"
+                    del templates[conflict]
+
+            if (removed_wiehgt / total_weight) > 0.35:
+                update_table = True
+
 
         self.picked_templates = picked_templates
         for template in picked_templates:
@@ -97,7 +127,8 @@ class Allocation(object):
 
     def construct_graph(self, data, settings):
         edges = list(data.initial_edges)
-        originalNEdges = len(edges)
+        edge_id = data.replacement_edges_id
+        originalNEdges = edge_id
         outgoing_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_outgoing_edges.items())
         incoming_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_incoming_edges.items())
 
@@ -109,41 +140,22 @@ class Allocation(object):
                 constraint = edge_replacements[key]
             else:
                 constraint = original_constraint
-
-            edges.append(GraphEdge(
-                edge_id=len(edges),
-                from_location=constraint.from_location,
-                to_location=constraint.to_location,
-                constraint=constraint.prereq_lambda,
-                backtrack_cost=1,
-            ))
+            edges[edge_id].satisfied = constraint.prereq_lambda
+            edge_id += 1
 
         # Map Transitions
         if settings.shuffle_map_transitions:
             random.shuffle(self.walking_left_transitions)
 
-        for rtr, ltr in zip(data.walking_right_transitions, self.walking_left_transitions):
-            edge1 = GraphEdge(
-                edge_id=len(edges),
-                from_location=rtr.origin_location,
-                to_location=ltr.origin_location,
-                constraint=NO_CONDITIONS,
-                backtrack_cost=INFTY,
-            )
-            edge2 = GraphEdge(
-                edge_id=len(edges)+1,
-                from_location=ltr.origin_location,
-                to_location=rtr.origin_location,
-                constraint=NO_CONDITIONS,
-                backtrack_cost=INFTY,
-            )
-            edges.append(edge1)
-            edges.append(edge2)
+            edge_id = data.transition_edges_id
+            for ltr in self.walking_left_transitions:
+                edges[edge_id].to_location = ltr.origin_location
+                edges[edge_id+1].from_location = ltr.origin_location
+                edge_id += 2
 
         for edge in edges[originalNEdges:]:
             outgoing_edges[edge.from_location].append(edge.edge_id)
             incoming_edges[edge.to_location].append(edge.edge_id)
-
 
         self.edges = edges
         self.outgoing_edges = outgoing_edges
