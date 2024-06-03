@@ -812,31 +812,33 @@ PROLOGUE_TRIGGER & (
 {
 "edge": "SKY_ISLAND_MAIN -> SKY_ISLAND_UPPER",
 "prereq": "
-    (SLIDE_JUMP_BUNSTRIKE & ITM_HARD)
+    (HARD & SLIDE_JUMP_BUNSTRIKE)
     | (AIR_JUMP & ((RABI_SLIPPERS & SPEED1) | AIR_DASH | WALL_JUMP | SLIDING_POWDER | ITM_HARD))
     | (AIR_DASH_LV3 & (WALL_JUMP | ADV_HARD))
-    // quick drop jump, ad, wj, qd, amulet, wj2
-    // (stupid method): quick drop jump, qd, ad, wimpy wj, amulet, wj2
-    | (ADV_EXT & AIR_DASH & WALL_JUMP & BUNNY_AMULET & (SPEED2 | STUPID))
-    // wimpy launch from the left edge, 3 amulets, bounce, ad
-    | (ADV_EXT & AIR_DASH & BUNNY_AMULET & (3_AMULET_FOOD | (2_AMULET_FOOD & STUPID)))
-    // qd, amulet, wimpy walljumps
-    | (ADV_STUPID & RABI_SLIPPERS & WALL_JUMP_LV2 & SPEED5 & BUNNY_AMULET_LV3)
-    // wimpy launch from the left edge, 3 amulets, wj2, 3 amulets wj3
-    | (ADV_STUPID & BORING & WALL_JUMP_LV2 & BUNNY_AMULET_LV2 & 6_AMULET_FOOD)
-    | (SLIDING_POWDER & RABI_SLIPPERS & (
+    | (ADV_EXT & AIR_DASH & BUNNY_AMULET & (
+        // quick drop jump, ad, wj, qd, amulet, wj2
+        // (stupid method): quick drop jump, qd, ad, wimpy wj, amulet, wj2
+        (WALL_JUMP & (SPEED2 | STUPID))
+        // wimpy launch from the left edge, 3 amulets, bounce, ad
+        | (3_AMULET_FOOD | (2_AMULET_FOOD & STUPID))
+    ))
+    | (ADV_STUPID & WALL_JUMP_LV2 & (
+        // qd, amulet, wimpy walljumps
+        (RABI_SLIPPERS & SPEED5 & BUNNY_AMULET_LV3)
+        // wimpy launch from the left edge, 3 amulets, wj2, 3 amulets wj3
+        | (BORING & BUNNY_AMULET_LV2 & 6_AMULET_FOOD)
+    ))
+    | (ADV_VHARD & SLIDING_POWDER & RABI_SLIPPERS & (
         // slide jump, wj, ad, wj2, amulet
         // (obscure method): slide jump, double wall jump, ad
-        (ADV_VHARD & WALL_JUMP & AIR_DASH & (AMULET_FOOD | OBSCURE))
+        (WALL_JUMP & AIR_DASH & (AMULET_FOOD | OBSCURE))
         // slide jump, wj, qd, amulet, amuclimbs
-        | (ADV_EXT & WALL_JUMP_LV2 & BUNNY_AMULET_LV2)
+        | (EXTREME & WALL_JUMP_LV2 & BUNNY_AMULET_LV2)
         // hi-speed slide jump, amulet, rwj, ad
-        | (ADV_EXT & AIR_DASH & (BUNNY_AMULET | STUPID))
+        | (EXTREME & AIR_DASH & (BUNNY_AMULET | STUPID))
         // hi-speed slide jump, wj, qd, spam amulets, wj2
-        | (ADV_STUPID & WALL_JUMP & BUNNY_AMULET & 3_AMULET_FOOD)
+        | (STUPID & WALL_JUMP & BUNNY_AMULET & 3_AMULET_FOOD)
     ))
-    // maybe not possible
-    //| (ADV_STUPID & SLIDING_POWDER & WALL_JUMP_LV2 & BUNNY_AMULET_LV3)
     // theoretically possible by amulet and item hover only but it takes forever
     // (OBS_STUPID & BUNNY_AMULET & CONSUMABLE_USE & BORING)
 ",
