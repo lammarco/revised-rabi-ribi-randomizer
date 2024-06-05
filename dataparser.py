@@ -670,7 +670,7 @@ def read_config(default_setting_flags, item_locations_set, shufflable_gift_items
         settings=config_settings,
     )
 
-    return setting_flags, list(to_shuffle), must_be_reachable, included_additional_items, config_data
+    return setting_flags, sorted(list(to_shuffle)), must_be_reachable, included_additional_items, config_data
 
 def parse_item_from_string(line):
     pos, areaid, itemid, name = (s.strip() for s in line.split(':', 3))
