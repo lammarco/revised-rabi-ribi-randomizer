@@ -1352,19 +1352,19 @@
 {
 "item": "FIRE_ORB",
 "from_location": "VOLCANIC_MAIN",
-// 1.8 requirements
 "entry_prereq": "
     (ITM & FIRE_ORB)
-    | CARROT_BOMB | (CARROT_SHOOTER & (BOOST | CHARGE_RING))
+    | CARROT_BOMB | (CARROT_SHOOTER & (BOOST | CHARGE_RING | OBS_VHARD))
 ",
 "exit_prereq": "
     FIRE_ORB
-    | ((RABI_SLIPPERS | (ADV_VHARD & SLIDE_JUMP_BUNSTRIKE_CANCEL)) & AIR_JUMP & WALL_JUMP_LV2)
+    | (AIR_JUMP & WALL_JUMP_LV2 & (
+        RABI_SLIPPERS
+        | (ADV_VHARD & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+        | (OBS_EXT & HAMMER_ROLL & (BUNNY_AMULET | (AIR_DASH & STUPID)))
+    ))
     | (ADV_EXT & BUNSTRIKE_ZIP) // j12 (n7 or n8)
 ",
-// 1.75 requirements
-//"entry_prereq": "CARROT_BOMB | (CARROT_SHOOTER & (BOOST | CHARGE_RING))",
-//"exit_prereq": "EXPLOSIVES_ENEMY | (RABI_SLIPPERS & AIR_JUMP & WALL_JUMP_LV2)",
 }
 
 {
@@ -1408,14 +1408,7 @@
 "item": "AIR_JUMP",
 "from_location": "SYSTEM_INTERIOR_MAIN",
 "entry_prereq": "NONE",
-"exit_prereq":"
-    AIR_JUMP
-    | AIR_DASH
-    | SLIDE_JUMP_BUNSTRIKE
-    | DOWNDRILL_SEMISOLID_CLIP
-    | (ADV_VHARD & RABI_SLIPPERS) // need bunny amulet
-    | (ADV_EXT & WALL_JUMP) // need bunny amulet lv2
-    ",
+"exit_prereq":"SLIDE_JUMP_BUNSTRIKE | DOWNDRILL_SEMISOLID_CLIP | 5TILE_WALL_CLIMB",
 }
 
 {
