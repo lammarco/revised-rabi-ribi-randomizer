@@ -562,7 +562,7 @@
 "changes": [
     {
     "edge": "PARK_MAIN -> PARK_UPPER",
-    "prereq": "BUNNY_WHIRL",
+    "prereq": "BUNNY_WHIRL | (CARROT_SHOOTER & BOOST)",
     }
     {
     "edge": "PARK_UPPER -> PARK_MAIN",
