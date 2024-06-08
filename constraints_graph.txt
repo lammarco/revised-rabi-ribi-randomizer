@@ -1740,7 +1740,10 @@ DARKNESS & (
 
 {
 "edge": "SNOWLAND_SPIKE_ROOM -> SNOWLAND_LAKE",
-"prereq": "(ITM & FIRE_ORB) | SLIDING_POWDER | (WATER_ORB & HAMMER_ROLL_ZIP)",
+"prereq": "
+    (ITM & FIRE_ORB) | SLIDING_POWDER
+    //| (WATER_ORB & HAMMER_ROLL_ZIP) | ROLL_BONK_ZIP // never required
+",
 }
 
 {
@@ -1854,6 +1857,10 @@ ITM & (
     ))
     | WHIRL_BONK_CANCEL
     | (ADV_VHARD & RABI_SLIPPERS & HAMMER_ROLL & AIR_DASH) // roll bonk, air dash, wall jump, wall kick
+    | (OBS_EXT & RABI_SLIPPERS & SLIDING_POWDER & (PIKO_HAMMER | CARROT_BOMB) & (
+        WALL_JUMP // vertical slide bonk a falling uprprc, wall launch
+        | (STUPID & BORING) // vertical slide bonk a fairy, wall jump, damage boost, wall kick
+    ))
     | (ADV_STUPID & WHIRL_BONK) // bonk a falling uprprc
     
     )",
