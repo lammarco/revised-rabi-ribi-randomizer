@@ -1431,10 +1431,10 @@
         | (2TILE_ZIP & ((OBS_EXT & HAMMER_ROLL_ZIP) | (OBS_STUPID & BUNSTRIKE_ZIP)))
     ))
     & (
-        (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD)) // 6tile airjump
+        (AIR_JUMP & (AIR_DASH | RABI_SLIPPERS | ITM_HARD)) // 6tile airjump
         | (AIR_DASH_LV3 & ITM_HARD) // 4tile walljump, some other strange jumps
         | (AIR_DASH & ADV_VHARD) // (needs slide) 4tile walljump + weird jump at end
-        | (WALL_JUMP & RABI_SLIPPERS & ADV_VHARD) // buffered wall launch
+        | (WALL_JUMP & RABI_SLIPPERS & (AIR_DASH | ADV_VHARD)) // buffered wall launch
         | (ADV_VHARD & WALL_JUMP_LV2) // (need slide) hi-speed walljump, amulet climb
         | ADV_STUPID // (needs slide) two slide bonks, one buffered wall launch
         | (WHIRL_BONK & ITM_VHARD) // 3 buffered whirlbonks. last one is tight
