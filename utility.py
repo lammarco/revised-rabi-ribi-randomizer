@@ -5,6 +5,7 @@ import random
 import re
 import ast
 import os
+from collections import defaultdict
 
 ### Enums
 LOCATION_WARP = 0
@@ -70,6 +71,66 @@ class StartLocation(object):
         self.weight = weight
         self.location = location
 
+_constraint_re = re.compile(r'[\(\)]|\bAND\b|\bOR\b|\bBACKTRACK_\d+\b') 
+_impossible = {'IMPOSSIBLE'}
+_always_check = {'DEFAULT'}
+def get_prereq_literals(prereq):
+    literals_str = _constraint_re.sub('', str( prereq ) )
+    literals_set = set(literals_str.split())
+    if('FALSE' in literals_set):
+        return _impossible
+    literals_set.discard('TRUE')
+    if(len(literals_set) < 1):
+        return _always_check
+    return literals_set
+    
+def generate_progression_dict(variables_list, edges:'list<GraphEdge>') -> 'dict< str constraint = list<int edge_id>>':
+    progression = defaultdict(set)
+    for v in variables_list: 
+        progression[v] = set()
+    for edge in edges:
+        for literal in edge.progression:
+            progression[literal].add(edge.edge_id)
+    return progression
+ 
+def swap_constraint_progression(progression:dict, edge_id:int, old_progression:set, new_progression:set):
+    #d = edge_id in progression['DEFAULT']
+    to_remove = old_progression - new_progression
+    to_add = new_progression - old_progression
+    for lit_remove in to_remove:
+        #if not d and edge_id not in progression[literal]:
+        #    raise Exception(f'edge {edge_id:>3} not in default nor {literal} constraints')
+        progression[lit_remove].discard(edge_id)
+        
+    for lit_add in to_add:
+        progression[lit_add].add(edge_id)
+    #print(f"{edge_id}\n\t-{','.join(to_remove)}\n\t+{','.join(to_add)}")
+    
+# def diff_items_output(reachables: 'tuple<list,list>', levels_tuple: 'tuple<list<set>,list<set>>') -> None:
+    # '''debug diff of reachables&levels from 2 different verify_reachable_items'''
+    # message = ''
+    # reachable, reachable2 = reachables
+    
+    # label, correct, v2 = ('r',reachable,reachable2)
+    # correct, v2 = set(correct), set(v2)
+    # missing = correct - v2
+    # extra = v2 - correct
+    
+    # if reachable != reachable2:
+        # message += f"{label}\n\t-{','.join(missing)}\n\t+{','.join(extra)}\n"
+         
+    # l = 0
+    # levels, levels2 = levels_tuple
+    # for lc, l2 in zip(levels, levels2):
+        # l += 1
+        # lc, l2 = set(lc), set(l2)
+        # missing = lc - l2
+        # extra = l2 - lc
+    # if len(missing) > 0 or len(extra) > 0:
+        # message += f"l{l:>2}\n\t-{','.join(missing)}\n\t+{','.join(extra)}\n"   
+    # print(message,end='')
+    # if len(message) > 0: raise Exception()
+
 class EdgeConstraintData(object):
     def __init__(self, from_location, to_location, prereq_expression):
         self.from_location = from_location
@@ -77,6 +138,7 @@ class EdgeConstraintData(object):
         self.prereq_expression = prereq_expression
         self.prereq_compile = compile(prereq_expression.compile(), "<node>", mode= "eval")
         self.prereq_lambda = lambda v : eval(self.prereq_compile, None, {"variables": v})
+        self.prereq_literals = get_prereq_literals( prereq_expression )
 
     def __str__(self):
         return '\n'.join([
@@ -110,11 +172,12 @@ class TemplateConstraintData(object):
         return bool(self.change_edge_set.intersection(other.change_edge_set))
 
 class GraphEdge(object):
-    def __init__(self, edge_id, from_location, to_location, constraint, backtrack_cost):
+    def __init__(self, edge_id, from_location, to_location, constraint, backtrack_cost, progression={'DEFAULT'}):
         self.edge_id = edge_id
         self.from_location = from_location
         self.to_location = to_location
         self.satisfied = constraint
+        self.progression = progression
         self.backtrack_cost = backtrack_cost
 
     def __str__(self):

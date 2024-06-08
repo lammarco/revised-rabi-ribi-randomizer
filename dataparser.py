@@ -871,6 +871,7 @@ class RandomizerData(object):
                     from_location=graph_edge.from_location,
                     to_location=graph_edge.to_location,
                     constraint=graph_edge.prereq_lambda,
+                    progression=graph_edge.prereq_literals,
                     backtrack_cost=1,
                 ))
             else:
@@ -920,7 +921,7 @@ class RandomizerData(object):
         self.initial_edges = edges
         self.initial_outgoing_edges = initial_outgoing_edges
         self.initial_incoming_edges = initial_incoming_edges
-
+        self.edge_progression = generate_progression_dict(self.variable_names_list, edges)
 
     def preprocess_data(self, settings):
         ### For item shuffle
