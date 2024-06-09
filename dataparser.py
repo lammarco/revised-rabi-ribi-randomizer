@@ -469,7 +469,7 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
 
     def parse_alternates(alts):
         if alts == None: return {}
-        return dict((name, parse_expression_lambda(constraint, variable_names_set, default_expressions))
+        return dict( (name, ExpressionData( parse_expression(constraint, variable_names_set, default_expressions)) )
             for name, constraint in alts.items())
 
     item_constraints = []
@@ -838,21 +838,23 @@ class RandomizerData(object):
                     backtrack_cost=0,
                 ))
 
-                for entry_node, prereq in item_constraint.alternate_entries.items():
+                for entry_node, expression_data in item_constraint.alternate_entries.items():
                     edges.append(GraphEdge(
                         edge_id=len(edges),
                         from_location=entry_node,
                         to_location=item_node_name,
-                        constraint=prereq,
+                        constraint=expression_data.exp_lambda,
+                        progression=expression_data.exp_literals,
                         backtrack_cost=1,
                     ))
 
-                for exit_node, prereq in item_constraint.alternate_exits.items():
+                for exit_node, expression_data in item_constraint.alternate_exits.items():
                     edges.append(GraphEdge(
                         edge_id=len(edges),
                         from_location=item_node_name,
                         to_location=exit_node,
-                        constraint=prereq,
+                        constraint=expression_data.exp_lambda,
+                        progression=expression_data.exp_literals,
                         backtrack_cost=1,
                     ))
 
@@ -923,7 +925,7 @@ class RandomizerData(object):
         self.initial_edges = edges
         self.initial_outgoing_edges = initial_outgoing_edges
         self.initial_incoming_edges = initial_incoming_edges
-        self.edge_progression = generate_progression_dict(self.variable_names_list, edges)
+        self.edge_progression = generate_progression_dict(self.variable_names_list, edges, keep_progression=False)
 
     def preprocess_data(self, settings):
         ### For item shuffle

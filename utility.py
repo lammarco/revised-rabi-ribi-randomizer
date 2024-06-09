@@ -84,13 +84,15 @@ def get_prereq_literals(prereq):
         return _always_check
     return literals_set
     
-def generate_progression_dict(variables_list, edges:'list<GraphEdge>') -> 'dict< str constraint = list<int edge_id>>':
+def generate_progression_dict(variables_list, edges:'list<GraphEdge>', keep_progression = True) -> 'dict< str constraint = list<int edge_id>>':
     progression = defaultdict(set)
     for v in variables_list: 
         progression[v] = set()
     for edge in edges:
         for literal in edge.progression:
             progression[literal].add(edge.edge_id)
+        if not keep_progression:
+            del edge.progression #no longer needed, saves space
     return progression
  
 def swap_constraint_progression(progression:dict, edge_id:int, old_progression:set, new_progression:set):
@@ -194,6 +196,13 @@ class ExpressionLambda(object):
         self.expression = expression
         self.expression_compile = compile(expression.compile(), "<node>", mode= "eval")
         self.expression_lambda = lambda v : eval(self.expression_compile, None, {"variables": v})
+
+class ExpressionData(object):
+    def __init__(self, exp):
+        self.exp = exp
+        compiled = compile(exp.compile(), "<node>", mode= "eval")
+        self.exp_lambda = lambda v : eval(compiled, None, {"variables": v})
+        self.exp_literals = get_prereq_literals( exp )
 
 class ConfigData(object):
     def __init__(self, knowledge, difficulty, settings):
