@@ -485,8 +485,8 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
         item_constraints.append(ItemConstraintData(
             item = item,
             from_location = from_location,
-            entry_prereq = parse_expression_lambda(cdict['entry_prereq'], variable_names_set, default_expressions),
-            exit_prereq = parse_expression_lambda(cdict['exit_prereq'], variable_names_set, default_expressions),
+            entry_prereq = parse_expression(cdict['entry_prereq'], variable_names_set, default_expressions),
+            exit_prereq = parse_expression(cdict['exit_prereq'], variable_names_set, default_expressions),
             alternate_entries = parse_alternates(cdict.get('alternate_entries')),
             alternate_exits = parse_alternates(cdict.get('alternate_exits')),
         ))
@@ -825,6 +825,7 @@ class RandomizerData(object):
                     from_location=item_constraint.from_location,
                     to_location=item_node_name,
                     constraint=item_constraint.entry_prereq,
+                    progression=item_constraint.entry_progression,
                     backtrack_cost=0,
                 ))
 
@@ -833,6 +834,7 @@ class RandomizerData(object):
                     from_location=item_node_name,
                     to_location=item_constraint.from_location,
                     constraint=item_constraint.exit_prereq,
+                    progression=item_constraint.exit_progression,
                     backtrack_cost=0,
                 ))
 

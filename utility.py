@@ -136,8 +136,7 @@ class EdgeConstraintData(object):
         self.from_location = from_location
         self.to_location = to_location
         self.prereq_expression = prereq_expression
-        self.prereq_compile = compile(prereq_expression.compile(), "<node>", mode= "eval")
-        self.prereq_lambda = lambda v : eval(self.prereq_compile, None, {"variables": v})
+        self.prereq_lambda = ExpressionLambda(prereq_expression).expression_lambda
         self.prereq_literals = get_prereq_literals( prereq_expression )
 
     def __str__(self):
@@ -151,8 +150,10 @@ class ItemConstraintData(object):
     def __init__(self, item, from_location, entry_prereq, exit_prereq, alternate_entries, alternate_exits):
         self.item = item
         self.from_location = from_location
-        self.entry_prereq = entry_prereq
-        self.exit_prereq = exit_prereq
+        self.entry_prereq = ExpressionLambda( entry_prereq ).expression_lambda
+        self.exit_prereq  = ExpressionLambda( exit_prereq ).expression_lambda
+        self.entry_progression = get_prereq_literals( entry_prereq )
+        self.exit_progression  = get_prereq_literals(  exit_prereq )
         self.alternate_entries = alternate_entries
         self.alternate_exits = alternate_exits
         self.no_alternate_paths = (len(self.alternate_entries) + len(self.alternate_exits) == 0)
