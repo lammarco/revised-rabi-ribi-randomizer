@@ -152,12 +152,14 @@ class Analyzer(object):
         outgoing_edges = allocation.outgoing_edges
         incoming_edges = allocation.incoming_edges
         locations_set = data.locations_set
+        edge_progression = allocation.edge_progression
 
         # Persistent variables
         variables = dict(starting_variables)
         untraversable_edges = set(edge.edge_id for edge in edges)
         unreached_pseudo_items = dict(data.pseudo_items)
         unsatisfied_item_conditions = dict(data.alternate_conditions)
+        edge_progression_default = edge_progression['DEFAULT'].copy()
 
         forward_enterable = set((allocation.start_location.location,))
         backward_exitable = set(backward_exitable)
@@ -173,6 +175,7 @@ class Analyzer(object):
         new_reachable_locations = set()
         newly_traversable_edges = set()
         temp_variable_storage = {}
+        previous_new_variables = set() # for step 1 updating edges
 
         variables['IS_BACKTRACKING'] = False
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
@@ -181,6 +184,10 @@ class Analyzer(object):
         first_loop = True
         current_level = 0
         reachable_levels = {allocation.start_location.location : 0}
+                
+        #step -1: Mark variables that start True (step 1 checks these)
+        previous_new_variables.update(var for var,val in variables.items() if val == True)
+
         while True:
             new_reachable_locations.clear()
             if first_loop: new_reachable_locations = forward_enterable.intersection(backward_exitable)
@@ -200,6 +207,7 @@ class Analyzer(object):
                         current_level_part1.append(target)
                         to_remove.append(target)
                         variables[target] = True
+                        previous_new_variables.add(target)
                         has_changes = True
 
                 for target in to_remove:
@@ -212,6 +220,7 @@ class Analyzer(object):
                         if not variables[target]:
                             current_level_part1.append(target)
                             variables[target] = True
+                            previous_new_variables.add(target)
                             has_changes = True
                         to_remove.append(target)
 
@@ -223,7 +232,13 @@ class Analyzer(object):
             forward_frontier.clear()
             backward_frontier.clear()
             newly_traversable_edges.clear()
-            for edge_id in untraversable_edges:
+            
+            def check_edge(edge_id):
+                nonlocal untraversable_edges, newly_traversable_edges
+                nonlocal forward_enterable, backward_exitable
+                nonlocal forward_frontier, backward_frontier
+                if edge_id not in untraversable_edges:
+                    return
                 edge = edges[edge_id]
                 if edge.satisfied(variables):
                     newly_traversable_edges.add(edge_id)
@@ -231,8 +246,19 @@ class Analyzer(object):
                         forward_frontier.add(edge.from_location)
                     if edge.to_location in backward_exitable:
                         backward_frontier.add(edge.to_location)
-            untraversable_edges -= newly_traversable_edges
-
+           
+            #check default always, then newly satisfied variables
+            for edge_id in edge_progression_default:
+                check_edge(edge_id)
+            edge_progression_default -= newly_traversable_edges
+            
+            for var in previous_new_variables:
+                for edge_id in edge_progression[var]:
+                    check_edge(edge_id)
+                    
+            previous_new_variables.clear()
+            untraversable_edges -= newly_traversable_edges   
+            
             # STEP 2: Find Forward Reachable Nodes
             new_forward_enterable = set()
             while len(forward_frontier) > 0:
@@ -347,7 +373,8 @@ class Analyzer(object):
 
             for node in current_level_part2:
                 variables[node] = True
-
+            previous_new_variables.update(current_level_part2)
+            
             if len(current_level_part1) == 0 and len(current_level_part2) == 0:
                 break
             levels.append(current_level_part1)

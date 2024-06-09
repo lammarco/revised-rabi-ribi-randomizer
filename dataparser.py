@@ -469,7 +469,7 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
 
     def parse_alternates(alts):
         if alts == None: return {}
-        return dict((name, parse_expression_lambda(constraint, variable_names_set, default_expressions))
+        return dict( (name, ExpressionData( parse_expression(constraint, variable_names_set, default_expressions)) )
             for name, constraint in alts.items())
 
     item_constraints = []
@@ -485,8 +485,8 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
         item_constraints.append(ItemConstraintData(
             item = item,
             from_location = from_location,
-            entry_prereq = parse_expression_lambda(cdict['entry_prereq'], variable_names_set, default_expressions),
-            exit_prereq = parse_expression_lambda(cdict['exit_prereq'], variable_names_set, default_expressions),
+            entry_prereq = parse_expression(cdict['entry_prereq'], variable_names_set, default_expressions),
+            exit_prereq = parse_expression(cdict['exit_prereq'], variable_names_set, default_expressions),
             alternate_entries = parse_alternates(cdict.get('alternate_entries')),
             alternate_exits = parse_alternates(cdict.get('alternate_exits')),
         ))
@@ -825,6 +825,7 @@ class RandomizerData(object):
                     from_location=item_constraint.from_location,
                     to_location=item_node_name,
                     constraint=item_constraint.entry_prereq,
+                    progression=item_constraint.entry_progression,
                     backtrack_cost=0,
                 ))
 
@@ -833,24 +834,27 @@ class RandomizerData(object):
                     from_location=item_node_name,
                     to_location=item_constraint.from_location,
                     constraint=item_constraint.exit_prereq,
+                    progression=item_constraint.exit_progression,
                     backtrack_cost=0,
                 ))
 
-                for entry_node, prereq in item_constraint.alternate_entries.items():
+                for entry_node, expression_data in item_constraint.alternate_entries.items():
                     edges.append(GraphEdge(
                         edge_id=len(edges),
                         from_location=entry_node,
                         to_location=item_node_name,
-                        constraint=prereq,
+                        constraint=expression_data.exp_lambda,
+                        progression=expression_data.exp_literals,
                         backtrack_cost=1,
                     ))
 
-                for exit_node, prereq in item_constraint.alternate_exits.items():
+                for exit_node, expression_data in item_constraint.alternate_exits.items():
                     edges.append(GraphEdge(
                         edge_id=len(edges),
                         from_location=item_node_name,
                         to_location=exit_node,
-                        constraint=prereq,
+                        constraint=expression_data.exp_lambda,
+                        progression=expression_data.exp_literals,
                         backtrack_cost=1,
                     ))
 
@@ -871,6 +875,7 @@ class RandomizerData(object):
                     from_location=graph_edge.from_location,
                     to_location=graph_edge.to_location,
                     constraint=graph_edge.prereq_lambda,
+                    progression=graph_edge.prereq_literals,
                     backtrack_cost=1,
                 ))
             else:
@@ -920,7 +925,7 @@ class RandomizerData(object):
         self.initial_edges = edges
         self.initial_outgoing_edges = initial_outgoing_edges
         self.initial_incoming_edges = initial_incoming_edges
-
+        self.edge_progression = generate_progression_dict(self.variable_names_list, edges, keep_progression=False)
 
     def preprocess_data(self, settings):
         ### For item shuffle
