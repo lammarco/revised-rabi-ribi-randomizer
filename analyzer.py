@@ -234,6 +234,11 @@ class Analyzer(object):
             newly_traversable_edges.clear()
             
             def check_edge(edge_id):
+                nonlocal untraversable_edges, newly_traversable_edges
+                nonlocal forward_enterable, backward_exitable
+                nonlocal forward_frontier, backward_frontier
+                if edge_id not in untraversable_edges:
+                    return
                 edge = edges[edge_id]
                 if edge.satisfied(variables):
                     newly_traversable_edges.add(edge_id)
