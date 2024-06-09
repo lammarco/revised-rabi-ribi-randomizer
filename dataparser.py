@@ -558,19 +558,33 @@ def read_config(default_setting_flags, item_locations_set, shufflable_gift_items
     jsondata = ' '.join(lines)
     jsondata = re.sub(',\\s*]', ']', jsondata)
     jsondata = re.sub(',\\s*}', '}', jsondata)
+    jsondata = re.sub('\\],\\s*$', ']', jsondata)
     config_dict = parse_json('{' + jsondata + '}')
 
-    to_shuffle = config_dict['to_shuffle']
-    must_be_reachable = set(config_dict['must_be_reachable'])
-    included_additional_items = config_dict['additional_items']
-    config_settings = config_dict['settings']
-    knowledge = config_dict['knowledge']
-    difficulty = config_dict['trick_difficulty']
+    knowledge = "BASIC"
+    difficulty = "NORMAL"
+    included_additional_items = list()
+    must_be_reachable = set()
+    config_settings = list()
+
+    if 'to_shuffle' not in config_dict:
+        fail('Missing "to_shuffle" in config')
+    to_shuffle = set(config_dict['to_shuffle'])
+    if 'must_be_reachable' in config_dict:
+        must_be_reachable = set(config_dict['must_be_reachable'])
+    if 'additional_items' in config_dict:
+        included_additional_items = config_dict['additional_items']
+    if 'settings' in config_dict:
+        config_settings = config_dict['settings']
+    if 'knowledge' in config_dict:
+        knowledge = config_dict['knowledge']
+    if 'trick_difficulty' in config_dict:
+        difficulty = config_dict['trick_difficulty']
 
     if settings.shuffle_gift_items:
         included_additional_items = [item_name for item_name in included_additional_items if not item_name in shufflable_gift_items_set]
     else:
-        to_shuffle = [item_name for item_name in to_shuffle if not item_name in shufflable_gift_items_set]
+        to_shuffle -= shufflable_gift_items_set
         must_be_reachable -= shufflable_gift_items_set
 
     # Settings
@@ -579,7 +593,7 @@ def read_config(default_setting_flags, item_locations_set, shufflable_gift_items
         if key not in config_flags_set:
             fail('Undefined flag: %s' % key)
         if not type(value) is bool:
-            fail('Flag %s does not map to a boolean variable in config.txt' % key)
+            fail('Flag %s does not map to a boolean variable in config' % key)
         setting_flags[key] = value
 
 
@@ -638,16 +652,16 @@ def read_config(default_setting_flags, item_locations_set, shufflable_gift_items
             '\n'.join(map(str, set(included_additional_items) - predefined_additional_items_set)),
         ]))
 
-    if set(to_shuffle) - item_locations_set:
+    if to_shuffle - item_locations_set:
         fail('\n'.join([
             'Unknown items defined in config:',
-            '\n'.join(map(str, set(to_shuffle) - item_locations_set)),
+            '\n'.join(map(str, to_shuffle - item_locations_set)),
         ]))
 
-    if set(must_be_reachable) - item_locations_set:
+    if must_be_reachable - item_locations_set:
         fail('\n'.join([
             'Unknown items defined in config:',
-            '\n'.join(map(str, set(must_be_reachable) - item_locations_set)),
+            '\n'.join(map(str, must_be_reachable - item_locations_set)),
         ]))
 
     config_data = ConfigData(
@@ -656,7 +670,7 @@ def read_config(default_setting_flags, item_locations_set, shufflable_gift_items
         settings=config_settings,
     )
 
-    return setting_flags, to_shuffle, must_be_reachable, included_additional_items, config_data
+    return setting_flags, sorted(list(to_shuffle)), must_be_reachable, included_additional_items, config_data
 
 def parse_item_from_string(line):
     pos, areaid, itemid, name = (s.strip() for s in line.split(':', 3))

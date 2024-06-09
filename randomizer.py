@@ -122,6 +122,10 @@ def apply_fixes_for_randomizer(areaid, data):
         for y in range(186,189):
             data.tiledata_event[xy_to_index(310,y)] = 0
 
+    if areaid == 6:
+        # Add EV_NOEVENT0 at plurk warp stone
+        data.tiledata_event[xy_to_index(188,38)] = 524
+
     if areaid == 7:
         # Remove redundant map transition
         for y in range(37,43):
