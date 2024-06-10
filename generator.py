@@ -60,6 +60,7 @@ class Generator(object):
                     else: goals = analyzer.hard_to_reach_items
                     difficulty_analysis = DifficultyAnalysis(self.data, analyzer, goals)
                 break
+            self.allocation.revert_graph(self.data)
             if (attempts + 1) % SEED_UPDATE_ATTEMPTS == 0:
                 state = random.getstate()[1]
                 seed = seed ^ state[2] ^ (state[4] << 32) ^ (state[6] << 64) ^ (state[8] << 96)

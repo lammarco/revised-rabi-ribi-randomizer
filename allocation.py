@@ -129,9 +129,11 @@ class Allocation(object):
         edges = list(data.initial_edges)
         edge_id = data.replacement_edges_id
         originalNEdges = edge_id
-        outgoing_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_outgoing_edges.items())
-        incoming_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_incoming_edges.items())
-
+        outgoing_edges = data.initial_outgoing_edges
+        incoming_edges = data.initial_incoming_edges
+        modified_outgoing = dict()
+        modified_incoming = dict()
+        
         # Edge Constraints
         edge_replacements = self.edge_replacements
         for original_constraint in data.edge_constraints:
@@ -154,12 +156,27 @@ class Allocation(object):
                 edge_id += 2
 
         for edge in edges[originalNEdges:]:
+            from_loc = edge.from_location
+            to_loc = edge.to_location
+            if from_loc not in modified_outgoing:
+                modified_outgoing[from_loc] = len(outgoing_edges[from_loc])
+            if to_loc not in modified_incoming:
+                modified_incoming[to_loc] = len(incoming_edges[to_loc])
             outgoing_edges[edge.from_location].append(edge.edge_id)
             incoming_edges[edge.to_location].append(edge.edge_id)
 
         self.edges = edges
         self.outgoing_edges = outgoing_edges
         self.incoming_edges = incoming_edges
+        self.modified_outgoing = modified_outgoing
+        self.modified_incoming = modified_incoming
+        
+    def revert_graph(self, data):
+        def revert_edges(changes: dict, loc_edges: dict):
+            for loc, edge_count in changes.items():
+                loc_edges[loc] = loc_edges[loc][:edge_count]
+        revert_edges(self.modified_incoming, data.initial_incoming_edges)
+        revert_edges(self.modified_outgoing, data.initial_outgoing_edges)
 
 
     def shift_eggs_to_hard_to_reach(self, data, settings, reachable_items, hard_to_reach_items):
