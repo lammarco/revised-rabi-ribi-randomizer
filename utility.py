@@ -95,19 +95,6 @@ def generate_progression_dict(variables_list, edges:'list<GraphEdge>', keep_prog
             del edge.progression #no longer needed, saves space
     return progression
  
-def swap_constraint_progression(progression:dict, edge_id:int, old_progression:set, new_progression:set):
-    #d = edge_id in progression['DEFAULT']
-    to_remove = old_progression - new_progression
-    to_add = new_progression - old_progression
-    for lit_remove in to_remove:
-        #if not d and edge_id not in progression[literal]:
-        #    raise Exception(f'edge {edge_id:>3} not in default nor {literal} constraints')
-        progression[lit_remove].discard(edge_id)
-        
-    for lit_add in to_add:
-        progression[lit_add].add(edge_id)
-    #print(f"{edge_id}\n\t-{','.join(to_remove)}\n\t+{','.join(to_add)}")
-    
 # def diff_items_output(reachables: 'tuple<list,list>', levels_tuple: 'tuple<list<set>,list<set>>') -> None:
     # '''debug diff of reachables&levels from 2 different verify_reachable_items'''
     # message = ''

@@ -1,5 +1,5 @@
 import random, bisect
-from utility import is_egg, print_ln, swap_constraint_progression
+from utility import is_egg, print_ln
 
 class Allocation(object):
     # Attributes:
@@ -128,7 +128,6 @@ class Allocation(object):
     def construct_graph(self, data, settings):
         edges = list(data.initial_edges)
         edge_id = data.replacement_edges_id
-        edge_progression = {key: edge_ids.copy() for key,edge_ids in data.edge_progression.items()} 
         
         originalNEdges = edge_id
         outgoing_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_outgoing_edges.items())
@@ -140,7 +139,6 @@ class Allocation(object):
             key = (original_constraint.from_location, original_constraint.to_location)
             if key in edge_replacements:
                 constraint = edge_replacements[key]
-                swap_constraint_progression(edge_progression, edge_id, original_constraint.prereq_literals, constraint.prereq_literals)
             else:
                 constraint = original_constraint
             edges[edge_id].satisfied = constraint.prereq_lambda
@@ -161,7 +159,6 @@ class Allocation(object):
             incoming_edges[edge.to_location].append(edge.edge_id)
 
         self.edges = edges
-        self.edge_progression = edge_progression
         self.outgoing_edges = outgoing_edges
         self.incoming_edges = incoming_edges
 
