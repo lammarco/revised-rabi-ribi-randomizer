@@ -128,6 +128,7 @@ class Allocation(object):
     def construct_graph(self, data, settings):
         edges = list(data.initial_edges)
         edge_id = data.replacement_edges_id
+        
         originalNEdges = edge_id
         outgoing_edges = data.initial_outgoing_edges
         incoming_edges = data.initial_incoming_edges
@@ -177,7 +178,6 @@ class Allocation(object):
                 loc_edges[loc] = loc_edges[loc][:edge_count]
         revert_edges(self.modified_incoming, data.initial_incoming_edges)
         revert_edges(self.modified_outgoing, data.initial_outgoing_edges)
-
 
     def shift_eggs_to_hard_to_reach(self, data, settings, reachable_items, hard_to_reach_items):
         reachable_items = set(reachable_items)
