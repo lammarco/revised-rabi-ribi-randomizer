@@ -12,6 +12,9 @@ class Allocation(object):
     # dict: incoming_edges  [location -> list(Edge)]
     # list: edges  [list(Edge)]   <-- indexed by edge_id
     #
+    # dict: modified_outgoing [location : str -> initial_len : int]
+    # dict: modified_incoming [location : str -> initial_len : int]
+    #
     # list: walking_left_transitions  (MapTransition objects)
     #
     # dict: edge_replacements  [(from_location, to_location) -> template_changes]

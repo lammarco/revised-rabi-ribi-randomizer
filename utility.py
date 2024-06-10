@@ -94,31 +94,6 @@ def generate_progression_dict(variables_list, edges:'list<GraphEdge>', keep_prog
         if not keep_progression:
             del edge.progression #no longer needed, saves space
     return progression
- 
-# def diff_items_output(reachables: 'tuple<list,list>', levels_tuple: 'tuple<list<set>,list<set>>') -> None:
-    # '''debug diff of reachables&levels from 2 different verify_reachable_items'''
-    # message = ''
-    # reachable, reachable2 = reachables
-    
-    # label, correct, v2 = ('r',reachable,reachable2)
-    # correct, v2 = set(correct), set(v2)
-    # missing = correct - v2
-    # extra = v2 - correct
-    
-    # if reachable != reachable2:
-        # message += f"{label}\n\t-{','.join(missing)}\n\t+{','.join(extra)}\n"
-         
-    # l = 0
-    # levels, levels2 = levels_tuple
-    # for lc, l2 in zip(levels, levels2):
-        # l += 1
-        # lc, l2 = set(lc), set(l2)
-        # missing = lc - l2
-        # extra = l2 - lc
-    # if len(missing) > 0 or len(extra) > 0:
-        # message += f"l{l:>2}\n\t-{','.join(missing)}\n\t+{','.join(extra)}\n"   
-    # print(message,end='')
-    # if len(message) > 0: raise Exception()
 
 class EdgeConstraintData(object):
     def __init__(self, from_location, to_location, prereq_expression):

@@ -703,6 +703,7 @@ class RandomizerData(object):
     # Preprocessed Information
     #
     # list: items_to_allocate
+    # dict: edge_progression (variable_name -> set(edge_id))
     #
     # list: walking_left_transitions
     # list: walking_right_transitions
