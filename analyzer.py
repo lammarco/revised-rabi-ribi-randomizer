@@ -152,7 +152,7 @@ class Analyzer(object):
         outgoing_edges = allocation.outgoing_edges
         incoming_edges = allocation.incoming_edges
         locations_set = data.locations_set
-        edge_progression = allocation.edge_progression
+        edge_progression = data.edge_progression
 
         # Persistent variables
         variables = dict(starting_variables)

@@ -1,5 +1,5 @@
 import random, bisect
-from utility import is_egg, print_ln, swap_constraint_progression
+from utility import is_egg, print_ln
 
 class Allocation(object):
     # Attributes:
@@ -11,6 +11,9 @@ class Allocation(object):
     # dict: outgoing_edges  [location -> list(Edge)]
     # dict: incoming_edges  [location -> list(Edge)]
     # list: edges  [list(Edge)]   <-- indexed by edge_id
+    #
+    # dict: modified_outgoing [location : str -> initial_len : int]
+    # dict: modified_incoming [location : str -> initial_len : int]
     #
     # list: walking_left_transitions  (MapTransition objects)
     #
@@ -128,19 +131,19 @@ class Allocation(object):
     def construct_graph(self, data, settings):
         edges = list(data.initial_edges)
         edge_id = data.replacement_edges_id
-        edge_progression = {key: edge_ids.copy() for key,edge_ids in data.edge_progression.items()} 
         
         originalNEdges = edge_id
-        outgoing_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_outgoing_edges.items())
-        incoming_edges = dict((key, list(edge_ids)) for key, edge_ids in data.initial_incoming_edges.items())
-
+        outgoing_edges = data.initial_outgoing_edges
+        incoming_edges = data.initial_incoming_edges
+        modified_outgoing = dict()
+        modified_incoming = dict()
+        
         # Edge Constraints
         edge_replacements = self.edge_replacements
         for original_constraint in data.edge_constraints:
             key = (original_constraint.from_location, original_constraint.to_location)
             if key in edge_replacements:
                 constraint = edge_replacements[key]
-                swap_constraint_progression(edge_progression, edge_id, original_constraint.prereq_literals, constraint.prereq_literals)
             else:
                 constraint = original_constraint
             edges[edge_id].satisfied = constraint.prereq_lambda
@@ -157,13 +160,27 @@ class Allocation(object):
                 edge_id += 2
 
         for edge in edges[originalNEdges:]:
+            from_loc = edge.from_location
+            to_loc = edge.to_location
+            if from_loc not in modified_outgoing:
+                modified_outgoing[from_loc] = len(outgoing_edges[from_loc])
+            if to_loc not in modified_incoming:
+                modified_incoming[to_loc] = len(incoming_edges[to_loc])
             outgoing_edges[edge.from_location].append(edge.edge_id)
             incoming_edges[edge.to_location].append(edge.edge_id)
 
         self.edges = edges
-        self.edge_progression = edge_progression
         self.outgoing_edges = outgoing_edges
         self.incoming_edges = incoming_edges
+        self.modified_outgoing = modified_outgoing
+        self.modified_incoming = modified_incoming
+        
+    def revert_graph(self, data):
+        def revert_edges(changes: dict, loc_edges: dict):
+            for loc, edge_count in changes.items():
+                loc_edges[loc] = loc_edges[loc][:edge_count]
+        revert_edges(self.modified_incoming, data.initial_incoming_edges)
+        revert_edges(self.modified_outgoing, data.initial_outgoing_edges)
 
     def shift_eggs_to_hard_to_reach(self, data, settings, reachable_items, hard_to_reach_items):
         reachable_items = set(reachable_items)
