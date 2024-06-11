@@ -2135,22 +2135,40 @@ ITM & (
 
 {
 "edge": "AQUARIUM_MID_EAST -> AQUARIUM_EAST",
-"prereq": "NONE",
+"prereq": "PROLOGUE_TRIGGER | (
+    WATER_ORB & (2TILE_ZIP | (EXPLOSIVES_ENEMY & HAMMER_ROLL_ZIP))
+)
+",
 }
 
 {
 "edge": "AQUARIUM_EAST -> AQUARIUM_MID_EAST",
-"prereq": "NONE",
+"prereq": "PROLOGUE_TRIGGER",
+}
+
+{
+"edge": "AQUARIUM_MID_EAST -> AQUARIUM_SEANA",
+"prereq": "EXPLOSIVES_ENEMY & FIRE_ORB & SLIDING_POWDER",
+}
+
+{
+"edge": "AQUARIUM_SEANA -> AQUARIUM_MID_EAST",
+"prereq": "FIRE_ORB & (
+    (EXPLOSIVES_ENEMY & SLIDING_POWDER)
+    | (WATER_ORB & HAMMER_ROLL_ZIP)
+    | ROLL_BONK_ZIP
+)
+",
 }
 
 {
 "edge": "AQUARIUM_EAST -> AQUARIUM_SEANA",
-"prereq": "NONE",
+"prereq": "PROLOGUE_TRIGGER",
 }
 
 {
 "edge": "AQUARIUM_SEANA -> AQUARIUM_EAST",
-"prereq": "NONE",
+"prereq": "PROLOGUE_TRIGGER",
 }
 
 {

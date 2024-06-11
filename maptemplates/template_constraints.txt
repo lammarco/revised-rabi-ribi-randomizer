@@ -1104,15 +1104,11 @@
 "changes": [
     {
     "edge": "AQUARIUM_MID_EAST -> AQUARIUM_EAST",
-    "prereq": "
-        EXPLOSIVES_ENEMY & (
-            (WATER_ORB & HAMMER_ROLL_ZIP)
-            | (FIRE_ORB & SLIDING_POWDER)
-       )",
+    "prereq": "EXPLOSIVES_ENEMY & WATER_ORB & HAMMER_ROLL_ZIP",
     }
     {
     "edge": "AQUARIUM_EAST -> AQUARIUM_MID_EAST",
-    "prereq": "EXPLOSIVES_ENEMY & FIRE_ORB & SLIDING_POWDER",
+    "prereq": "IMPOSSIBLE",
     }
 ]}
 
@@ -1190,12 +1186,12 @@
 "changes": [
     {
     "edge": "AQUARIUM_MID_EAST -> AQUARIUM_EAST",
-    "prereq": "PIKO_HAMMER | EXPLOSIVES | (EXPLOSIVES_ENEMY & FIRE_ORB & SLIDING_POWDER)",
+    "prereq": "current & (PIKO_HAMMER | EXPLOSIVES | (CARROT_SHOOTER & (CHARGE_RING | ADV_HARD)))",
     }
 
     {
     "edge": "AQUARIUM_EAST -> AQUARIUM_MID_EAST",
-    "prereq": "PIKO_HAMMER | EXPLOSIVES_ENEMY",
+    "prereq": "current & (PIKO_HAMMER | EXPLOSIVES_ENEMY)",
     }
 ]}
 
