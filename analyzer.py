@@ -183,7 +183,6 @@ class Analyzer(object):
         variables['BACKTRACK_GOALS'] = None, None
 
         first_loop = True
-        current_level = 0
         reachable_levels = {allocation.start_location.location : 0}
 
         #step -1: Mark variables that start True (step 1 checks these)
@@ -292,7 +291,7 @@ class Analyzer(object):
             for location in new_reachable_locations:
                 if self.visualize:
                     if location not in reachable_levels:
-                        reachable_levels[location] = current_level
+                        reachable_levels[location] = len(levels)//2
                 if location in locations_set:
                     if not variables[location]:
                         current_level_part2.append(location)
@@ -372,7 +371,6 @@ class Analyzer(object):
                 break
             levels.append(current_level_part1)
             levels.append(current_level_part2)
-            current_level += 1
 
         if self.visualize:
             colors = [ \
