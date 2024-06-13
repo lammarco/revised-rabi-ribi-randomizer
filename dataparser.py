@@ -789,6 +789,8 @@ class RandomizerData(object):
         self.preprocess_variables(settings)
         self.preprocess_graph(settings)
 
+        self.preprocess_backward_reachable()
+
     def preprocess_variables_with_settings(self, setting_flags, settings):
         # Mark all unconstrained pseudo-items
         variables = dict((name, False) for name in self.variable_names_list)
@@ -1005,3 +1007,40 @@ class RandomizerData(object):
 
     def generate_pessimistic_variables(self):
         return dict(self.pessimistic_variables)
+
+    def preprocess_backward_reachable(self):
+        variables = self.generate_variables()
+        edges = self.initial_edges
+
+        outgoing_edges = dict((key, list(edge_ids)) for key, edge_ids in self.initial_outgoing_edges.items())
+        incoming_edges = dict((key, list(edge_ids)) for key, edge_ids in self.initial_incoming_edges.items())
+
+        for edge in edges[self.transition_edges_id:]:
+            outgoing_edges[edge.from_location].append(edge.edge_id)
+            incoming_edges[edge.to_location].append(edge.edge_id)
+
+        pending_edge_ids = self.replacement_edges_id
+
+        dfs_stack = [location for location, loc_type in self.locations.items() if loc_type == LOCATION_WARP]
+        visited = set(dfs_stack)
+        pending_stack = set(dfs_stack)
+
+        while len(dfs_stack) > 0:
+            current_dest = dfs_stack.pop()
+            resolved = True
+            for edge_id in incoming_edges[current_dest]:
+                target_src = edges[edge_id].from_location
+                if edge_id >= pending_edge_ids:
+                    pending_stack.add(current_dest)
+                    resolved = False
+                else:
+                    if target_src in visited: continue
+                    if edges[edge_id].satisfied(variables):
+                        visited.add(target_src)
+                        dfs_stack.append(target_src)
+            if resolved:
+                pending_stack.discard(current_dest)
+
+        self.initial_visited_edges = visited
+        self.initial_pending_stack = list(sorted(pending_stack))
+

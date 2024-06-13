@@ -115,14 +115,18 @@ class Analyzer(object):
         return None
 
 
-    def verify_warps_reachable(self, starting_variables):
+    def verify_warps_reachable(self, starting_variables, diff_analysis = False):
         # verify that every major location has an unconstrained path to the goal.
         variables = starting_variables #should make a copy, but we don't modify variables anyway so we optimize this out.
         allocation = self.allocation
         edges = allocation.edges
 
-        dfs_stack = [location for location, loc_type in self.data.locations.items() if loc_type == LOCATION_WARP]
-        visited = set(dfs_stack)
+        if diff_analysis:
+            dfs_stack = [location for location, loc_type in self.data.locations.items() if loc_type == LOCATION_WARP]
+            visited = set(dfs_stack)
+        else:
+            dfs_stack = self.data.initial_pending_stack.copy()
+            visited = self.data.initial_visited_edges.copy()
 
         while len(dfs_stack) > 0:
             current_dest = dfs_stack.pop()
@@ -411,7 +415,7 @@ class Analyzer(object):
         return reachable, unreachable, levels, variables
 
     def analyze_with_variable_set(self, starting_variables):
-        result, backward_exitable = self.verify_warps_reachable(starting_variables)
+        result, backward_exitable = self.verify_warps_reachable(starting_variables, diff_analysis=True)
         reachable, unreachable, levels, ending_variables = self.verify_reachable_items(starting_variables, backward_exitable)
         return reachable, unreachable, levels, ending_variables
 
