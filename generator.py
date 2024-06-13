@@ -67,14 +67,13 @@ class Generator(object):
                 self.allocation = Allocation(self.data, self.settings)
                 random.seed(seed)
 
-        if not success:
-            fail('Unable to generate a valid seed after %d attempts.' % MAX_ATTEMPTS)
-
         time_taken = time.time() - start_time
         time_string = '%.2f seconds' % (time_taken)
 
-        print_ln('Seed generated after %d attempts in %s (%.2f/sec)' % (attempts+1, time_string, (attempts + 1) / time_taken))
+        if not success:
+            fail('Unable to generate a valid seed after %d attempts in %s (%.2f/sec)' % (MAX_ATTEMPTS, time_string, MAX_ATTEMPTS / time_taken))
 
+        print_ln('Seed generated after %d attempts in %s (%.2f/sec)' % (attempts+1, time_string, (attempts + 1) / time_taken))
         # Generate Visualization and Print Output:
         if self.settings.debug_visualize:
             Analyzer(self.data, self.settings, self.allocation, visualize=True)
