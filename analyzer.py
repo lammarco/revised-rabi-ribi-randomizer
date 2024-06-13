@@ -176,6 +176,7 @@ class Analyzer(object):
         newly_traversable_edges = set()
         temp_variable_storage = {}
         previous_new_variables = set() # for step 1 updating edges
+        new_variables_edges = set()
 
         variables['IS_BACKTRACKING'] = False
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
@@ -184,7 +185,7 @@ class Analyzer(object):
         first_loop = True
         current_level = 0
         reachable_levels = {allocation.start_location.location : 0}
-                
+
         #step -1: Mark variables that start True (step 1 checks these)
         previous_new_variables.update(var for var,val in variables.items() if val == True)
 
@@ -207,7 +208,6 @@ class Analyzer(object):
                         current_level_part1.append(target)
                         to_remove.append(target)
                         variables[target] = True
-                        previous_new_variables.add(target)
                         has_changes = True
 
                 for target in to_remove:
@@ -220,25 +220,26 @@ class Analyzer(object):
                         if not variables[target]:
                             current_level_part1.append(target)
                             variables[target] = True
-                            previous_new_variables.add(target)
                             has_changes = True
                         to_remove.append(target)
 
                 for target in to_remove:
                     del unsatisfied_item_conditions[target]
+            previous_new_variables.update(current_level_part1)
 
 
             # STEP 1: Loop Edge List
             forward_frontier.clear()
             backward_frontier.clear()
             newly_traversable_edges.clear()
-            
-            def check_edge(edge_id):
-                nonlocal untraversable_edges, newly_traversable_edges
-                nonlocal forward_enterable, backward_exitable
-                nonlocal forward_frontier, backward_frontier
-                if edge_id not in untraversable_edges:
-                    return
+
+            new_variables_edges.clear()
+            for var in previous_new_variables:
+                if len(edge_progression[var]) > 0:
+                    new_variables_edges |= edge_progression[var]
+            new_variables_edges &= untraversable_edges
+            new_variables_edges |= edge_progression_default
+            for edge_id in new_variables_edges:
                 edge = edges[edge_id]
                 if edge.satisfied(variables):
                     newly_traversable_edges.add(edge_id)
@@ -246,19 +247,11 @@ class Analyzer(object):
                         forward_frontier.add(edge.from_location)
                     if edge.to_location in backward_exitable:
                         backward_frontier.add(edge.to_location)
-           
-            #check default always, then newly satisfied variables
-            for edge_id in edge_progression_default:
-                check_edge(edge_id)
-            edge_progression_default -= newly_traversable_edges
-            
-            for var in previous_new_variables:
-                for edge_id in edge_progression[var]:
-                    check_edge(edge_id)
-                    
+
             previous_new_variables.clear()
-            untraversable_edges -= newly_traversable_edges   
-            
+            edge_progression_default -= newly_traversable_edges
+            untraversable_edges -= newly_traversable_edges
+
             # STEP 2: Find Forward Reachable Nodes
             new_forward_enterable = set()
             while len(forward_frontier) > 0:
@@ -374,7 +367,7 @@ class Analyzer(object):
             for node in current_level_part2:
                 variables[node] = True
             previous_new_variables.update(current_level_part2)
-            
+
             if len(current_level_part1) == 0 and len(current_level_part2) == 0:
                 break
             levels.append(current_level_part1)
