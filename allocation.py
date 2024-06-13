@@ -109,7 +109,7 @@ class Allocation(object):
                     break
 
             picked_templates.append(templates[current_template])
-            
+
             # remove all conflicting templates
             for conflict in templates[current_template].conflicts_names:
                 if conflict in templates:
@@ -131,13 +131,13 @@ class Allocation(object):
     def construct_graph(self, data, settings):
         edges = list(data.initial_edges)
         edge_id = data.replacement_edges_id
-        
-        originalNEdges = edge_id
+
+        originalNEdges = data.transition_edges_id
         outgoing_edges = data.initial_outgoing_edges
         incoming_edges = data.initial_incoming_edges
         modified_outgoing = dict()
         modified_incoming = dict()
-        
+
         # Edge Constraints
         edge_replacements = self.edge_replacements
         for original_constraint in data.edge_constraints:
@@ -174,7 +174,7 @@ class Allocation(object):
         self.incoming_edges = incoming_edges
         self.modified_outgoing = modified_outgoing
         self.modified_incoming = modified_incoming
-        
+
     def revert_graph(self, data):
         def revert_edges(changes: dict, loc_edges: dict):
             for loc, edge_count in changes.items():

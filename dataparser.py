@@ -897,13 +897,6 @@ class RandomizerData(object):
                 sifted_edge_constraints.append(graph_edge)
         self.edge_constraints = sifted_edge_constraints
 
-        initial_outgoing_edges = dict((node, []) for node in graph_vertices)
-        initial_incoming_edges = dict((node, []) for node in graph_vertices)
-
-        for edge in edges:
-            initial_outgoing_edges[edge.from_location].append(edge.edge_id)
-            initial_incoming_edges[edge.to_location].append(edge.edge_id)
-
         # replacement potencial nodes
         self.replacement_edges_id = len(edges)
         for graph_edge in sifted_edge_constraints:
@@ -914,6 +907,13 @@ class RandomizerData(object):
                 constraint=graph_edge.prereq_lambda,
                 backtrack_cost=1,
             ))
+
+        initial_outgoing_edges = dict((node, []) for node in graph_vertices)
+        initial_incoming_edges = dict((node, []) for node in graph_vertices)
+
+        for edge in edges:
+            initial_outgoing_edges[edge.from_location].append(edge.edge_id)
+            initial_incoming_edges[edge.to_location].append(edge.edge_id)
 
         # map transition nodes
         self.transition_edges_id = len(edges)
