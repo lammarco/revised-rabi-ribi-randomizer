@@ -1023,23 +1023,35 @@ class RandomizerData(object):
 
         dfs_stack = [location for location, loc_type in self.locations.items() if loc_type == LOCATION_WARP]
         visited = set(dfs_stack)
-        pending_stack = set(dfs_stack)
+        pending_edges = dict()
 
         while len(dfs_stack) > 0:
             current_dest = dfs_stack.pop()
-            resolved = True
             for edge_id in incoming_edges[current_dest]:
                 target_src = edges[edge_id].from_location
                 if edge_id >= pending_edge_ids:
-                    pending_stack.add(current_dest)
-                    resolved = False
+                        if current_dest not in pending_edges:
+                            pending_edges[current_dest] = []
+                        pending_edges[current_dest].append(edge_id)
                 else:
                     if target_src in visited: continue
                     if edges[edge_id].satisfied(variables):
                         visited.add(target_src)
                         dfs_stack.append(target_src)
-            if resolved:
-                pending_stack.discard(current_dest)
+
+        pending_stack = set()
+        for current_dest, from_edges in pending_edges.items():
+            resolved = True
+            for edge_id in from_edges:
+                if edge_id >= self.transition_edges_id:
+                    resolved = False
+                    break
+                target_src = edges[edge_id].from_location
+                if target_src not in visited:
+                    resolved = False
+                    break
+            if not resolved:
+                pending_stack.add(current_dest)
 
         self.initial_visited_edges = visited
         self.initial_pending_stack = list(sorted(pending_stack))
