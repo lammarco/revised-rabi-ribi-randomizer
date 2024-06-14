@@ -1072,8 +1072,20 @@ class RandomizerData(object):
             if not resolved:
                 pending_stack.add(current_dest)
 
+        traversable_edges = set()
+        backward_frontier = set()
+        for edge_id in range(pending_edge_ids):
+                edge = edges[edge_id]
+                if edge.satisfied(variables):
+                    traversable_edges.add(edge_id)
+                    if edge.to_location in visited:
+                        backward_frontier.add(edge.to_location)
+
         self.exitable_nodes = exitable_nodes
         self.unexitable_nodes = unexitable_nodes
         self.initial_visited_edges = visited
         self.initial_pending_stack = list(sorted(pending_stack))
+        self.initial_backward_frontier = backward_frontier
+        self.initial_traversable_edges = traversable_edges
+        self.initial_untraversable_edges = set(edge.edge_id for edge in edges) - traversable_edges
 

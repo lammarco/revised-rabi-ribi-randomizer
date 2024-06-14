@@ -166,7 +166,7 @@ class Analyzer(object):
 
         # Persistent variables
         variables = dict(starting_variables)
-        untraversable_edges = set(edge.edge_id for edge in edges)
+        untraversable_edges = data.initial_untraversable_edges.copy()
         unreached_pseudo_items = dict(data.pseudo_items)
         unsatisfied_item_conditions = dict(data.alternate_conditions)
         edge_progression_default = edge_progression['DEFAULT'].copy()
@@ -181,12 +181,13 @@ class Analyzer(object):
         # Temp Variables that are reset every time
         to_remove = []
         forward_frontier = set()
-        backward_frontier = set()
+        backward_frontier = data.initial_backward_frontier.copy()
         new_reachable_locations = set()
-        newly_traversable_edges = set()
+        newly_traversable_edges = data.initial_traversable_edges.copy()
         temp_variable_storage = {}
         previous_new_variables = set() # for step 1 updating edges
         new_variables_edges = set()
+        edge_progression_default -= newly_traversable_edges
 
         variables['IS_BACKTRACKING'] = False
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
@@ -238,10 +239,6 @@ class Analyzer(object):
 
 
             # STEP 1: Loop Edge List
-            forward_frontier.clear()
-            backward_frontier.clear()
-            newly_traversable_edges.clear()
-
             new_variables_edges.clear()
             for var in previous_new_variables:
                 if len(edge_progression[var]) > 0:
@@ -260,6 +257,7 @@ class Analyzer(object):
             previous_new_variables.clear()
             edge_progression_default -= newly_traversable_edges
             untraversable_edges -= newly_traversable_edges
+            newly_traversable_edges.clear()
 
             # STEP 2: Find Forward Reachable Nodes
             new_forward_enterable = set()
