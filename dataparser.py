@@ -1023,7 +1023,26 @@ class RandomizerData(object):
 
         dfs_stack = [location for location, loc_type in self.locations.items() if loc_type == LOCATION_WARP]
         visited = set(dfs_stack)
+        unexitable_nodes = set()
+        exitable_nodes = set()
         pending_edges = dict()
+
+        for location in self.graph_vertices:
+            unexitable = True
+            exitable = len(outgoing_edges[location]) > 0
+            for edge_id in outgoing_edges[location]:
+                if edge_id >= pending_edge_ids:
+                    unexitable = False
+                    exitable = False
+                    break
+                if edges[edge_id].satisfied(variables):
+                    unexitable = False
+                else:
+                    exitable = False
+            if unexitable:
+                unexitable_nodes.add(location)
+            if exitable:
+                exitable_nodes.add(location)
 
         while len(dfs_stack) > 0:
             current_dest = dfs_stack.pop()
@@ -1053,6 +1072,8 @@ class RandomizerData(object):
             if not resolved:
                 pending_stack.add(current_dest)
 
+        self.exitable_nodes = exitable_nodes
+        self.unexitable_nodes = unexitable_nodes
         self.initial_visited_edges = visited
         self.initial_pending_stack = list(sorted(pending_stack))
 

@@ -120,24 +120,30 @@ class Analyzer(object):
         variables = starting_variables #should make a copy, but we don't modify variables anyway so we optimize this out.
         allocation = self.allocation
         edges = allocation.edges
+        data = self.data
 
         if diff_analysis:
-            dfs_stack = [location for location, loc_type in self.data.locations.items() if loc_type == LOCATION_WARP]
+            dfs_stack = [location for location, loc_type in data.locations.items() if loc_type == LOCATION_WARP]
             visited = set(dfs_stack)
+            unexitable = set()
+            exitable = set()
         else:
-            dfs_stack = self.data.initial_pending_stack.copy()
-            visited = self.data.initial_visited_edges.copy()
+            dfs_stack = data.initial_pending_stack.copy()
+            visited = data.initial_visited_edges.copy()
+            unexitable = data.unexitable_nodes
+            exitable = data.exitable_nodes
 
         while len(dfs_stack) > 0:
             current_dest = dfs_stack.pop()
             for edge_id in allocation.incoming_edges[current_dest]:
                 target_src = edges[edge_id].from_location
                 if target_src in visited: continue
-                if edges[edge_id].satisfied(variables):
+                if target_src in unexitable: continue
+                if target_src in exitable or edges[edge_id].satisfied(variables):
                     visited.add(target_src)
                     dfs_stack.append(target_src)
 
-        major_locations = set(location for location, loc_type in self.data.locations.items() if loc_type == LOCATION_MAJOR)
+        major_locations = set(location for location, loc_type in data.locations.items() if loc_type == LOCATION_MAJOR)
 
         return (len(major_locations - visited) == 0, visited)
 
