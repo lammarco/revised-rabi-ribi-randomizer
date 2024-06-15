@@ -846,8 +846,10 @@
         FIRE_ORB | (
             SLIDING_POWDER | AIR_JUMP | AIR_DASH | WHIRL_BONK
             | (SPEED5 & ADV_HARD)
-            | (SPEED3 & ADV_VHARD) // quick drop jump
-            | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            | (ADV_EXT & (
+                SPEED3 // quick drop jump
+                | (BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            ))
         )
         ",
     }
@@ -863,8 +865,10 @@
         PIKO_HAMMER | (
             SLIDING_POWDER | AIR_JUMP
             | (SPEED5 & ADV_HARD)
-            | (SPEED3 & ADV_VHARD) // quick drop jump
-            | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            | (ADV_EXT & (
+                SPEED3 // quick drop jump
+                | (BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            ))
         )
         ",
     }
