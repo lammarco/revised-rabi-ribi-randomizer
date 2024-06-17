@@ -125,23 +125,29 @@ class Analyzer(object):
         if diff_analysis:
             dfs_stack = [location for location, loc_type in data.locations.items() if loc_type == LOCATION_WARP]
             visited = set(dfs_stack)
-            unexitable = set()
-            exitable = set()
+            pending_static_edges = []
+            dynamic_edges_id = 0
         else:
             dfs_stack = data.initial_pending_stack.copy()
             visited = data.initial_visited_edges.copy()
-            unexitable = data.unexitable_nodes
-            exitable = data.exitable_nodes
+            pending_static_edges = data.pending_static_edges
+            dynamic_edges_id = data.dynamic_edges_id
 
         while len(dfs_stack) > 0:
             current_dest = dfs_stack.pop()
             for edge_id in allocation.incoming_edges[current_dest]:
-                target_src = edges[edge_id].from_location
-                if target_src in visited: continue
-                if target_src in unexitable: continue
-                if target_src in exitable or edges[edge_id].satisfied(variables):
-                    visited.add(target_src)
-                    dfs_stack.append(target_src)
+                if edge_id < dynamic_edges_id:
+                    if pending_static_edges[edge_id]:
+                        target_src = edges[edge_id].from_location
+                        if target_src in visited: continue
+                        visited.add(target_src)
+                        dfs_stack.append(target_src)
+                else:
+                    target_src = edges[edge_id].from_location
+                    if target_src in visited: continue
+                    if edges[edge_id].satisfied(variables):
+                        visited.add(target_src)
+                        dfs_stack.append(target_src)
 
         major_locations = set(location for location, loc_type in data.locations.items() if loc_type == LOCATION_MAJOR)
 
@@ -180,7 +186,7 @@ class Analyzer(object):
 
         # Temp Variables that are reset every time
         to_remove = []
-        forward_frontier = set()
+        forward_frontier = set((allocation.start_location.location,))
         backward_frontier = data.initial_backward_frontier.copy()
         new_reachable_locations = new_reachable_locations = forward_enterable.intersection(backward_exitable)
         newly_traversable_edges = data.initial_traversable_edges.copy()
