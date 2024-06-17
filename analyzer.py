@@ -182,7 +182,7 @@ class Analyzer(object):
         to_remove = []
         forward_frontier = set()
         backward_frontier = data.initial_backward_frontier.copy()
-        new_reachable_locations = set()
+        new_reachable_locations = new_reachable_locations = forward_enterable.intersection(backward_exitable)
         newly_traversable_edges = data.initial_traversable_edges.copy()
         temp_variable_storage = {}
         previous_new_variables = set() # for step 1 updating edges
@@ -193,18 +193,14 @@ class Analyzer(object):
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
         variables['BACKTRACK_GOALS'] = None, None
 
-        first_loop = True
         reachable_levels = {allocation.start_location.location : 0}
 
         #step -1: Mark variables that start True (step 1 checks these)
         previous_new_variables.update(var for var,val in variables.items() if val == True)
 
         while True:
-            new_reachable_locations.clear()
-            if first_loop: new_reachable_locations = forward_enterable.intersection(backward_exitable)
             current_level_part1 = []
             current_level_part2 = []
-            first_loop = False
 
             # STEP 0: Mark Pseudo-Items
             has_changes = True
@@ -373,12 +369,12 @@ class Analyzer(object):
 
             for node in current_level_part2:
                 variables[node] = True
-            previous_new_variables.update(current_level_part2)
 
             if len(current_level_part1) == 0 and len(current_level_part2) == 0:
                 break
             levels.append(current_level_part1)
             levels.append(current_level_part2)
+            previous_new_variables.update(current_level_part2)
 
         if self.visualize:
             colors = [ \
