@@ -188,7 +188,7 @@ class Analyzer(object):
         to_remove = []
         forward_frontier = set((allocation.start_location.location,))
         backward_frontier = data.initial_backward_frontier.copy()
-        new_reachable_locations = new_reachable_locations = forward_enterable.intersection(backward_exitable)
+        new_reachable_locations = forward_enterable.intersection(backward_exitable)
         newly_traversable_edges = data.initial_traversable_edges.copy()
         temp_variable_storage = {}
         previous_new_variables = set() # for step 1 updating edges
