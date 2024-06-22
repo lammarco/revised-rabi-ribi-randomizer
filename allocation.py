@@ -75,17 +75,15 @@ class Allocation(object):
             if low == high:return low
             return random.randrange(low, high)
 
-        templates = dict()
-        orig_templates = list(data.template_constraints)
-        for t in orig_templates:
-            templates[t.name] = t
+        templates = list(data.template_constraints)
         target_template_count = get_template_count(settings)
 
         picked_templates = []
-        update_table = True
-        template_weights = [0 for j in range(len(templates))]
-        template_names = ["" for j in range(len(templates))]
-        template_index = {}
+        update_table = False
+        template_weights = data.initial_template_weights.copy()
+        template_index = data.initial_template_index.copy()
+        total_weight = template_weights[-1]
+        removed_wiehgt = 0
         while len(templates) > 0 and len(picked_templates) < target_template_count:
             if update_table:
                 update_table = False
@@ -94,32 +92,38 @@ class Allocation(object):
                 removed_wiehgt = 0
                 template_index.clear()
                 for t in templates:
-                    total_weight += templates[t].weight
-                    template_names[i] = templates[t].name
+                    total_weight += t.weight
                     template_weights[i] = total_weight
-                    template_index[templates[t].name] = i
+                    template_index[t.name] = i
                     i += 1
                 template_weights = template_weights[:i]
 
             while True:
                 index = random.randrange(total_weight)
                 picked = bisect.bisect(template_weights, index)
-                current_template = template_names[picked]
-                if current_template[0] != '!':
+                current_template = templates[picked]
+                if current_template != None:
                     break
 
-            picked_templates.append(templates[current_template])
+            picked_templates.append(current_template)
 
             # remove all conflicting templates
-            for conflict in templates[current_template].conflicts_names:
-                if conflict in templates:
-                    removed_wiehgt += templates[conflict].weight
-                    remove_index = template_index[templates[conflict].name]
-                    template_names[remove_index] = "!"
-                    del templates[conflict]
+            for conflict in current_template.conflicts_names:
+                if conflict in template_index:
+                    conflict_index = template_index[conflict]
+                    if conflict_index < 0: continue
+                    removed_wiehgt += templates[conflict_index].weight
+                    templates[conflict_index] = None
+                    template_index[conflict] = -1
 
             if (removed_wiehgt / total_weight) > 0.35:
                 update_table = True
+                new_templates = []
+                for t in templates:
+                    if t == None: continue
+                    new_templates.append(t)
+                templates = new_templates
+
 
 
         self.picked_templates = picked_templates

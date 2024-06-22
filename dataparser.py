@@ -790,6 +790,7 @@ class RandomizerData(object):
         self.preprocess_graph(settings)
 
         self.preprocess_backward_reachable(settings)
+        self.preprocess_template_constraints(settings)
 
     def preprocess_variables_with_settings(self, setting_flags, settings):
         # Mark all unconstrained pseudo-items
@@ -1080,3 +1081,16 @@ class RandomizerData(object):
         self.pending_static_edges = pending_static_edges
         self.dynamic_edges_id = dynamic_edges_id
 
+    def preprocess_template_constraints(self, settings):
+        initial_template_index = dict()
+        initial_template_weights = list()
+        templates = self.template_constraints
+        total_weight = 0
+        for i in range(len(templates)):
+            t = templates[i]
+            total_weight += t.weight
+            initial_template_index[t.name] = i
+            initial_template_weights.append(total_weight)
+
+        self.initial_template_index = initial_template_index
+        self.initial_template_weights = initial_template_weights
