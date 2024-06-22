@@ -5,6 +5,7 @@ import random
 import re
 import ast
 import os
+from collections import defaultdict
 
 ### Enums
 LOCATION_WARP = 0
@@ -70,13 +71,37 @@ class StartLocation(object):
         self.weight = weight
         self.location = location
 
+_constraint_re = re.compile(r'[\(\)]|\bAND\b|\bOR\b|\bBACKTRACK_\d+\b') 
+_impossible = {'IMPOSSIBLE'}
+_always_check = {'DEFAULT'}
+def get_prereq_literals(prereq):
+    literals_str = _constraint_re.sub('', str( prereq ) )
+    literals_set = set(literals_str.split())
+    if('FALSE' in literals_set):
+        return _impossible
+    literals_set.discard('TRUE')
+    if(len(literals_set) < 1):
+        return _always_check
+    return literals_set
+    
+def generate_progression_dict(variables_list, edges:'list<GraphEdge>', keep_progression = True) -> 'dict< str constraint = list<int edge_id>>':
+    progression = defaultdict(set)
+    for v in variables_list: 
+        progression[v] = set()
+    for edge in edges:
+        for literal in edge.progression:
+            progression[literal].add(edge.edge_id)
+        if not keep_progression:
+            del edge.progression #no longer needed, saves space
+    return progression
+
 class EdgeConstraintData(object):
     def __init__(self, from_location, to_location, prereq_expression):
         self.from_location = from_location
         self.to_location = to_location
         self.prereq_expression = prereq_expression
-        self.prereq_compile = compile(prereq_expression.compile(), "<node>", mode= "eval")
-        self.prereq_lambda = lambda v : eval(self.prereq_compile, None, {"variables": v})
+        self.prereq_lambda = ExpressionLambda(prereq_expression).expression_lambda
+        self.prereq_literals = get_prereq_literals( prereq_expression )
 
     def __str__(self):
         return '\n'.join([
@@ -89,8 +114,10 @@ class ItemConstraintData(object):
     def __init__(self, item, from_location, entry_prereq, exit_prereq, alternate_entries, alternate_exits):
         self.item = item
         self.from_location = from_location
-        self.entry_prereq = entry_prereq
-        self.exit_prereq = exit_prereq
+        self.entry_prereq = ExpressionLambda( entry_prereq ).expression_lambda
+        self.exit_prereq  = ExpressionLambda( exit_prereq ).expression_lambda
+        self.entry_progression = get_prereq_literals( entry_prereq )
+        self.exit_progression  = get_prereq_literals(  exit_prereq )
         self.alternate_entries = alternate_entries
         self.alternate_exits = alternate_exits
         self.no_alternate_paths = (len(self.alternate_entries) + len(self.alternate_exits) == 0)
@@ -110,11 +137,12 @@ class TemplateConstraintData(object):
         return bool(self.change_edge_set.intersection(other.change_edge_set))
 
 class GraphEdge(object):
-    def __init__(self, edge_id, from_location, to_location, constraint, backtrack_cost):
+    def __init__(self, edge_id, from_location, to_location, constraint, backtrack_cost, progression={'DEFAULT'}):
         self.edge_id = edge_id
         self.from_location = from_location
         self.to_location = to_location
         self.satisfied = constraint
+        self.progression = progression
         self.backtrack_cost = backtrack_cost
 
     def __str__(self):
@@ -130,6 +158,13 @@ class ExpressionLambda(object):
         self.expression = expression
         self.expression_compile = compile(expression.compile(), "<node>", mode= "eval")
         self.expression_lambda = lambda v : eval(self.expression_compile, None, {"variables": v})
+
+class ExpressionData(object):
+    def __init__(self, exp):
+        self.exp = exp
+        compiled = compile(exp.compile(), "<node>", mode= "eval")
+        self.exp_lambda = lambda v : eval(compiled, None, {"variables": v})
+        self.exp_literals = get_prereq_literals( exp )
 
 class ConfigData(object):
     def __init__(self, knowledge, difficulty, settings):
