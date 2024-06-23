@@ -374,9 +374,17 @@ class Analyzer(object):
             for node in current_level_part2:
                 variables[node] = True
             previous_new_variables.update(current_level_part2)
-
+            
+            #try fix dead end by swapping reachable-but-useless item with unreachable progression
             if len(current_level_part1) == 0 and len(current_level_part2) == 0:
-                break
+                new_progression = allocation.progression_dead_end_swap(variables, levels)
+                if new_progression in variables and variables[new_progression] == False:
+                    variables[new_progression] = True
+                    #Possible TODO: fix level output after swap
+                else:
+                    #print('deadend fail:',new_progression)
+                    break #failed to undo dead end; fail seed attempt
+                
             levels.append(current_level_part1)
             levels.append(current_level_part2)
 

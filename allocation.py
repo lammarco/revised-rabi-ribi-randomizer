@@ -47,6 +47,7 @@ class Allocation(object):
         else:
             self.start_location = data.start_locations[0]
             self.start_location.location = "FOREST_START"
+            
     def allocate_items(self, data, settings):
         item_slots = data.item_slots
 
@@ -59,6 +60,41 @@ class Allocation(object):
         # A map of location -> item at location
         self.item_at_item_location = dict(zip(item_slots, self.items_to_allocate))
         self.item_at_item_location.update(data.unshuffled_allocations)
+        self.item_to_loc = dict( (v,k) for k,v in self.item_at_item_location.items() )
+        
+    def progression_dead_end_swap( self, variables, levels ):
+        ''' 
+            fix impossible seed progression by
+            swapping 1 impossible item into 1 previous_level_location
+        '''
+        def get_latest_level():
+            for i,level in enumerate( levels[::-1] ):
+                useless_items = set(level) - variables.keys()
+                if len(useless_items) > 0:
+                    return i, list(useless_items)
+            return -1, []
+            
+        false_vars = list(k for k,v in variables.items() if v == False)
+        level, useless_items = get_latest_level()
+        
+        if len(false_vars) < 1 or len(useless_items) < 1: # basically impossible for useless_items to < 1
+            return None #fail swap / seed attempt
+        
+        progression = random.choice(false_vars)
+        replacement = random.choice(useless_items)
+        p_loc = self.item_to_loc[progression]
+        r_loc = self.item_to_loc[replacement]
+        
+        self.item_to_loc[progression] = r_loc
+        self.item_to_loc[replacement] = p_loc
+        self.item_at_item_location[r_loc] = progression
+        self.item_at_item_location[p_loc] = replacement
+        
+        #print(f'swapped {progression} @ {p_loc} <-> {replacement} @ {r_loc}')
+        modified_level = levels[level]
+        modified_level[ modified_level.index( replacement ) ] = progression
+        
+        return progression
 
     def choose_constraint_templates(self, data, settings):
         self.edge_replacements = {}
