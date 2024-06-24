@@ -26,7 +26,9 @@ class Generator(object):
         start_time = time.time()
         for attempts in range(MAX_ATTEMPTS):
             self.shuffle()
+            self.allocation.enable_swaps(True)
             analyzer = Analyzer(self.data, self.settings, self.allocation)
+            self.allocation.enable_swaps(False)
             if analyzer.success:
                 if not self.settings.egg_goals:
                     success = True

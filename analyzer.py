@@ -241,7 +241,7 @@ class Analyzer(object):
             # STEP 1: Loop Edge List
             new_variables_edges.clear()
             for var in previous_new_variables:
-                if len(edge_progression[var]) > 0:
+                if var in edge_progression: # implies len(edge_progression[var]) > 0:
                     new_variables_edges |= edge_progression[var]
             new_variables_edges &= untraversable_edges
             new_variables_edges |= edge_progression_default
@@ -377,12 +377,14 @@ class Analyzer(object):
             
             #try fix dead end by swapping reachable-but-useless item with unreachable progression
             if len(current_level_part1) == 0 and len(current_level_part2) == 0:
-                new_progression = allocation.progression_dead_end_swap(variables, levels)
-                if new_progression in variables and variables[new_progression] == False:
+                new_progression, replaced = allocation.progression_dead_end_swap(variables, levels)
+                if new_progression in variables and replaced in variables \
+                   and variables[new_progression] == False \
+                   and variables[replaced] == True:
                     variables[new_progression] = True
-                    #Possible TODO: fix level output after swap
+                    variables[replaced] = False
+                    previous_new_variables.add(new_progression)
                 else:
-                    #print('deadend fail:',new_progression)
                     break #failed to undo dead end; fail seed attempt
                 
             levels.append(current_level_part1)

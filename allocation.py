@@ -23,7 +23,12 @@ class Allocation(object):
     def __init__(self, data, settings):
         self.items_to_allocate = list(data.items_to_allocate)
         self.walking_left_transitions = list(data.walking_left_transitions)
-
+        self.progression_items = data.progression_items
+        self.eggs = data.eggs
+        self.allow_swaps = False
+        
+    def enable_swaps(self, allow: bool):
+        self.allow_swaps = allow
 
     def shuffle(self, data, settings):
         self.map_modifications = list(data.default_map_modifications)
@@ -66,35 +71,45 @@ class Allocation(object):
         ''' 
             fix impossible seed progression by
             swapping 1 impossible item into 1 previous_level_location
+            (non-major location in latest level to prevent breaking logic chain)
         '''
+        if self.allow_swaps != True:
+            return None,None
+            
+        items = set( self.items_to_allocate )
+        progression = self.progression_items
+        major = progression | self.eggs
+        
         def get_latest_level():
             for i,level in enumerate( levels[::-1] ):
-                useless_items = set(level) - variables.keys()
+                level_items = items & set(level)
+                useless_items = level_items - major
                 if len(useless_items) > 0:
-                    return i, list(useless_items)
+                    return len(levels) - i - 1, useless_items
             return -1, []
             
-        false_vars = list(k for k,v in variables.items() if v == False)
+        false_vars = set(k for k,v in variables.items() if v == False)
+        unreachable_progression = progression & false_vars
         level, useless_items = get_latest_level()
         
-        if len(false_vars) < 1 or len(useless_items) < 1: # basically impossible for useless_items to < 1
-            return None #fail swap / seed attempt
+        if len(unreachable_progression) < 1 or len(useless_items) < 1:
+            return None,None #fail swap / seed attempt
         
-        progression = random.choice(false_vars)
-        replacement = random.choice(useless_items)
+        progression = random.choice(sorted(unreachable_progression))
+        replacement = random.choice(sorted(useless_items))
         p_loc = self.item_to_loc[progression]
         r_loc = self.item_to_loc[replacement]
+        #print(f'swapping {progression} @ {p_loc} <-> {replacement} @ {r_loc}')
         
         self.item_to_loc[progression] = r_loc
         self.item_to_loc[replacement] = p_loc
         self.item_at_item_location[r_loc] = progression
         self.item_at_item_location[p_loc] = replacement
         
-        #print(f'swapped {progression} @ {p_loc} <-> {replacement} @ {r_loc}')
         modified_level = levels[level]
         modified_level[ modified_level.index( replacement ) ] = progression
         
-        return progression
+        return progression, replacement
 
     def choose_constraint_templates(self, data, settings):
         self.edge_replacements = {}
