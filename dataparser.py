@@ -788,6 +788,8 @@ class RandomizerData(object):
         self.preprocess_data(settings)
         self.preprocess_variables(settings)
         self.preprocess_graph(settings)
+        self.generate_progression_data(False)
+        self.mark_major_items()
 
         self.preprocess_backward_reachable()
 
@@ -942,8 +944,30 @@ class RandomizerData(object):
         self.initial_edges = edges
         self.initial_outgoing_edges = initial_outgoing_edges
         self.initial_incoming_edges = initial_incoming_edges
-        self.edge_progression = generate_progression_dict(self.variable_names_list, edges, keep_progression=False)
+    
+    def generate_progression_data(self, keep_progression = True) -> None:
+        '''
+            propagates class attribute:
+                edge_progression : dict< str constraint : list<int edge_id>>
+                progression_names: list< str >
+        '''
+        progression = defaultdict(set)
+        vars = self.variable_names_list
+        edges = self.initial_edges
+        for edge in edges:
+            for literal in edge.progression:
+                progression[literal].add(edge.edge_id)
+            if not keep_progression:
+                del edge.progression #no longer needed, saves space
+        
+        self.edge_progression = {p:e for p,e in progression.items() if len(e) > 0}
 
+    def mark_major_items( self ):
+        items = set( self.items_to_allocate )
+        
+        self.eggs = set(item_name for item_name in items if is_egg(item_name))
+        self.progression_items = set( self.edge_progression.keys() ) & items
+    
     def preprocess_data(self, settings):
         ### For item shuffle
         to_shuffle_set = set(self.to_shuffle)

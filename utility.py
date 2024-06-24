@@ -83,17 +83,6 @@ def get_prereq_literals(prereq):
     if(len(literals_set) < 1):
         return _always_check
     return literals_set
-    
-def generate_progression_dict(variables_list, edges:'list<GraphEdge>', keep_progression = True) -> 'dict< str constraint = list<int edge_id>>':
-    progression = defaultdict(set)
-    for v in variables_list: 
-        progression[v] = set()
-    for edge in edges:
-        for literal in edge.progression:
-            progression[literal].add(edge.edge_id)
-        if not keep_progression:
-            del edge.progression #no longer needed, saves space
-    return progression
 
 class EdgeConstraintData(object):
     def __init__(self, from_location, to_location, prereq_expression):
