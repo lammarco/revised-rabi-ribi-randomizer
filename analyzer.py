@@ -378,15 +378,17 @@ class Analyzer(object):
                 
             #try fix dead end by swapping reachable-but-useless item with unreachable progression
             if len(current_level_part1) == 0 and len(current_level_part2) == 0:
-                new_progression, replaced = allocation.progression_dead_end_swap(variables, levels)
-                if new_progression in variables and replaced in variables \
-                   and variables[new_progression] == False \
-                   and variables[replaced] == True:
-                    variables[new_progression] = True
-                    variables[replaced] = False
-                    previous_new_variables.add(new_progression)
-                else:
+                swaps = allocation.progression_unblock_dead_end(variables, levels)
+                if len(swaps) < 1:
                     break #failed to undo dead end; fail seed attempt
+                    
+                for new_progression, replaced in swaps:
+                    if new_progression in variables and replaced in variables:
+                        variables[new_progression] = True
+                        variables[replaced] = False
+                        previous_new_variables.add(new_progression)
+                    else:
+                        raise Exception(f"swap returned non-variable: {new_progression}<>{replaced}")
                 
             levels.append(current_level_part1)
             levels.append(current_level_part2)

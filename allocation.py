@@ -27,6 +27,7 @@ class Allocation(object):
         self.eggs = data.eggs
         self.allow_swaps = False
         self.swaps = list()
+        self.max_swaps = max( 1,  settings.max_progression_swaps)
         
     def enable_swaps(self, allow: bool):
         self.allow_swaps = allow
@@ -34,7 +35,6 @@ class Allocation(object):
     def shuffle(self, data, settings):
         self.map_modifications = list(data.default_map_modifications)
         self.swaps.clear()
-        
         # Shuffle Items
         self.allocate_items(data, settings)
 
@@ -69,7 +69,30 @@ class Allocation(object):
         self.item_at_item_location.update(data.unshuffled_allocations)
         self.item_to_loc = dict( (v,k) for k,v in self.item_at_item_location.items() )
         
-    def progression_dead_end_swap( self, variables, levels ):
+    def progression_unblock_dead_end( self, variables, levels ):
+        if self.allow_swaps != True:
+            return []
+            
+        items = set( self.items_to_allocate )
+        major = self.progression_items | self.eggs
+        
+        swaps = []
+        false_vars = set(k for k,v in variables.items() if v == False)
+        possible_swaps = len(self.progression_items & false_vars)
+        nSwaps = possible_swaps if possible_swaps < 2 \
+            else random.randint(1, min(possible_swaps, self.max_swaps))
+        
+        for _ in range(nSwaps):
+            new_progression, replacement = self.progression_dead_end_swap(false_vars, levels, items, major)
+            if new_progression in variables and replacement in variables:
+                false_vars.discard(new_progression)
+                false_vars.add(replacement)
+                swaps.append( (new_progression, replacement) )
+            else:
+                break #no more swaps can be made
+        return swaps
+                       
+    def progression_dead_end_swap( self, false_vars, levels, items, major ):
         ''' 
             fix impossible seed progression by
             swapping 1 impossible item into 1 previous_level_location
@@ -78,10 +101,7 @@ class Allocation(object):
         if self.allow_swaps != True:
             return None,None
             
-        items = set( self.items_to_allocate )
         progression = self.progression_items
-        major = progression | self.eggs
-        
         def get_latest_level():
             for i,level in enumerate( levels[::-1] ):
                 level_items = items & set(level)
@@ -90,12 +110,11 @@ class Allocation(object):
                     return len(levels) - i - 1, useless_items
             return -1, []
             
-        false_vars = set(k for k,v in variables.items() if v == False)
         unreachable_progression = progression & false_vars
         level, useless_items = get_latest_level()
         
         if len(unreachable_progression) < 1 or len(useless_items) < 1:
-            return None,None #fail swap / seed attempt
+            return None,None #fail swap
         
         progression = random.choice(sorted(unreachable_progression))
         replacement = random.choice(sorted(useless_items))

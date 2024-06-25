@@ -44,7 +44,8 @@ def parse_args():
     args.add_argument('-extra-eggs', default=0, type=int, help='Number of extra randomly-chosen eggs for egg-goals mode (in addition to the hard-to-reach eggs)')
     args.add_argument('-num-hard-to-reach', default=5, type=int, help='Number of hard to reach items/eggs. Default is 5.')
     args.add_argument('--debug-visualize', action='store_true', help='Output debug info and node graph image.')
-
+    args.add_argument('-max-progression-swaps', default=1, type=int, help='Maximum swaps to help fix progression dead end. Less swaps = more linear progression. Default/Min is 1')
+    
     return args.parse_args(sys.argv[1:])
 
 
