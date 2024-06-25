@@ -645,11 +645,7 @@
     "edge": "LAB_MID -> LAB_WEST",
     "prereq": "
         SLIDING_POWDER & (
-            AIR_DASH_LV3
-            | BUNNY_STRIKE
-            | (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
-            | (ITM & SPEED3)
-            | ADV_VHARD
+            AIR_DASH | BUNNY_STRIKE | WHIRL_BONK | AIR_JUMP | (ITM & SPEED3) | ITM_VHARD
         )",
     }
     {
@@ -735,12 +731,7 @@
     "edge": "LAB_MID -> LAB_WEST",
     "prereq": "
         SLIDING_POWDER & (
-            FIRE_ORB
-            | AIR_DASH_LV3
-            | BUNNY_STRIKE
-            | (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
-            | (ITM & SPEED3)
-            | ADV_VHARD
+            FIRE_ORB | AIR_DASH | BUNNY_STRIKE | WHIRL_BONK | AIR_JUMP | (ITM & SPEED3) | ITM_VHARD
         )",
     }
     {
@@ -791,10 +782,7 @@
     "edge": "LAB_MID -> LAB_WEST",
     "prereq": "
         SLIDING_POWDER & (
-            PIKO_HAMMER | EXPLOSIVES
-            | (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
-            | (ITM & SPEED3)
-            | ADV_VHARD
+            PIKO_HAMMER | EXPLOSIVES | AIR_JUMP | (ITM & SPEED3) | ITM_VHARD
         )",
     }
     {
@@ -858,8 +846,10 @@
         FIRE_ORB | (
             SLIDING_POWDER | AIR_JUMP | AIR_DASH | WHIRL_BONK
             | (SPEED5 & ADV_HARD)
-            | (SPEED3 & ADV_VHARD) // quick drop jump
-            | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            | (ADV_EXT & (
+                SPEED3 // quick drop jump
+                | (BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            ))
         )
         ",
     }
@@ -875,8 +865,10 @@
         PIKO_HAMMER | (
             SLIDING_POWDER | AIR_JUMP
             | (SPEED5 & ADV_HARD)
-            | (SPEED3 & ADV_VHARD) // quick drop jump
-            | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            | (ADV_EXT & (
+                SPEED3 // quick drop jump
+                | (BUNNY_AMULET & 2_AMULET_FOOD) //  qd jump, qd, amulet, wk, velocity cancel
+            ))
         )
         ",
     }
@@ -1104,15 +1096,11 @@
 "changes": [
     {
     "edge": "AQUARIUM_MID_EAST -> AQUARIUM_EAST",
-    "prereq": "
-        EXPLOSIVES_ENEMY & (
-            (WATER_ORB & HAMMER_ROLL_ZIP)
-            | (FIRE_ORB & SLIDING_POWDER)
-       )",
+    "prereq": "EXPLOSIVES_ENEMY & WATER_ORB & HAMMER_ROLL_ZIP",
     }
     {
     "edge": "AQUARIUM_EAST -> AQUARIUM_MID_EAST",
-    "prereq": "EXPLOSIVES_ENEMY & FIRE_ORB & SLIDING_POWDER",
+    "prereq": "IMPOSSIBLE",
     }
 ]}
 
@@ -1190,12 +1178,12 @@
 "changes": [
     {
     "edge": "AQUARIUM_MID_EAST -> AQUARIUM_EAST",
-    "prereq": "PIKO_HAMMER | EXPLOSIVES | (EXPLOSIVES_ENEMY & FIRE_ORB & SLIDING_POWDER)",
+    "prereq": "current & (PIKO_HAMMER | EXPLOSIVES | (CARROT_SHOOTER & (CHARGE_RING | ADV_HARD)))",
     }
 
     {
     "edge": "AQUARIUM_EAST -> AQUARIUM_MID_EAST",
-    "prereq": "PIKO_HAMMER | EXPLOSIVES_ENEMY",
+    "prereq": "current & (PIKO_HAMMER | EXPLOSIVES_ENEMY)",
     }
 ]}
 
@@ -1461,7 +1449,7 @@
     "edge": "RIVERBANK_LEVEL2 -> RIVERBANK_LEVEL3",
     "prereq": "AIR_JUMP | WALL_JUMP_LV2 | WHIRL_BONK_CANCEL | (ITM_HARD & HAMMER_ROLL)
         | (ADV_HARD & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & WALL_JUMP)
-        | (ADV_STUPID & (
+        | (ADV_EXT & (
             WHIRL_BONK // whirl bonk off falling stone
             // do slide and attack in same frame for cancel sliding motion, then jump and bonk off falling stone
             | (OBSCURE & SLIDING_POWDER & (PIKO_HAMMER | CARROT_BOMB))

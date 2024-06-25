@@ -125,23 +125,29 @@ class Analyzer(object):
         if diff_analysis:
             dfs_stack = [location for location, loc_type in data.locations.items() if loc_type == LOCATION_WARP]
             visited = set(dfs_stack)
-            unexitable = set()
-            exitable = set()
+            pending_static_edges = []
+            dynamic_edges_id = 0
         else:
             dfs_stack = data.initial_pending_stack.copy()
             visited = data.initial_visited_edges.copy()
-            unexitable = data.unexitable_nodes
-            exitable = data.exitable_nodes
+            pending_static_edges = data.pending_static_edges
+            dynamic_edges_id = data.dynamic_edges_id
 
         while len(dfs_stack) > 0:
             current_dest = dfs_stack.pop()
             for edge_id in allocation.incoming_edges[current_dest]:
-                target_src = edges[edge_id].from_location
-                if target_src in visited: continue
-                if target_src in unexitable: continue
-                if target_src in exitable or edges[edge_id].satisfied(variables):
-                    visited.add(target_src)
-                    dfs_stack.append(target_src)
+                if edge_id < dynamic_edges_id:
+                    if pending_static_edges[edge_id]:
+                        target_src = edges[edge_id].from_location
+                        if target_src in visited: continue
+                        visited.add(target_src)
+                        dfs_stack.append(target_src)
+                else:
+                    target_src = edges[edge_id].from_location
+                    if target_src in visited: continue
+                    if edges[edge_id].satisfied(variables):
+                        visited.add(target_src)
+                        dfs_stack.append(target_src)
 
         major_locations = set(location for location, loc_type in data.locations.items() if loc_type == LOCATION_MAJOR)
 
@@ -180,9 +186,9 @@ class Analyzer(object):
 
         # Temp Variables that are reset every time
         to_remove = []
-        forward_frontier = set()
+        forward_frontier = set((allocation.start_location.location,))
         backward_frontier = data.initial_backward_frontier.copy()
-        new_reachable_locations = set()
+        new_reachable_locations = forward_enterable.intersection(backward_exitable)
         newly_traversable_edges = data.initial_traversable_edges.copy()
         temp_variable_storage = {}
         previous_new_variables = set() # for step 1 updating edges
@@ -193,18 +199,14 @@ class Analyzer(object):
         variables['BACKTRACK_DATA'] = untraversable_edges, outgoing_edges, edges
         variables['BACKTRACK_GOALS'] = None, None
 
-        first_loop = True
         reachable_levels = {allocation.start_location.location : 0}
 
         #step -1: Mark variables that start True (step 1 checks these)
         previous_new_variables.update(var for var,val in variables.items() if val == True)
 
         while True:
-            new_reachable_locations.clear()
-            if first_loop: new_reachable_locations = forward_enterable.intersection(backward_exitable)
             current_level_part1 = []
             current_level_part2 = []
-            first_loop = False
 
             # STEP 0: Mark Pseudo-Items
             has_changes = True
@@ -373,8 +375,7 @@ class Analyzer(object):
 
             for node in current_level_part2:
                 variables[node] = True
-            previous_new_variables.update(current_level_part2)
-            
+                
             #try fix dead end by swapping reachable-but-useless item with unreachable progression
             if len(current_level_part1) == 0 and len(current_level_part2) == 0:
                 new_progression, replaced = allocation.progression_dead_end_swap(variables, levels)
@@ -389,6 +390,7 @@ class Analyzer(object):
                 
             levels.append(current_level_part1)
             levels.append(current_level_part2)
+            previous_new_variables.update(current_level_part2)
 
         if self.visualize:
             colors = [ \

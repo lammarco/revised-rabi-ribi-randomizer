@@ -791,7 +791,8 @@ class RandomizerData(object):
         self.generate_progression_data(False)
         self.mark_major_items()
 
-        self.preprocess_backward_reachable()
+        self.preprocess_backward_reachable(settings)
+        self.preprocess_template_constraints(settings)
 
     def preprocess_variables_with_settings(self, setting_flags, settings):
         # Mark all unconstrained pseudo-items
@@ -1032,7 +1033,7 @@ class RandomizerData(object):
     def generate_pessimistic_variables(self):
         return dict(self.pessimistic_variables)
 
-    def preprocess_backward_reachable(self):
+    def preprocess_backward_reachable(self, settings):
         variables = self.generate_variables()
         edges = self.initial_edges
 
@@ -1043,36 +1044,23 @@ class RandomizerData(object):
             outgoing_edges[edge.from_location].append(edge.edge_id)
             incoming_edges[edge.to_location].append(edge.edge_id)
 
-        pending_edge_ids = self.replacement_edges_id
+        dynamic_edges_id = self.replacement_edges_id
+        if(settings.constraint_changes <= 0 and
+           settings.min_constraint_changes <= 0 and
+           settings.max_constraint_changes <= 0):
+            dynamic_edges_id = self.transition_edges_id
+            if not settings.shuffle_map_transitions:
+                dynamic_edges_id = len(edges)
 
         dfs_stack = [location for location, loc_type in self.locations.items() if loc_type == LOCATION_WARP]
         visited = set(dfs_stack)
-        unexitable_nodes = set()
-        exitable_nodes = set()
         pending_edges = dict()
-
-        for location in self.graph_vertices:
-            unexitable = True
-            exitable = len(outgoing_edges[location]) > 0
-            for edge_id in outgoing_edges[location]:
-                if edge_id >= pending_edge_ids:
-                    unexitable = False
-                    exitable = False
-                    break
-                if edges[edge_id].satisfied(variables):
-                    unexitable = False
-                else:
-                    exitable = False
-            if unexitable:
-                unexitable_nodes.add(location)
-            if exitable:
-                exitable_nodes.add(location)
 
         while len(dfs_stack) > 0:
             current_dest = dfs_stack.pop()
             for edge_id in incoming_edges[current_dest]:
                 target_src = edges[edge_id].from_location
-                if edge_id >= pending_edge_ids:
+                if edge_id >= dynamic_edges_id:
                         if current_dest not in pending_edges:
                             pending_edges[current_dest] = []
                         pending_edges[current_dest].append(edge_id)
@@ -1098,18 +1086,35 @@ class RandomizerData(object):
 
         traversable_edges = set()
         backward_frontier = set()
-        for edge_id in range(pending_edge_ids):
+        pending_static_edges = [False for _ in range(dynamic_edges_id)]
+        for edge_id in range(dynamic_edges_id):
                 edge = edges[edge_id]
                 if edge.satisfied(variables):
                     traversable_edges.add(edge_id)
                     if edge.to_location in visited:
                         backward_frontier.add(edge.to_location)
+                    if edge.from_location not in visited:
+                        pending_static_edges[edge_id] = True
 
-        self.exitable_nodes = exitable_nodes
-        self.unexitable_nodes = unexitable_nodes
+
         self.initial_visited_edges = visited
         self.initial_pending_stack = list(sorted(pending_stack))
         self.initial_backward_frontier = backward_frontier
         self.initial_traversable_edges = traversable_edges
         self.initial_untraversable_edges = set(edge.edge_id for edge in edges) - traversable_edges
+        self.pending_static_edges = pending_static_edges
+        self.dynamic_edges_id = dynamic_edges_id
 
+    def preprocess_template_constraints(self, settings):
+        initial_template_index = dict()
+        initial_template_weights = list()
+        templates = self.template_constraints
+        total_weight = 0
+        for i in range(len(templates)):
+            t = templates[i]
+            total_weight += t.weight
+            initial_template_index[t.name] = i
+            initial_template_weights.append(total_weight)
+
+        self.initial_template_index = initial_template_index
+        self.initial_template_weights = initial_template_weights
