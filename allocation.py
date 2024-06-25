@@ -26,13 +26,15 @@ class Allocation(object):
         self.progression_items = data.progression_items
         self.eggs = data.eggs
         self.allow_swaps = False
+        self.swaps = list()
         
     def enable_swaps(self, allow: bool):
         self.allow_swaps = allow
 
     def shuffle(self, data, settings):
         self.map_modifications = list(data.default_map_modifications)
-
+        self.swaps.clear()
+        
         # Shuffle Items
         self.allocate_items(data, settings)
 
@@ -99,7 +101,6 @@ class Allocation(object):
         replacement = random.choice(sorted(useless_items))
         p_loc = self.item_to_loc[progression]
         r_loc = self.item_to_loc[replacement]
-        #print(f'swapping {progression} @ {p_loc} <-> {replacement} @ {r_loc}')
         
         self.item_to_loc[progression] = r_loc
         self.item_to_loc[replacement] = p_loc
@@ -108,6 +109,7 @@ class Allocation(object):
         
         modified_level = levels[level]
         modified_level[ modified_level.index( replacement ) ] = progression
+        self.swaps.append(f'swap {progression} @ {p_loc} <-> {replacement} @ {r_loc}')
         
         return progression, replacement
 

@@ -705,7 +705,8 @@ def generate_analysis_file(data, allocation, analyzer, difficulty_analysis, sett
             f.write("\n\n")
 
             lv += 2
-
+        
+        f.write('--- dead end swaps ---\n'+'\n'.join(allocation.swaps))
         f.close()
 
 def run_randomizer(seed, settings):
