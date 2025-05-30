@@ -469,7 +469,7 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
 
     def parse_alternates(alts):
         if alts == None: return {}
-        return dict((name, parse_expression_lambda(constraint, variable_names_set, default_expressions))
+        return dict( (name, ExpressionData( parse_expression(constraint, variable_names_set, default_expressions)) )
             for name, constraint in alts.items())
 
     item_constraints = []
@@ -485,8 +485,8 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
         item_constraints.append(ItemConstraintData(
             item = item,
             from_location = from_location,
-            entry_prereq = parse_expression_lambda(cdict['entry_prereq'], variable_names_set, default_expressions),
-            exit_prereq = parse_expression_lambda(cdict['exit_prereq'], variable_names_set, default_expressions),
+            entry_prereq = parse_expression(cdict['entry_prereq'], variable_names_set, default_expressions),
+            exit_prereq = parse_expression(cdict['exit_prereq'], variable_names_set, default_expressions),
             alternate_entries = parse_alternates(cdict.get('alternate_entries')),
             alternate_exits = parse_alternates(cdict.get('alternate_exits')),
         ))
@@ -717,6 +717,7 @@ class RandomizerData(object):
     # Preprocessed Information
     #
     # list: items_to_allocate
+    # dict: edge_progression (variable_name -> set(edge_id))
     #
     # list: walking_left_transitions
     # list: walking_right_transitions
@@ -788,6 +789,9 @@ class RandomizerData(object):
         self.preprocess_variables(settings)
         self.preprocess_graph(settings)
 
+        self.preprocess_backward_reachable(settings)
+        self.preprocess_template_constraints(settings)
+
     def preprocess_variables_with_settings(self, setting_flags, settings):
         # Mark all unconstrained pseudo-items
         variables = dict((name, False) for name in self.variable_names_list)
@@ -839,6 +843,7 @@ class RandomizerData(object):
                     from_location=item_constraint.from_location,
                     to_location=item_node_name,
                     constraint=item_constraint.entry_prereq,
+                    progression=item_constraint.entry_progression,
                     backtrack_cost=0,
                 ))
 
@@ -847,24 +852,27 @@ class RandomizerData(object):
                     from_location=item_node_name,
                     to_location=item_constraint.from_location,
                     constraint=item_constraint.exit_prereq,
+                    progression=item_constraint.exit_progression,
                     backtrack_cost=0,
                 ))
 
-                for entry_node, prereq in item_constraint.alternate_entries.items():
+                for entry_node, expression_data in item_constraint.alternate_entries.items():
                     edges.append(GraphEdge(
                         edge_id=len(edges),
                         from_location=entry_node,
                         to_location=item_node_name,
-                        constraint=prereq,
+                        constraint=expression_data.exp_lambda,
+                        progression=expression_data.exp_literals,
                         backtrack_cost=1,
                     ))
 
-                for exit_node, prereq in item_constraint.alternate_exits.items():
+                for exit_node, expression_data in item_constraint.alternate_exits.items():
                     edges.append(GraphEdge(
                         edge_id=len(edges),
                         from_location=item_node_name,
                         to_location=exit_node,
-                        constraint=prereq,
+                        constraint=expression_data.exp_lambda,
+                        progression=expression_data.exp_literals,
                         backtrack_cost=1,
                     ))
 
@@ -885,18 +893,12 @@ class RandomizerData(object):
                     from_location=graph_edge.from_location,
                     to_location=graph_edge.to_location,
                     constraint=graph_edge.prereq_lambda,
+                    progression=graph_edge.prereq_literals,
                     backtrack_cost=1,
                 ))
             else:
                 sifted_edge_constraints.append(graph_edge)
         self.edge_constraints = sifted_edge_constraints
-
-        initial_outgoing_edges = dict((node, []) for node in graph_vertices)
-        initial_incoming_edges = dict((node, []) for node in graph_vertices)
-
-        for edge in edges:
-            initial_outgoing_edges[edge.from_location].append(edge.edge_id)
-            initial_incoming_edges[edge.to_location].append(edge.edge_id)
 
         # replacement potencial nodes
         self.replacement_edges_id = len(edges)
@@ -908,6 +910,13 @@ class RandomizerData(object):
                 constraint=graph_edge.prereq_lambda,
                 backtrack_cost=1,
             ))
+
+        initial_outgoing_edges = dict((node, []) for node in graph_vertices)
+        initial_incoming_edges = dict((node, []) for node in graph_vertices)
+
+        for edge in edges:
+            initial_outgoing_edges[edge.from_location].append(edge.edge_id)
+            initial_incoming_edges[edge.to_location].append(edge.edge_id)
 
         # map transition nodes
         self.transition_edges_id = len(edges)
@@ -934,7 +943,7 @@ class RandomizerData(object):
         self.initial_edges = edges
         self.initial_outgoing_edges = initial_outgoing_edges
         self.initial_incoming_edges = initial_incoming_edges
-
+        self.edge_progression = generate_progression_dict(self.variable_names_list, edges, keep_progression=False)
 
     def preprocess_data(self, settings):
         ### For item shuffle
@@ -999,3 +1008,89 @@ class RandomizerData(object):
 
     def generate_pessimistic_variables(self):
         return dict(self.pessimistic_variables)
+
+    def preprocess_backward_reachable(self, settings):
+        variables = self.generate_variables()
+        edges = self.initial_edges
+
+        outgoing_edges = dict((key, list(edge_ids)) for key, edge_ids in self.initial_outgoing_edges.items())
+        incoming_edges = dict((key, list(edge_ids)) for key, edge_ids in self.initial_incoming_edges.items())
+
+        for edge in edges[self.transition_edges_id:]:
+            outgoing_edges[edge.from_location].append(edge.edge_id)
+            incoming_edges[edge.to_location].append(edge.edge_id)
+
+        dynamic_edges_id = self.replacement_edges_id
+        if(settings.constraint_changes <= 0 and
+           settings.min_constraint_changes <= 0 and
+           settings.max_constraint_changes <= 0):
+            dynamic_edges_id = self.transition_edges_id
+            if not settings.shuffle_map_transitions:
+                dynamic_edges_id = len(edges)
+
+        dfs_stack = [location for location, loc_type in self.locations.items() if loc_type == LOCATION_WARP]
+        visited = set(dfs_stack)
+        pending_edges = dict()
+
+        while len(dfs_stack) > 0:
+            current_dest = dfs_stack.pop()
+            for edge_id in incoming_edges[current_dest]:
+                target_src = edges[edge_id].from_location
+                if edge_id >= dynamic_edges_id:
+                        if current_dest not in pending_edges:
+                            pending_edges[current_dest] = []
+                        pending_edges[current_dest].append(edge_id)
+                else:
+                    if target_src in visited: continue
+                    if edges[edge_id].satisfied(variables):
+                        visited.add(target_src)
+                        dfs_stack.append(target_src)
+
+        pending_stack = set()
+        for current_dest, from_edges in pending_edges.items():
+            resolved = True
+            for edge_id in from_edges:
+                if edge_id >= self.transition_edges_id:
+                    resolved = False
+                    break
+                target_src = edges[edge_id].from_location
+                if target_src not in visited:
+                    resolved = False
+                    break
+            if not resolved:
+                pending_stack.add(current_dest)
+
+        traversable_edges = set()
+        backward_frontier = set()
+        pending_static_edges = [False for _ in range(dynamic_edges_id)]
+        for edge_id in range(dynamic_edges_id):
+                edge = edges[edge_id]
+                if edge.satisfied(variables):
+                    traversable_edges.add(edge_id)
+                    if edge.to_location in visited:
+                        backward_frontier.add(edge.to_location)
+                    if edge.from_location not in visited:
+                        pending_static_edges[edge_id] = True
+
+
+        self.initial_visited_edges = visited
+        self.initial_pending_stack = list(sorted(pending_stack))
+        self.initial_backward_frontier = backward_frontier
+        self.initial_traversable_edges = traversable_edges
+        self.initial_untraversable_edges = set(edge.edge_id for edge in edges) - traversable_edges
+        self.pending_static_edges = pending_static_edges
+        self.dynamic_edges_id = dynamic_edges_id
+
+    def preprocess_template_constraints(self, settings):
+        initial_template_index = dict()
+        initial_template_weights = list()
+        templates = self.template_constraints
+        total_weight = 0
+        for i in range(len(templates)):
+            t = templates[i]
+            total_weight += t.weight
+            initial_template_index[t.name] = i
+            initial_template_weights.append(total_weight)
+
+        self.initial_template_index = initial_template_index
+        self.initial_template_weights = initial_template_weights

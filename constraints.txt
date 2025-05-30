@@ -106,10 +106,12 @@
 "exit_prereq": "
     RABI_SLIPPERS | AIR_JUMP | WALL_JUMP
     | (ITM_HARD & (AIR_DASH | SLIDING_POWDER))
-    // quick drop jump, wall jump, wall kick
-    | (ADV_EXT & SPEED3)
-    // quick drop, amulet gliding, wimpy, bounce
-    | (ADV_STUPID & BUNNY_AMULET)
+    | (ADV_EXT & (
+        // quick drop jump, (amulet), wall jump, wall kick
+        // quick drop, amulet gliding, wimpy, bounce (stupid method)
+        SPEED3
+        | (BUNNY_AMULET & (SPEED1 | STUPID))
+    ))
 ",
 }
 
@@ -489,7 +491,10 @@
 {
 "item": "TOP_FORM",
 "from_location": "SKY_ISLAND_UPPER",
-"entry_prereq": "5TILE_WALL_CLIMB | SLIDE_JUMP_BUNSTRIKE",
+"entry_prereq": "
+    5TILE_WALL_CLIMB | SLIDE_JUMP_BUNSTRIKE
+    | (ADV_EXT & RABI_SLIPPERS & SLIDING_POWDER)
+",
 "exit_prereq": "NONE",
 }
 
@@ -750,7 +755,7 @@
 {
 "item": "HP_UP_SOUTH_RAVINE",
 "from_location": "RAVINE_LOWER",
-"entry_prereq": "EXPLOSIVES_ENEMY & (SLIDING_POWDER | HAMMER_ROLL_ZIP)",
+"entry_prereq": "EXPLOSIVES_ENEMY & (SLIDING_POWDER | HAMMER_ROLL_ZIP | (ROLL_BONK_ZIP & BORING))",
 "exit_prereq": "(SLIDING_POWDER | HAMMER_ROLL_ZIP)",
 }
 
@@ -891,6 +896,12 @@
 "entry_prereq": "
     AIR_JUMP
     | (OBS_VHARD & RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL) // need turn-off hammer roll v1.08
+    // whirlbonk fairy, amulet cancel, airdash, wall kick, amulet
+    | (OBS_STUPID & AIR_DASH & 2_AMULET_FOOD & BUNNY_AMULET & (
+        HAMMER_ROLL
+        | (SLIDE_JUMP_BUNSTRIKE & WHIRL_BONK)
+        | (SLIDING_POWDER & RABI_SLIPPERS & WHIRL_BONK & WALL_JUMP & 3_AMULET_FOOD & BUNNY_AMULET_LV2)
+    ))
     | (WALL_JUMP_LV2 & (
         WHIRL_BONK
         | (AIR_DASH & HARD)
@@ -1218,7 +1229,7 @@
 {
 "item": "HP_UP_LAB_PIT",
 "from_location": "LAB_MID",
-"entry_prereq": "CARROT_BOMB",
+"entry_prereq": "CARROT_BOMB | (OBS_VHARD & PIKO_HAMMER & CARROT_SHOOTER)",
 "exit_prereq": "NONE",
 }
 
@@ -1927,7 +1938,14 @@
 {
 "item": "EGG_TOWN",
 "from_location": "TOWN_MAIN",
-"entry_prereq": "AIR_JUMP & (RABI_SLIPPERS | (SLIDE_JUMP_BUNSTRIKE_CANCEL | (OBS_VHARD & SLIDE_JUMP_BUNSTRIKE)))",
+"entry_prereq": "
+    AIR_JUMP & (
+        RABI_SLIPPERS
+        | (SLIDE_JUMP_BUNSTRIKE_CANCEL | (OBS_VHARD & SLIDE_JUMP_BUNSTRIKE))
+        // giant buff + slide airjump
+        | (OBS_VHARD & TM_SAYA & 3TM & SLIDING_POWDER)
+    )
+",
 "exit_prereq": "NONE",
 }
 

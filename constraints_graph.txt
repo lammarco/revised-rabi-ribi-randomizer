@@ -488,7 +488,7 @@ PROLOGUE_TRIGGER & (
 PROLOGUE_TRIGGER & (
     SLIDE_JUMP_BUNSTRIKE
     | (AIR_JUMP & (AIR_DASH | ADV_VHARD))
-    | (ADV_EXT & AMULET_FOOD & (SPEED5 | (SPEED3 & STUPID)))
+    | (ADV_EXT & AMULET_FOOD & (SPEED5 | (SPEED2 & STUPID)))
     | (OBS_STUPID & HAMMER_ROLL & (AMULET_FOOD | AIR_DASH | RABI_SLIPPERS))
     | (SLIDING_POWDER & (
         (ADV_EXT & AIR_DASH)
@@ -503,7 +503,6 @@ PROLOGUE_TRIGGER & (
     SLIDE_JUMP_BUNSTRIKE
     | (AIR_DASH & (AIR_JUMP | ITM_HARD))
     | (ITM_HARD & SLIDING_POWDER & AIR_JUMP)
-    | (ADV_EXT & AMULET_FOOD & (SPEED5 | (STUPID & SPEED3)))
 ",
 }
 
@@ -750,12 +749,13 @@ PROLOGUE_TRIGGER & (
     ITM & AIR_JUMP & (
         (RABI_SLIPPERS & (
             AIR_DASH
-            | (ITM_HARD & SPEED3)
+            | (ITM_HARD & (SPEED3 | SLIDING_POWDER))
             | (ADV_VHARD & SPEED1 & (WALL_JUMP | BUNNY_AMULET | STUPID))
         ))
         // | SLIDE_JUMP_BUNSTRIKE_CANCEL | (OBS_VHARD & SLIDE_JUMP_BUNSTRIKE)
         | (BUNNY_STRIKE & ((HARD & BUNNY_AMULET) | OBS_VHARD))
     )
+    | (OBS_STUPID & BORING & HAMMER_ROLL & (BUNNY_AMULET | RABI_SLIPPERS | AIR_DASH))
 ",
 }
 
@@ -887,11 +887,14 @@ PROLOGUE_TRIGGER & (
 "prereq": "
     (AIR_JUMP & (RABI_SLIPPERS | ITM_HARD))
     | (AIR_DASH & (AIR_JUMP | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE_CANCEL))
-    | (ADV_EXT & MANY_AMULET_FOOD & (
-        WALL_JUMP_LV2
-        | (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL)
+    | (ADV_EXT & (
+        (RABI_SLIPPERS & SLIDE_JUMP_BUNSTRIKE_CANCEL & 2_AMULET_FOOD)
+        | (MANY_AMULET_FOOD & WALL_JUMP_LV2)
+        | (4_AMULET_FOOD & WALL_JUMP & (
+            (RABI_SLIPPERS & BUNNY_AMULET & (RUMI_DONUT | BUNNY_AMULET_LV2))
+            | (SLIDE_JUMP_BUNSTRIKE_CANCEL & BUNNY_AMULET_LV2 & (RUMI_DONUT | BUNNY_AMULET_LV3))
+        ))
     ))
-    | (ADV_EXT & 4_AMULET_FOOD & RABI_SLIPPERS & WALL_JUMP & (BUNNY_AMULET_LV2 | (BUNNY_AMULET & RUMI_DONUT)))
     | (ADV_VHARD & WALL_JUMP & AIR_DASH & (2_AMULET_FOOD | OBSCURE))
     // 1st ledge: wimpy launch, airdash, bounce, amulet
     // 2nd ledge: wall jump, airdash, wall kick
@@ -1033,7 +1036,12 @@ PROLOGUE_TRIGGER & (
 
 {
 "edge": "LIBRARY_MID_LOWER -> LIBRARY_MID_UPPER",
-"prereq": "8TILE_WALLJUMP | AIR_JUMP | RABI_SLIPPERS | (ITM_HARD & AIR_DASH) | (ITM_VHARD & SPEED1) | ADV_EXT",
+"prereq": "
+    ADV_EXT | RABI_SLIPPERS | AIR_JUMP
+    | (ITM_VHARD & SPEED1)
+    | (ITM_HARD & (WALL_JUMP | SPEED3)) 
+    | (ADV_HARD & AIR_DASH)
+",
 }
 
 {
@@ -1393,14 +1401,17 @@ ADV_VHARD & (
         | (ADV_VHARD & (
             AIR_DASH
             | (SLIDE_JUMP_BUNSTRIKE & (RABI_SLIPPERS | AMULET_FOOD))
+            // slide jump, amulet, wall jump, amulet
+            | (BUNNY_AMULET & 2_AMULET_FOOD & RABI_SLIPPERS & SLIDING_POWDER)
         ))
-        // quick drop jump, wall jump, amulet
-        | (ADV_EXT & AMULET_FOOD & (SPEED5 | (STUPID & SPEED3)))
-        // same as above but use roll3 for getting velocity
+        | (ADV_EXT & (
+            // quick drop jump, wall jump, amulet
+            (AMULET_FOOD & (SPEED5 | (STUPID & SPEED3)))
+            | (RABI_SLIPPERS & WALL_JUMP & ((BUNNY_AMULET & 2_AMULET_FOOD) | (OBSCURE & AMULET_FOOD)))
+            | (BUNNY_AMULET_LV2 & 3_AMULET_FOOD & SLIDING_POWDER & WALL_JUMP)
+        ))
+        // same as quick drop jump method but use roll3 for getting velocity
         | (OBS_STUPID & AMULET_FOOD & HAMMER_ROLL_LV3)
-        
-        | (ADV_EXT & BUNNY_AMULET & 2_AMULET_FOOD & RABI_SLIPPERS & (SLIDING_POWDER | WALL_JUMP))
-        | (ADV_EXT & BUNNY_AMULET_LV2 & 3_AMULET_FOOD & SLIDING_POWDER & WALL_JUMP)
     ) & (
         // From ledge below egg to flower ledge
         AIR_DASH | AIR_JUMP | RABI_SLIPPERS | SLIDE_JUMP_BUNSTRIKE | ADV_VHARD
@@ -1597,10 +1608,10 @@ DARKNESS & (
 "prereq": "DARKNESS",
 }
 
-{
-"edge": "SKY_BRIDGE_MAIN -> SKY_BRIDGE_HEALTH_SURGE_ROOM",
-"prereq": "IMPOSSIBLE",
-}
+//{
+//"edge": "SKY_BRIDGE_MAIN -> SKY_BRIDGE_HEALTH_SURGE_ROOM",
+//"prereq": "IMPOSSIBLE",
+//}
 
 {
 "edge": "SKY_BRIDGE_HEALTH_SURGE_ROOM -> SKY_BRIDGE_MAIN",
@@ -2238,7 +2249,7 @@ ITM & (
 "edge": "RIVERBANK_LOWER_LEFT -> RIVERBANK_LOWER_MID",
 "prereq": "
     DOWNDRILL_SEMISOLID_CLIP
-    | (ITM & PIKO_HAMMER_LEVELED & RABI_SLIPPERS)
+    | (ITM & PIKO_HAMMER_LEVELED & (RABI_SLIPPERS | AIR_JUMP | OBSCURE))
     | BUNNY_WHIRL
     | AIR_DASH
     | BUNNY_STRIKE
