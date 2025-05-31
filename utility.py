@@ -171,7 +171,7 @@ class ExpressionLambda(object):
     
     def __init__(self, expression):
         self.expression = expression
-        self.expression_compile = compile(expression.compile(), "<node>", mode= "eval")
+        self.expression_compile = compile(expression.compiled, "<node>", mode= "eval")
         self.expression_lambda = lambda v : eval(self.expression_compile, None, {"variables": v})
 
 class ExpressionData(object):
@@ -179,7 +179,7 @@ class ExpressionData(object):
     
     def __init__(self, exp):
         self.exp = exp
-        compiled = compile(exp.compile(), "<node>", mode= "eval")
+        compiled = compile(exp.compiled, "<node>", mode= "eval")
         self.exp_lambda = lambda v : eval(compiled, None, {"variables": v})
         self.exp_literals = get_prereq_literals( exp )
 
@@ -236,8 +236,8 @@ def to_tile_index(x, y):
 
 # Expression Parsing
 
-def parse_expression_lambda(line, variable_names_set, default_expressions, current_expression=None):
-    expression = parse_expression(line, variable_names_set, default_expressions, current_expression)
+def parse_expression_lambda(line, variable_literals, default_expressions, current_expression=None):
+    expression = parse_expression(line, variable_literals, default_expressions, current_expression)
     evaluate = ExpressionLambda(expression)
     return evaluate.expression_lambda
 
@@ -246,10 +246,10 @@ def parse_expression_lambda(line, variable_names_set, default_expressions, curre
 # !/~ - not
 # ( ) - parentheses
 # throws errors if parsing fails
-def parse_expression(line, variable_names_set, default_expressions={}, current_expression=None):
+def parse_expression(line, variable_literals, default_expressions={}, current_expression=None):
     try:
         # the str(line) cast is used because sometimes <line> is a u'unicode string' on unix machines.
-        return parse_expression_logic(str(line), variable_names_set, default_expressions, current_expression)
+        return parse_expression_logic(str(line), variable_literals, default_expressions, current_expression)
     except Exception as e:
         print_err('Error parsing expression:')
         print_err(line)
@@ -258,7 +258,7 @@ def parse_expression(line, variable_names_set, default_expressions={}, current_e
 # Used in string parsing. We only have either strings or expressions
 isExpr = lambda s : not type(s) is str
 _logic_re = re.compile('([()&|!~])')
-def parse_expression_logic(line, variable_names_set, default_expressions, current_expression):
+def parse_expression_logic(line, variable_literals, default_expressions, current_expression):
     line = line.replace('&&', '&').replace('||', '|')
     tokens = (s.strip() for s in _logic_re.split(line))
     tokens = [s for s in tokens if s]
@@ -306,67 +306,39 @@ def parse_expression_logic(line, variable_names_set, default_expressions, curren
                 tokens.append(default_expressions[next])
             else:
                 if next.startswith('r'): next = next[1:]
-                if next not in variable_names_set:
+                if next not in variable_literals:
                     fail('Unknown variable %s in expression: %s' % (next, line))
                 else:
-                    tokens.append(OpLit(next))
+                    tokens.append(variable_literals[next])
     assert len(stack) == 1
     return stack[0]
 
-
-class OpLit(object):
-    __slots__ = ( 'name' )
+class BaseOp(object): #should be ABC, but overhead
+    __slots__ = ( 'compiled', 'str' )
     
+    def __str__(self):
+        return self.str
+    __repr__ = __str__
+
+class OpLit(BaseOp):
     def __init__(self, name):
-        self.name = name
-    def compile(self):
-        return "variables['%s']" % self.name
-    def evaluate(self, variables):
-        return variables[self.name]
-    def __str__(self):
-        return self.name
-    __repr__ = __str__
+        self.compiled = "variables['%s']" % name
+        self.str = name
 
-class OpNot(object):
-    __slots__ = ( 'expr' )
-    
+class OpNot(BaseOp):
     def __init__(self, expr):
-        self.expr = expr
-    def compile(self):
-        return "(not %s)" % self.expr.compile()
-    def evaluate(self, variables):
-        return not self.expr.evaluate(variables)
-    def __str__(self):
-        return '(NOT %s)' % self.expr
-    __repr__ = __str__
+        self.compiled = '(not %s)' % expr.compiled
+        self.str = '(NOT %s)' % expr.str
 
-class OpOr(object):
-    __slots__ = ( 'exprL', 'exprR' )
-    
+class OpOr(BaseOp):
     def __init__(self, exprL, exprR):
-        self.exprL = exprL
-        self.exprR = exprR
-    def compile(self):
-        return "(%s or %s)" % (self.exprL.compile(), self.exprR.compile())
-    def evaluate(self, variables):
-        return self.exprL.evaluate(variables) or self.exprR.evaluate(variables)
-    def __str__(self):
-        return '(%s OR %s)' % (self.exprL, self.exprR)
-    __repr__ = __str__
+        self.compiled = "(%s or %s)" % (exprL.compiled, exprR.compiled)
+        self.str = '(%s OR %s)' % (exprL.str, exprR.str)
 
-class OpAnd(object):
-    __slots__ = ( 'exprL', 'exprR' )
-    
+class OpAnd(BaseOp):
     def __init__(self, exprL, exprR):
-        self.exprL = exprL
-        self.exprR = exprR
-    def compile(self):
-        return "(%s and %s)" % (self.exprL.compile(), self.exprR.compile())
-    def evaluate(self, variables):
-        return self.exprL.evaluate(variables) and self.exprR.evaluate(variables)
-    def __str__(self):
-        return '(%s AND %s)' % (self.exprL, self.exprR)
-    __repr__ = __str__
+        self.compiled = "(%s and %s)" % (exprL.compiled, exprR.compiled)
+        self.str = '(%s AND %s)' % (exprL.str, exprR.str)
 
 def backtrackEvaluate(variables, nSteps):
     # Yes, we're cheating by putting backtrack data in variables lol.
@@ -392,19 +364,10 @@ def backtrackEvaluate(variables, nSteps):
         frontier, frontier_next = frontier_next, frontier
     return False
     
-class OpBacktrack(object):
-    __slots__ = ( 'nSteps' )
-    
+class OpBacktrack(BaseOp):
     def __init__(self, nSteps):
-        self.nSteps = nSteps
-    def evaluate(self, variables):
-        return backtrackEvaluate(variables, self.nSteps)
-    def __str__(self):
-        return 'BACKTRACK_%d' % self.nSteps
-    def compile(self):
-        return "backtrackEvaluate(variables, %d)" % self.nSteps
-    __repr__ = __str__
-
+        self.compiled = 'backtrackEvaluate(variables, %d)' % nSteps
+        self.str = 'BACKTRACK_%d' % nSteps
 
 # Error Handling
 
