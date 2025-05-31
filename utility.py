@@ -26,6 +26,8 @@ Variable types:
 # Structs
 
 class Item(object):
+    __slots__ = ('self', 'position', 'areaid', 'itemid', 'name')
+    
     def __init__(self, position, areaid, itemid, name=None):
         self.areaid = areaid
         self.position = position
@@ -49,6 +51,8 @@ class Item(object):
         return '(%d,%d) : %d : %d : %s' % (x, y, self.areaid, self.itemid, self.name)
 
 class MapTransition(object):
+    __slots__ = ('origin_location', 'area_current', 'entry_current', 'area_target', 'entry_target', 'walking_right', 'rect', 'rect_x', 'rect_y', 'rect_width', 'rect_height')
+    
     def __init__(self, origin_location, area_current, entry_current, area_target,
             entry_target, walking_right, rect):
         self.origin_location = origin_location
@@ -65,6 +69,7 @@ class MapTransition(object):
         self.rect_height = rect_height
 
 class StartLocation(object):
+    __slots__ = ( 'area', 'position', 'weight', 'location' )
     def __init__(self, area, position, weight, location):
         self.area = area
         self.position = ast.literal_eval(position)
@@ -96,6 +101,8 @@ def generate_progression_dict(variables_list, edges:'list<GraphEdge>', keep_prog
     return progression
 
 class EdgeConstraintData(object):
+    __slots__ = ('from_location', 'to_location', 'prereq_expression', 'prereq_lambda', 'prereq_literals')
+    
     def __init__(self, from_location, to_location, prereq_expression):
         self.from_location = from_location
         self.to_location = to_location
@@ -111,6 +118,8 @@ class EdgeConstraintData(object):
         ])
 
 class ItemConstraintData(object):
+    __slots__ = ( 'item', 'from_location', 'entry_prereq', 'exit_prereq', 'entry_progression', 'exit_progression', 'alternate_entries', 'alternate_exits', 'no_alternate_paths' )
+    
     def __init__(self, item, from_location, entry_prereq, exit_prereq, alternate_entries, alternate_exits):
         self.item = item
         self.from_location = from_location
@@ -123,6 +132,8 @@ class ItemConstraintData(object):
         self.no_alternate_paths = (len(self.alternate_entries) + len(self.alternate_exits) == 0)
 
 class TemplateConstraintData(object):
+    __slots__ = ( 'name', 'weight', 'template_file', 'changes', 'conflicts_names', 'change_edge_set' )
+    
     def __init__(self, name, weight, template_file, changes):
         self.name = name
         self.weight = weight
@@ -137,6 +148,8 @@ class TemplateConstraintData(object):
         return bool(self.change_edge_set.intersection(other.change_edge_set))
 
 class GraphEdge(object):
+    __slots__ = ('edge_id', 'from_location', 'to_location', 'satisfied', 'backtrack_cost', 'progression')
+    
     def __init__(self, edge_id, from_location, to_location, constraint, backtrack_cost, progression={'DEFAULT'}):
         self.edge_id = edge_id
         self.from_location = from_location
@@ -154,12 +167,16 @@ class GraphEdge(object):
         ])
     
 class ExpressionLambda(object):
+    __slots__ = ( 'expression', 'expression_compile', 'expression_lambda' )
+    
     def __init__(self, expression):
         self.expression = expression
         self.expression_compile = compile(expression.compile(), "<node>", mode= "eval")
         self.expression_lambda = lambda v : eval(self.expression_compile, None, {"variables": v})
 
 class ExpressionData(object):
+    __slots__ = ( 'exp', 'exp_lambda', 'exp_literals' )
+    
     def __init__(self, exp):
         self.exp = exp
         compiled = compile(exp.compile(), "<node>", mode= "eval")
@@ -167,6 +184,8 @@ class ExpressionData(object):
         self.exp_literals = get_prereq_literals( exp )
 
 class ConfigData(object):
+    __slots__ = ( 'knowledge', 'difficulty', 'settings' )
+    
     def __init__(self, knowledge, difficulty, settings):
         self.knowledge = knowledge
         self.difficulty = difficulty
@@ -296,6 +315,8 @@ def parse_expression_logic(line, variable_names_set, default_expressions, curren
 
 
 class OpLit(object):
+    __slots__ = ( 'name' )
+    
     def __init__(self, name):
         self.name = name
     def compile(self):
@@ -307,6 +328,8 @@ class OpLit(object):
     __repr__ = __str__
 
 class OpNot(object):
+    __slots__ = ( 'expr' )
+    
     def __init__(self, expr):
         self.expr = expr
     def compile(self):
@@ -318,6 +341,8 @@ class OpNot(object):
     __repr__ = __str__
 
 class OpOr(object):
+    __slots__ = ( 'exprL', 'exprR' )
+    
     def __init__(self, exprL, exprR):
         self.exprL = exprL
         self.exprR = exprR
@@ -330,6 +355,8 @@ class OpOr(object):
     __repr__ = __str__
 
 class OpAnd(object):
+    __slots__ = ( 'exprL', 'exprR' )
+    
     def __init__(self, exprL, exprR):
         self.exprL = exprL
         self.exprR = exprR
@@ -366,6 +393,8 @@ def backtrackEvaluate(variables, nSteps):
     return False
     
 class OpBacktrack(object):
+    __slots__ = ( 'nSteps' )
+    
     def __init__(self, nSteps):
         self.nSteps = nSteps
     def evaluate(self, variables):
