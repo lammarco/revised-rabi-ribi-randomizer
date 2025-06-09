@@ -137,7 +137,7 @@ def define_pseudo_items():
     }
 
 
-def define_alternate_conditions(settings, variable_literals, default_expressions):
+def define_alternate_conditions(settings, variable_names_set, default_expressions):
     d = {
         "SOUL_HEART": "TOWN_SHOP",
         "BOOK_OF_CARROT": "TOWN_SHOP",
@@ -158,15 +158,15 @@ def define_alternate_conditions(settings, variable_literals, default_expressions
 
     for key in d.keys():
         if type(d[key]) == str:
-            d[key] = parse_expression_lambda(d[key], variable_literals, default_expressions)
+            d[key] = parse_expression_lambda(d[key], variable_names_set, default_expressions)
     return d
 
 
-def define_default_expressions(variable_literals):
+def define_default_expressions(variable_names_set):
     # Default expressions take priority over actual variables.
     # so if we parse an expression that has AIR_DASH, the default expression AIR_DASH will be used instead of the variable AIR_DASH.
     # however, the expressions parsed in define_default_expressions (just below) cannot use default expressions in their expressions.
-    expr = lambda s : parse_expression(s, variable_literals)
+    expr = lambda s : parse_expression(s, variable_names_set)
     expr_all = lambda d : dict((k,expr(v) if type(v)==str else v) for k,v in d.items())
 
     def1 = expr_all({
@@ -203,7 +203,7 @@ def define_default_expressions(variable_literals):
         "IMPOSSIBLE": "FALSE",
     })
 
-    expr = lambda s : parse_expression(s, variable_literals, def1)
+    expr = lambda s : parse_expression(s, variable_names_set, def1)
     def2 = expr_all({
         "ITM": "INTERMEDIATE",
         "ITM_HARD": "INTERMEDIATE & HARD",
@@ -220,7 +220,7 @@ def define_default_expressions(variable_literals):
     })
     def1.update(def2)
 
-    expr = lambda s : parse_expression(s, variable_literals, def1)
+    expr = lambda s : parse_expression(s, variable_names_set, def1)
     def3 = expr_all({
         "HAMMER_ROLL_ZIP": "ZIP & HAMMER_ROLL_LV3",
         "SLIDE_ZIP": "ZIP & SLIDING_POWDER",
@@ -244,7 +244,7 @@ def define_default_expressions(variable_literals):
     })
     def1.update(def3)
 
-    expr = lambda s : parse_expression(s, variable_literals, def1)
+    expr = lambda s : parse_expression(s, variable_names_set, def1)
     def4 = expr_all({
         "1TILE_ZIP": "SLIDE_ZIP",
         "2TILE_ZIP": "SLIDE_ZIP & ADV_VHARD",
@@ -317,10 +317,10 @@ def enough_amu_food(variables, amount):
     return (amulet + food) >= amount
 
 
-def evaluate_pseudo_item_constraints(pseudo_items, variable_literals, default_expressions):
+def evaluate_pseudo_item_constraints(pseudo_items, variable_names_set, default_expressions):
     for key in pseudo_items.keys():
         if type(pseudo_items[key]) == str:
-            pseudo_items[key] = parse_expression_lambda(pseudo_items[key], variable_literals, default_expressions)
+            pseudo_items[key] = parse_expression_lambda(pseudo_items[key], variable_names_set, default_expressions)
 
 
 def parse_locations_and_items():
@@ -433,7 +433,7 @@ def parse_locations_and_items():
     return locations, map_transitions, items, additional_items, shufflable_gift_items, start_locations
 
 # throws errors for invalid formats.
-def parse_edge_constraints(locations_set, variable_literals, default_expressions):
+def parse_edge_constraints(locations_set, variable_names_set, default_expressions):
     lines = read_file_and_strip_comments('constraints_graph.txt')
     jsondata = ' '.join(lines)
     jsondata = re.sub(',\\s*}', '}', jsondata)
@@ -447,7 +447,7 @@ def parse_edge_constraints(locations_set, variable_literals, default_expressions
         from_location, to_location = (x.strip() for x in cdict['edge'].split('->'))
         if from_location not in locations_set: fail('Unknown location: %s' % from_location)
         if to_location not in locations_set: fail('Unknown location: %s' % to_location)
-        prereq = parse_expression(cdict['prereq'], variable_literals, default_expressions)
+        prereq = parse_expression(cdict['prereq'], variable_names_set, default_expressions)
         constraints.append(EdgeConstraintData(from_location, to_location, prereq))
 
     # Validate that there are no duplicate edges defined
@@ -459,7 +459,7 @@ def parse_edge_constraints(locations_set, variable_literals, default_expressions
 
     return constraints
 
-def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locations_set, variable_literals, default_expressions):
+def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locations_set, variable_names_set, default_expressions):
     lines = read_file_and_strip_comments('constraints.txt')
     jsondata = ' '.join(lines)
     jsondata = re.sub(',\\s*}', '}', jsondata)
@@ -469,7 +469,7 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
 
     def parse_alternates(alts):
         if alts == None: return {}
-        return dict( (name, ExpressionData( parse_expression(constraint, variable_literals, default_expressions)) )
+        return dict( (name, ExpressionData( parse_expression(constraint, variable_names_set, default_expressions)) )
             for name, constraint in alts.items())
 
     item_constraints = []
@@ -485,8 +485,8 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
         item_constraints.append(ItemConstraintData(
             item = item,
             from_location = from_location,
-            entry_prereq = parse_expression(cdict['entry_prereq'], variable_literals, default_expressions),
-            exit_prereq = parse_expression(cdict['exit_prereq'], variable_literals, default_expressions),
+            entry_prereq = parse_expression(cdict['entry_prereq'], variable_names_set, default_expressions),
+            exit_prereq = parse_expression(cdict['exit_prereq'], variable_names_set, default_expressions),
             alternate_entries = parse_alternates(cdict.get('alternate_entries')),
             alternate_exits = parse_alternates(cdict.get('alternate_exits')),
         ))
@@ -502,7 +502,7 @@ def parse_item_constraints(settings, items_set, shufflable_gift_items_set, locat
 
 DIR_TEMPLATE_PATCH_FILES = './maptemplates/constraint_shuffle/'
 
-def parse_template_constraints(settings, locations_set, variable_literals, default_expressions, edge_constraints):
+def parse_template_constraints(settings, locations_set, variable_names_set, default_expressions, edge_constraints):
     lines = read_file_and_strip_comments('maptemplates/template_constraints.txt')
     if settings.shuffle_start_location:
         lines += read_file_and_strip_comments('maptemplates/start_rando_template_constraints.txt')
@@ -528,7 +528,7 @@ def parse_template_constraints(settings, locations_set, variable_literals, defau
         if from_location not in locations_set: fail('Unknown location: %s' % from_location)
         if to_location not in locations_set: fail('Unknown location: %s' % to_location)
         current_expression = original_prereqs[(from_location, to_location)]
-        prereq = parse_expression(change['prereq'], variable_literals, default_expressions, current_expression)
+        prereq = parse_expression(change['prereq'], variable_names_set, default_expressions, current_expression)
         return EdgeConstraintData(from_location, to_location, prereq)
 
     template_constraints = []
@@ -764,10 +764,10 @@ class RandomizerData(object):
                                    list(self.default_setting_flags.keys())
         self.variable_names_list.sort()
 
-        variable_literals = { var:OpLit(var) for var in set(self.variable_names_list) }
-        if len(variable_literals) < len(self.variable_names_list):
+        variable_names_set = set(self.variable_names_list)
+        if len(variable_names_set) < len(self.variable_names_list):
             # Repeats detected! Fail.
-            repeat_names = [x for x in variable_literals.keys() if self.variable_names_list.count(x) > 1]
+            repeat_names = [x for x in variable_names_set if self.variable_names_list.count(x) > 1]
             fail('Repeat names detected: %s' % ','.join(repeat_names))
 
         self.locations_set = set(self.location_list)
@@ -778,12 +778,12 @@ class RandomizerData(object):
         self.configured_setting_flags, self.to_shuffle, self.must_be_reachable, self.included_additional_items, self.config_data = \
             read_config(self.default_setting_flags, items_set, shufflable_gift_items_set, config_flags_set, set(self.all_additional_items.keys()), settings)
 
-        default_expressions = define_default_expressions(variable_literals)
-        evaluate_pseudo_item_constraints(self.pseudo_items, variable_literals, default_expressions)
-        self.alternate_conditions = define_alternate_conditions(settings, variable_literals, default_expressions)
-        self.edge_constraints = parse_edge_constraints(self.locations_set, variable_literals, default_expressions)
-        self.item_constraints = parse_item_constraints(settings, items_set, shufflable_gift_items_set, self.locations_set, variable_literals, default_expressions)
-        self.template_constraints = parse_template_constraints(settings, self.locations_set, variable_literals, default_expressions, self.edge_constraints)
+        default_expressions = define_default_expressions(variable_names_set)
+        evaluate_pseudo_item_constraints(self.pseudo_items, variable_names_set, default_expressions)
+        self.alternate_conditions = define_alternate_conditions(settings, variable_names_set, default_expressions)
+        self.edge_constraints = parse_edge_constraints(self.locations_set, variable_names_set, default_expressions)
+        self.item_constraints = parse_item_constraints(settings, items_set, shufflable_gift_items_set, self.locations_set, variable_names_set, default_expressions)
+        self.template_constraints = parse_template_constraints(settings, self.locations_set, variable_names_set, default_expressions, self.edge_constraints)
 
         self.preprocess_data(settings)
         self.preprocess_variables(settings)
