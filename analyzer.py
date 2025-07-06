@@ -35,13 +35,13 @@ class Analyzer(object):
         reachable, unreachable, levels, _ = self.verify_reachable_items(starting_variables, backward_exitable)
 
         # ensure all must_be_reachable items are reachable.
-        if not set(self.data.must_be_reachable).issubset(reachable):
-            self.error_message = 'Not all must_be_reachable items are reachable.'
-            return False
+        #if not set(self.data.must_be_reachable).issubset(reachable):
+        #    self.error_message = 'Not all must_be_reachable items are reachable.'
+        #    return False
 
-        if self.goals != None and not set(self.goals).issubset(reachable):
-            self.error_message = 'Not all goals are reachable.'
-            return False
+        #if self.goals != None and not set(self.goals).issubset(reachable):
+        #    self.error_message = 'Not all goals are reachable.'
+        #    return False
 
         error = self.process_verification_results(reachable, unreachable, levels)
         if error:
@@ -66,45 +66,48 @@ class Analyzer(object):
         #print_ln(len(all_levels), len(set(all_levels)), len(reachable), len(unreachable))
         #print_ln(set(all_levels) - set(reachable))
 
-        allocated_items_set = set(self.data.items_to_allocate)
+        #allocated_items_set = set(self.data.items_to_allocate)
         nHardToReach = self.data.nHardToReach
-        minHardToReachPoolSize = nHardToReach * 5
+        #minHardToReachPoolSize = nHardToReach * 5
 
         hard_to_reach_all = []
         nonempty_levels = 0
         for level in reversed(levels):
-            # sort to make it deterministic
-            additional_hard_to_reach_items = sorted(allocated_items_set.intersection(level))
-            if len(additional_hard_to_reach_items) > 0:
-                nonempty_levels += 1
-            hard_to_reach_all += additional_hard_to_reach_items
-            if len(hard_to_reach_all) >= minHardToReachPoolSize and nonempty_levels >= 2:
+            additional_hard_to_reach_locations = sorted( self.data.locations_set.intersection(level) ) #sort for determinism, smaller sublists instead of one large
+            if len(additional_hard_to_reach_locations) <= 0:
+                continue #skip; will not increase nonempty_levels nor len(hard_to_reach_all) 
+            nonempty_levels += 1
+            hard_to_reach_all += additional_hard_to_reach_locations
+            if len(hard_to_reach_all) >= nHardToReach and nonempty_levels >= 2:
                 break
 
         if len(hard_to_reach_all) < nHardToReach:
             return 'Not enough reachable items (%d) for hard to reach (%d)...?' % (len(hard_to_reach_all), nHardToReach)
 
-        if self.settings.egg_goals:
-            hard_to_reach_egg = [item for item in hard_to_reach_all if is_egg(item)]
+        #if self.settings.egg_goals:
+        #    hard_to_reach_egg = [item for item in hard_to_reach_all if is_egg(item)]
 
             # hard-to-reach priority
             # egg > potion > other
-            nHardToReachEgg = len(hard_to_reach_egg)
-            if nHardToReachEgg >= nHardToReach:
-                self.hard_to_reach_items = random.sample(hard_to_reach_egg, nHardToReach)
-            else:
-                self.hard_to_reach_items = random.sample(hard_to_reach_egg, nHardToReachEgg)
-                hard_to_reach_potion = [item for item in hard_to_reach_all if is_potion(item)]
-                nHardToReachPotion = len(hard_to_reach_potion)
-                if (nHardToReachEgg + nHardToReachPotion >= nHardToReach):
-                    self.hard_to_reach_items += random.sample(hard_to_reach_potion, nHardToReach - nHardToReachEgg)
-                else:
-                    self.hard_to_reach_items += random.sample(hard_to_reach_potion, nHardToReachPotion)
-                    hard_to_reach_other = [item for item in hard_to_reach_all if not is_potion(item) and not is_egg(item)]
-                    self.hard_to_reach_items += random.sample(hard_to_reach_other, nHardToReach - nHardToReachEgg - nHardToReachPotion)
+        #    nHardToReachEgg = len(hard_to_reach_egg)
+        #    if nHardToReachEgg >= nHardToReach:
+        #        self.hard_to_reach_items = random.sample(hard_to_reach_egg, nHardToReach)
+        #    else:
+        #        self.hard_to_reach_items = random.sample(hard_to_reach_egg, nHardToReachEgg)
+        #        hard_to_reach_potion = [item for item in hard_to_reach_all if is_potion(item)]
+        #        nHardToReachPotion = len(hard_to_reach_potion)
+        #        if (nHardToReachEgg + nHardToReachPotion >= nHardToReach):
+        #            self.hard_to_reach_items += random.sample(hard_to_reach_potion, nHardToReach - nHardToReachEgg)
+        #        else:
+        #            self.hard_to_reach_items += random.sample(hard_to_reach_potion, nHardToReachPotion)
+        #            hard_to_reach_other = [item for item in hard_to_reach_all if not is_potion(item) and not is_egg(item)]
+        #            self.hard_to_reach_items += random.sample(hard_to_reach_other, nHardToReach - nHardToReachEgg - nHardToReachPotion)
 
-        else:
-            self.hard_to_reach_items = random.sample(hard_to_reach_all, nHardToReach)
+        #else:
+        #    self.hard_to_reach_items = random.sample(hard_to_reach_all, nHardToReach)
+        if self.goals is None:
+            self.goals = random.sample(hard_to_reach_all, nHardToReach)
+        self.hard_to_reach = hard_to_reach_all
         self.reachable = reachable
         self.unreachable = unreachable
         self.levels = levels
@@ -169,6 +172,7 @@ class Analyzer(object):
         incoming_edges = allocation.incoming_edges
         locations_set = data.locations_set
         edge_progression = data.edge_progression
+        finalized = allocation.finalized_shuffle
 
         # Persistent variables
         variables = dict(starting_variables)
@@ -183,6 +187,7 @@ class Analyzer(object):
         locally_exitable_locations = {}
 
         levels = []
+        progression_index = 0 # for retrieving allocation.progression
 
         # Temp Variables that are reset every time
         to_remove = []
@@ -306,6 +311,7 @@ class Analyzer(object):
                     if not variables[location]:
                         current_level_part2.append(location)
                         #variables[location] = True
+                if not finalized: continue #no items to get
                 for item_location in data.item_locations_in_node[location]:
                     item_name = allocation.item_at_item_location[item_location]
                     if item_name == None: continue
@@ -324,11 +330,13 @@ class Analyzer(object):
                 if base_location in locations_set:
                     temp_variable_storage[base_location] = variables[base_location]
                     variables[base_location] = True
-                for item_location in data.item_locations_in_node[base_location]:
-                    item_name = allocation.item_at_item_location[item_location]
-                    if item_name == None: continue
-                    temp_variable_storage[item_name] = variables[item_name]
-                    variables[item_name] = True
+                
+                if finalized:
+                    for item_location in data.item_locations_in_node[base_location]:
+                        item_name = allocation.item_at_item_location[item_location]
+                        if item_name == None: continue
+                        temp_variable_storage[item_name] = variables[item_name]
+                        variables[item_name] = True
 
                 if base_location not in locally_exitable_locations:
                     locally_exitable_locations[base_location] = set((base_location,))
@@ -366,21 +374,36 @@ class Analyzer(object):
                         if not variables[base_location]:
                             current_level_part2.append(base_location)
                             #variables[base_location] = True
-                    for item_location in data.item_locations_in_node[base_location]:
-                        item_name = allocation.item_at_item_location[item_location]
-                        if item_name == None: continue
-                        if not variables[item_name]:
-                            current_level_part2.append(item_name)
-                            #variables[item_name] = True
+                    if finalized:
+                        for item_location in data.item_locations_in_node[base_location]:
+                            item_name = allocation.item_at_item_location[item_location]
+                            if item_name == None: continue
+                            if not variables[item_name]:
+                                current_level_part2.append(item_name)
+                                #variables[item_name] = True
 
             for node in current_level_part2:
                 variables[node] = True
 
             if len(current_level_part1) == 0 and len(current_level_part2) == 0:
-                break
-            levels.append(current_level_part1)
-            levels.append(current_level_part2)
-            previous_new_variables.update(current_level_part2)
+                # dead end; allocate progression into reachable
+                if allocation.finalized_shuffle or len(levels) < 2 or progression_index >= len(allocation.progression):
+                    break #no more progression to allocate
+                        
+                next_progression = allocation.progression[progression_index]
+                previous_locations = data.item_slots.intersection( levels[-1] + levels[-2] ) #parts 1&2
+                previous_locations = sorted( previous_locations ) #determinism
+                previous_locations = random.sample( previous_locations, k = len(next_progression) )
+                
+                allocation.item_at_item_location.update( zip( previous_locations, next_progression ) )
+                progression_index += 1
+                
+                variables.update( (item:True) for item in next_progression )
+                previous_new_variables.update(next_progression)
+            else:     
+                levels.append(current_level_part1)
+                levels.append(current_level_part2)
+                previous_new_variables.update(current_level_part2)
 
         if self.visualize:
             colors = [ \
