@@ -91,8 +91,6 @@ def get_prereq_literals(prereq):
     
 def generate_progression_dict(variables_list, edges:'list<GraphEdge>', keep_progression = True) -> 'dict< str constraint = list<int edge_id>>':
     progression = defaultdict(set)
-    for v in variables_list: 
-        progression[v] = set()
     for edge in edges:
         for literal in edge.progression:
             progression[literal].add(edge.edge_id)
