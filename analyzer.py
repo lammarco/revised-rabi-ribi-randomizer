@@ -188,7 +188,11 @@ class Analyzer(object):
         locally_exitable_locations = {}
 
         levels = []
-        progression_index = 0 # for retrieving allocation.progression
+        
+        progression_split_index = 0 # for retrieving allocation.progression_splits, to update available_progression[1]
+        available_progression = [0,0] # window for allocation.progression[ available[0], available[1] ]
+        current_sphere_item_locations = set()
+        previous_sphere_item_locations = set()
 
         # Temp Variables that are reset every time
         to_remove = []
@@ -312,13 +316,16 @@ class Analyzer(object):
                     if not variables[location]:
                         current_level_part2.append(location)
                         #variables[location] = True
-                if not finalized: continue #no items to get
+                if not finalized:
+                    current_sphere_item_locations.update( item_locations_in_node[location] )
+                    continue #no assigned items yet
+                    
                 for item_location in item_locations_in_node[location]:
                     item_name = allocation.item_at_item_location[item_location]
                     if item_name == None: continue
                     if not variables[item_name]:
                         current_level_part2.append(item_name)
-                        #variables[item_name] = True
+                        variables[item_name] = True
 
             new_reachable_locations.clear()
 
@@ -375,41 +382,57 @@ class Analyzer(object):
                         if not variables[base_location]:
                             current_level_part2.append(base_location)
                             #variables[base_location] = True
-                    if finalized:
-                        for item_location in item_locations_in_node[base_location]:
-                            item_name = allocation.item_at_item_location[item_location]
-                            if item_name == None: continue
-                            if not variables[item_name]:
-                                current_level_part2.append(item_name)
-                                #variables[item_name] = True
+                    
+                    if not finalized:
+                        current_sphere_item_locations.update( item_locations_in_node[base_location] )
+                        continue #no assigned items yet
+                        
+                    for item_location in item_locations_in_node[base_location]:
+                        item_name = allocation.item_at_item_location[item_location]
+                        if item_name == None: continue
+                        if not variables[item_name]:
+                            current_level_part2.append(item_name)
+                            variables[item_name] = True
 
             for node in current_level_part2:
                 variables[node] = True
 
             if len(current_level_part1) == 0 and len(current_level_part2) == 0:
                 # dead end; allocate progression into reachable
-                if allocation.finalized_shuffle or len(levels) < 2 or progression_index >= len(allocation.progression):
+                if allocation.finalized_shuffle or available_progression[1] >= allocation.progression_splits[-1]:
                     break #no more progression to allocate
-                next_progression = allocation.progression[progression_index]
-                previous_item_locations = set()
-                for level in reversed(levels):
-                    if len(previous_item_locations) >= len(next_progression):
-                        break
-                    previous_item_locations.update( item_location
-                        for base_location in locations_set.intersection( level )
-                        for item_location in item_locations_in_node[base_location]
-                    )
-                previous_item_locations_sorted = random.sample( sorted(previous_item_locations), k = len(next_progression) )
                 
-                allocation.item_at_item_location.update( zip( previous_item_locations_sorted, next_progression ) )
-                progression_index += 1
+                if progression_split_index < len( allocation.progression_splits ):
+                    available_progression[1] = allocation.progression_splits[ progression_split_index ]
+                    progression_split_index += 1
+                    
+                next_index = available_progression[0]
+                sample_size = available_progression[1] - next_index
+                if len( current_sphere_item_locations ) < sample_size:
+                    current_sphere_item_locations |= previous_sphere_item_locations
                 
-                variables.update( (item,True) for item in next_progression )
-                previous_new_variables.update(next_progression)
-            else:     
-                levels.append(current_level_part1)
-                levels.append(current_level_part2)
-                previous_new_variables.update(current_level_part2)
+                sample_size = min( len( current_sphere_item_locations ), sample_size )
+                if sample_size < 1:
+                    break #no more locations to allocate, unlikely for Rabi-Ribi's open world nature
+                
+                locs = sorted( current_sphere_item_locations ) # graph traversal order not guaranteed; sort item_locations here
+                next_progressions = allocation.progression[ next_index : next_index+sample_size ]
+                selected_locations = random.sample( locs, k = sample_size )
+                
+                available_progression[0] += sample_size
+                allocation.item_at_item_location.update( zip( selected_locations, next_progressions ) )
+                
+                current_sphere_item_locations.difference_update( selected_locations )
+                previous_sphere_item_locations = current_sphere_item_locations
+                current_sphere_item_locations = set()
+                
+                variables.update( (item,True) for item in next_progressions )
+                previous_new_variables.update(next_progressions)
+                current_level_part2.extend( next_progressions )
+                
+            levels.append(current_level_part1)
+            levels.append(current_level_part2)
+            previous_new_variables.update(current_level_part2)
 
         if self.visualize:
             colors = [ \

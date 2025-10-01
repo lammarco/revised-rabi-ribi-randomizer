@@ -69,35 +69,45 @@ class Allocation(object):
         # each element representing number of progression in level
         # clarification: progression here is only data.must_be_reachable movement items, so no eggs etc
         
-        self.progression = []
-        self.item_at_item_location = dict()
-        progression_left = data.progression_items_set.copy()
-        min_chain = settings.min_chain_length
-        max_chain = len(progression_left) #TODO: add max_chain_length setting
+        if self.finalized_shuffle: return # No need to shuffle again
+        
+        self.progression = data.progression_items_sorted.copy()
+        self.progression_splits = [] #indices of self.progression, marking the start of each sphere/level
+        rolls = [] 
+        progression_left = len( self.progression )
+        
+        MIN_CHAIN = settings.min_chain_length
+        MAX_CHAIN = progression_left #TODO: add max_chain_length setting
         MIN_PER_CHAIN = 1
-        assert min_chain <= max_chain, "Impossible settings: min_chain_length longer than possible"
+        assert MIN_CHAIN <= MAX_CHAIN, "Impossible settings: min_chain_length longer than possible"
         
         #generate one-by-one, restricting value range to use progression
         # rule 1: even if all following rolls max, are there still leftover? = min for this roll
         # rule 2: conversly, all following rolls min, how much left? = max for this roll
-        for i in range(max_chain):
-            progression_count = len( progression_left )
-            if progression_count <= 0: break
+        for i in range(MAX_CHAIN):
+            if progression_left <= 0: break
             
-            max_in_chain = progression_count if i >= min_chain else progression_count - (min_chain-i-1) * MIN_PER_CHAIN
-            min_in_chain = max(1, progression_count - (max_chain-i)*max_in_chain) #approximation; since later rolls can have lowered max
+            max_in_chain = progression_left if i >= MIN_CHAIN else progression_left - (MIN_CHAIN-i-1) * MIN_PER_CHAIN
+            min_in_chain = max(1, progression_left - (MAX_CHAIN-i)*max_in_chain) #approximation; since later rolls can have lowered max
             
-            roll = random.randint( min_in_chain, max_in_chain if max_in_chain < 6 else max_in_chain//2 ) #prevent high rolls 
-            progression_in_level = random.sample( sorted(progression_left), k=roll ) #sorted for determinism
-            
-            self.progression.append( progression_in_level )
-            progression_left.difference_update( progression_in_level )
+            roll = random.randint( min_in_chain, max_in_chain if max_in_chain < 6 else max_in_chain//2 ) #prevent high rolls
+            progression_left -= roll
+            rolls.append( roll )
             
         # algorithm compresses range towards the end, so randomize roll distribution
         random.shuffle( self.progression )
-        self.finalized_shuffle = False
+        random.shuffle( rolls )
+        #transform rolls into indices ( add sum of previous elements ); NOTE: 0th split is the start of next level, use [0: splits[0]]
+        total = 0
+        for roll in rolls: 
+            total += roll
+            self.progression_splits.append( total )
+        print( self.progression, self.progression_splits,  sep="\n")
         
-    def finalize(self, data, settings, goals):
+    def finalize_shuffle(self, data, settings, goals):
+        if self.finalized_shuffle:
+            return #TODO: warn about duplicate finalize
+            
         n_hard_to_reach = settings.num_hard_to_reach
         n_extra_eggs = settings.extra_eggs if settings.egg_goals else 0
         
