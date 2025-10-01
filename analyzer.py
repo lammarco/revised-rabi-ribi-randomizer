@@ -172,6 +172,7 @@ class Analyzer(object):
         incoming_edges = allocation.incoming_edges
         locations_set = data.locations_set
         edge_progression = data.edge_progression
+        item_locations_in_node = data.item_locations_in_node
         finalized = allocation.finalized_shuffle
 
         # Persistent variables
@@ -312,7 +313,7 @@ class Analyzer(object):
                         current_level_part2.append(location)
                         #variables[location] = True
                 if not finalized: continue #no items to get
-                for item_location in data.item_locations_in_node[location]:
+                for item_location in item_locations_in_node[location]:
                     item_name = allocation.item_at_item_location[item_location]
                     if item_name == None: continue
                     if not variables[item_name]:
@@ -332,7 +333,7 @@ class Analyzer(object):
                     variables[base_location] = True
                 
                 if finalized:
-                    for item_location in data.item_locations_in_node[base_location]:
+                    for item_location in item_locations_in_node[base_location]:
                         item_name = allocation.item_at_item_location[item_location]
                         if item_name == None: continue
                         temp_variable_storage[item_name] = variables[item_name]
@@ -375,7 +376,7 @@ class Analyzer(object):
                             current_level_part2.append(base_location)
                             #variables[base_location] = True
                     if finalized:
-                        for item_location in data.item_locations_in_node[base_location]:
+                        for item_location in item_locations_in_node[base_location]:
                             item_name = allocation.item_at_item_location[item_location]
                             if item_name == None: continue
                             if not variables[item_name]:
@@ -389,16 +390,21 @@ class Analyzer(object):
                 # dead end; allocate progression into reachable
                 if allocation.finalized_shuffle or len(levels) < 2 or progression_index >= len(allocation.progression):
                     break #no more progression to allocate
-                        
                 next_progression = allocation.progression[progression_index]
-                previous_locations = data.item_slots.intersection( levels[-1] + levels[-2] ) #parts 1&2
-                previous_locations = sorted( previous_locations ) #determinism
-                previous_locations = random.sample( previous_locations, k = len(next_progression) )
+                previous_item_locations = set()
+                for level in reversed(levels):
+                    if len(previous_item_locations) >= len(next_progression):
+                        break
+                    previous_item_locations.update( item_location
+                        for base_location in locations_set.intersection( level )
+                        for item_location in item_locations_in_node[base_location]
+                    )
+                previous_item_locations_sorted = random.sample( sorted(previous_item_locations), k = len(next_progression) )
                 
-                allocation.item_at_item_location.update( zip( previous_locations, next_progression ) )
+                allocation.item_at_item_location.update( zip( previous_item_locations_sorted, next_progression ) )
                 progression_index += 1
                 
-                variables.update( (item:True) for item in next_progression )
+                variables.update( (item,True) for item in next_progression )
                 previous_new_variables.update(next_progression)
             else:     
                 levels.append(current_level_part1)

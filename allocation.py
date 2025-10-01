@@ -24,7 +24,8 @@ class Allocation(object):
     def __init__(self, data, settings):
         self.items_to_allocate = list(data.items_to_allocate)
         self.walking_left_transitions = list(data.walking_left_transitions)
-
+        self.modified_incoming = dict()
+        self.modified_outgoing = dict()
 
     def shuffle(self, data, settings):
         self.map_modifications = list(data.default_map_modifications)
@@ -69,22 +70,22 @@ class Allocation(object):
         # clarification: progression here is only data.must_be_reachable movement items, so no eggs etc
         
         self.progression = []
-        progression_left = set( data.must_be_reachable )
+        self.item_at_item_location = dict()
+        progression_left = data.progression_items_set.copy()
         min_chain = settings.min_chain_length
         max_chain = len(progression_left) #TODO: add max_chain_length setting
         MIN_PER_CHAIN = 1
         assert min_chain <= max_chain, "Impossible settings: min_chain_length longer than possible"
         
         #generate one-by-one, restricting value range to use progression
-        # rule 1: even if all following rolls max, are there still leftover = min for this roll?
-        # rule 2: conversly, all following rolls min, how much left = max for this roll?
+        # rule 1: even if all following rolls max, are there still leftover? = min for this roll
+        # rule 2: conversly, all following rolls min, how much left? = max for this roll
         for i in range(max_chain):
             progression_count = len( progression_left )
             if progression_count <= 0: break
             
             max_in_chain = progression_count if i >= min_chain else progression_count - (min_chain-i-1) * MIN_PER_CHAIN
             min_in_chain = max(1, progression_count - (max_chain-i)*max_in_chain) #approximation; since later rolls can have lowered max
-            #print(min_in_chain,max_in_chain)
             
             roll = random.randint( min_in_chain, max_in_chain if max_in_chain < 6 else max_in_chain//2 ) #prevent high rolls 
             progression_in_level = random.sample( sorted(progression_left), k=roll ) #sorted for determinism
@@ -92,7 +93,8 @@ class Allocation(object):
             self.progression.append( progression_in_level )
             progression_left.difference_update( progression_in_level )
             
-        random.shuffle( self.progression ) # algorithm compresses range towards the end, so randomize roll distribution
+        # algorithm compresses range towards the end, so randomize roll distribution
+        random.shuffle( self.progression )
         self.finalized_shuffle = False
         
     def finalize(self, data, settings, goals):
@@ -102,8 +104,6 @@ class Allocation(object):
         #handle goals
         
         #shuffle everything else
-        
-        if not settings.egg_goals:
             
         self.finalized_shuffle = True
 

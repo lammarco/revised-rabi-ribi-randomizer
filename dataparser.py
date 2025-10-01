@@ -788,6 +788,8 @@ class RandomizerData(object):
         self.preprocess_data(settings)
         self.preprocess_variables(settings)
         self.preprocess_graph(settings)
+        
+        self.progression_items_set = set( self.item_names ).intersection( self.edge_progression.keys() )
 
         self.preprocess_backward_reachable(settings)
         self.preprocess_template_constraints(settings)
